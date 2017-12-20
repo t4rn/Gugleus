@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gugleus.Core", "Gugleus.Core\Gugleus.Core.csproj", "{01405A31-C11D-4C9B-AF42-A3CAE4F0A60D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gugleus.Core", "Gugleus.Core\Gugleus.Core.csproj", "{01405A31-C11D-4C9B-AF42-A3CAE4F0A60D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gugleus.Api", "Gugleus.Api\Gugleus.Api.csproj", "{9D367D4A-91D7-4C44-808D-459724B9AA54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gugleus.Api", "Gugleus.Api\Gugleus.Api.csproj", "{9D367D4A-91D7-4C44-808D-459724B9AA54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
