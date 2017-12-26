@@ -1,4 +1,5 @@
-﻿using Gugleus.Core.Repositories;
+﻿using AutoMapper;
+using Gugleus.Core.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,7 @@ namespace Gugleus.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddAutoMapper();
 
             services.AddTransient<IPostRepository, PostRepository>();
 
