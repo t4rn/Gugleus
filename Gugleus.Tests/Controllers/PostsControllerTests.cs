@@ -9,15 +9,15 @@ using Xunit;
 
 namespace Gugleus.Tests.Controllers
 {
-    public class PostControllerTests
+    public class PostsControllerTests
     {
         private readonly Mock<IPostRepository> _postRepositoryMock;
-        private readonly PostController _controller;
+        private readonly PostsController _controller;
 
-        public PostControllerTests()
+        public PostsControllerTests()
         {
             _postRepositoryMock = new Mock<IPostRepository>();
-            _controller = new PostController(_postRepositoryMock.Object);
+            _controller = new PostsController(_postRepositoryMock.Object);
         }
 
         [Fact(DisplayName = "GetPing")]

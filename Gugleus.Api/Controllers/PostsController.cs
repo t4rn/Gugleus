@@ -1,6 +1,7 @@
 ﻿using Gugleus.Core.Repositories;
 using Gugleus.Core.Results;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +10,19 @@ using System.Threading.Tasks;
 
 namespace Gugleus.Api.Controllers
 {
-    public class PostController : BaseController
+    [Route("api/[controller]")]
+    public class PostsController : BaseController
     {
         private readonly IPostRepository _postRepository;
 
-        public PostController(IPostRepository postRepository)
+        public PostsController(IPostRepository postRepository)
         {
             _postRepository = postRepository;
         }
 
 
         [HttpGet("")]
+        [SwaggerResponse(200, Type = typeof(string))]
         public IActionResult Get()
         {
             return Ok($"Ping at {DateTime.Now}.");
