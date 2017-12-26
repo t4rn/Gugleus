@@ -1,5 +1,4 @@
-﻿using Gugleus.Api.ActionResults;
-using Gugleus.Core.Repositories;
+﻿using Gugleus.Core.Repositories;
 using Gugleus.Core.Results;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,12 +9,11 @@ using System.Threading.Tasks;
 
 namespace Gugleus.Api.Controllers
 {
-    [Route("api/[controller]")]
-    public class PlusController : Controller
+    public class PostController : BaseController
     {
         private readonly IPostRepository _postRepository;
 
-        public PlusController(IPostRepository postRepository)
+        public PostController(IPostRepository postRepository)
         {
             _postRepository = postRepository;
         }
@@ -42,10 +40,25 @@ namespace Gugleus.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]string newPost)
         {
-            long id = await _postRepository.AddPost(newPost);
-            Result result = new Result() { IsOk = true, Message = $"Successfully added post with Id: {id}." };
+            IActionResult result;
 
-            return Ok(result);
+            if (newPost == null)
+            {
+                result = BadRequest("Null input.");
+            }
+            else if (!ModelState.IsValid)
+            {
+                result = BadRequest(ModelState);
+            }
+            else
+            {
+                long id = await _postRepository.AddPost(newPost);
+                var res = new Result() { IsOk = true, Message = $"Successfully added post with Id: {id}." };
+
+                result = Ok(res);
+            }
+
+            return result;
         }
 
         [HttpPut("{id}")]
