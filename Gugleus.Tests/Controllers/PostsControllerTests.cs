@@ -7,6 +7,7 @@ using Gugleus.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -43,8 +44,9 @@ namespace Gugleus.Tests.Controllers
         public void PostNullInput(PostDto newPost)
         {
             // Arrange
+            string expectedMsg = Guid.NewGuid().ToString();
             _validationServiceMock.Setup(x => x.ValidateNewPost(newPost))
-                .Returns(new MessageListResult() { IsOk = false });
+                .Returns(new MessageListResult() { IsOk = false, Message = expectedMsg });
 
             // Act
             Task<IActionResult> taskWithActionResult = _controller.Post(newPost);
@@ -56,7 +58,10 @@ namespace Gugleus.Tests.Controllers
 
             var badRequestResult = taskWithActionResult.Result as BadRequestObjectResult;
             badRequestResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-            badRequestResult.Value.Should().Be("Null input.");
+            badRequestResult.Value.Should().BeOfType<MessageListResult>();
+            var result = badRequestResult.Value as MessageListResult;
+            result.IsOk.Should().Be(false);
+            result.Message.Should().Be(expectedMsg);
         }
     }
 }

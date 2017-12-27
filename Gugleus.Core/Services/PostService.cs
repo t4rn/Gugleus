@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Gugleus.Core.Domain;
+using Gugleus.Core.Domain.Requests;
 using Gugleus.Core.Dto;
 using Gugleus.Core.Repositories;
 using Gugleus.Core.Results;
@@ -10,13 +11,15 @@ namespace Gugleus.Core.Services
 {
     public class PostService : IPostService
     {
-        private readonly IPostRepository _postRepository;
+        private readonly IRequestRepository _requestRepository;
         private readonly IMapper _mapper;
+        private readonly IUtilsService _utilsService;
 
-        public PostService(IPostRepository postRepository, IMapper mapper)
+        public PostService(IRequestRepository requestRepository, IMapper mapper, IUtilsService utilsService)
         {
-            _postRepository = postRepository;
+            _requestRepository = requestRepository;
             _mapper = mapper;
+            _utilsService = utilsService;
         }
 
         public async Task<IdResult<long>> AddPost(PostDto postDto)
@@ -28,19 +31,29 @@ namespace Gugleus.Core.Services
                 // mapping
                 Post post = _mapper.Map<Post>(postDto);
 
-                // saving to db
-                long id = await _postRepository.AddPost(post);
-
-                // preparing result
-                if (id > 0)
+                if (post != null)
                 {
-                    result.IsOk = true;
-                    result.Id = id;
-                    result.Message = "Post successfully added.";
+                    // preparing request
+                    Request request = PrepareRequest(post);
+
+                    // saving to db
+                    long id = await _requestRepository.AddRequest(request);
+
+                    // preparing result
+                    if (id > 0)
+                    {
+                        result.IsOk = true;
+                        result.Id = id;
+                        result.Message = "Request successfully added to queue.";
+                    }
+                    else
+                    {
+                        result.Message = "Something went wrong while adding request...";
+                    }
                 }
                 else
                 {
-                    result.Message = "Something went wrong while adding post...";
+                    result.Message = "Error mapping Post.";
                 }
             }
             catch (Exception ex)
@@ -54,11 +67,11 @@ namespace Gugleus.Core.Services
         public async Task<ObjResult<PostDto>> GetPost(long id)
         {
             ObjResult<PostDto> result = new ObjResult<PostDto>();
-            Post post = await _postRepository.GetPost(id);
+            Request request = await _requestRepository.GetRequest(id);
 
-            if (post != null)
+            if (request != null)
             {
-                var postDto = _mapper.Map<PostDto>(post);
+                var postDto = _mapper.Map<PostDto>(request);
                 result.Object = postDto;
                 result.IsOk = true;
             }
@@ -68,6 +81,15 @@ namespace Gugleus.Core.Services
             }
 
             return result;
+        }
+
+        private Request PrepareRequest(Post post)
+        {
+            Request request = new Request();
+            request.Type = new DictionaryItem(DictionaryItem.RequestTypes.ADDPOST);
+            request.Input = _utilsService.SerializeToJson(post);
+
+            return request;
         }
     }
 }

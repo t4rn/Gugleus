@@ -17,9 +17,10 @@ namespace Gugleus.Core.AutofacModules
             //builder.Register(c => new EfRepository(_connStr))
             //    .As<IUserRepository>().InstancePerRequest();
 
-            builder.RegisterType<PostRepository>().As<IPostRepository>();
+            builder.RegisterType<RequestRepository>().As<IRequestRepository>();
             builder.RegisterType<PostService>().As<IPostService>();
             builder.RegisterType<ValidationService>().As<IValidationService>();
+            builder.RegisterType<UtilsService>().As<IUtilsService>();
 
             base.Load(builder);
         }
