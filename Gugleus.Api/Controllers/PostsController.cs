@@ -2,6 +2,7 @@
 using Gugleus.Core.Dto;
 using Gugleus.Core.Results;
 using Gugleus.Core.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
@@ -24,7 +25,7 @@ namespace Gugleus.Api.Controllers
 
         [HttpGet("")]
         [SwaggerResponse(200, Type = typeof(string))]
-        public IActionResult Get()
+        public IActionResult Ping()
         {
             return Ok($"Ping at {DateTime.Now}.");
         }
@@ -47,6 +48,7 @@ namespace Gugleus.Api.Controllers
         {
             IActionResult result;
 
+            // validating input
             MessageListResult validationResult = _validationService.ValidateNewPost(newPost);
 
             if (!validationResult.IsOk)
@@ -55,9 +57,17 @@ namespace Gugleus.Api.Controllers
             }
             else
             {
+                // adding post to queue
                 var addResult = await _postService.AddPost(newPost);
 
-                result = Ok(addResult);
+                if (addResult.IsOk)
+                {
+                    result = Ok(addResult);
+                }
+                else
+                {
+                    result = StatusCode(StatusCodes.Status500InternalServerError, addResult);
+                }
             }
 
             return result;

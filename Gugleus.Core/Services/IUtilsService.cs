@@ -3,5 +3,6 @@
     public interface IUtilsService
     {
         string SerializeToJson(object obj);
+        T DeserializeFromJson<T>(string json);
     }
 }

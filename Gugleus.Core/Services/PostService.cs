@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Gugleus.Core.Domain;
+using Gugleus.Core.Domain.Google;
 using Gugleus.Core.Domain.Requests;
 using Gugleus.Core.Dto;
 using Gugleus.Core.Repositories;
@@ -102,20 +103,31 @@ namespace Gugleus.Core.Services
             RequestStatusDto dto = new RequestStatusDto();
 
             dto.Id = request.Id;
-            dto.Status = request.Queue.Status.Code;
+            dto.Status = request.Queue?.Status?.Code;
             if (dto.Status == DictionaryItem.RequestStatus.DONE.ToString())
             {
                 dto.Url = GetUrlFromRequest(request.Output);
             }
-            dto.Error = request.Queue.ErrorMsg;
+            dto.Error = request.Queue?.ErrorMsg;
 
             return dto;
         }
 
-        // TODO: impement
         private string GetUrlFromRequest(string json)
         {
-            return "http://www.asd.com";
+            string url = null;
+
+            PostUrlInfo postInfo = _utilsService.DeserializeFromJson<PostUrlInfo>(json);
+            if (postInfo.IsOk)
+            {
+                url = postInfo.RequestedUrl;
+            }
+            else
+            {
+                url = $"Not Ok returned from runner...";
+            }
+
+            return url;
         }
     }
 }

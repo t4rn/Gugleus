@@ -26,13 +26,13 @@ namespace Gugleus.Tests.Controllers
             _controller = new PostsController(_postServiceMock.Object, _validationServiceMock.Object);
         }
 
-        [Fact(DisplayName = "GetPing")]
-        public void GetPing()
+        [Fact(DisplayName = "Ping")]
+        public void Ping()
         {
             // Arrange
 
             // Act
-            IActionResult actionResult = _controller.Get();
+            IActionResult actionResult = _controller.Ping();
 
             // Assert
             actionResult.Should().NotBeNull().And.BeOfType<OkObjectResult>();
