@@ -31,10 +31,10 @@ namespace Gugleus.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var post = await _postService.GetPostStatus(id);
-            if (post != null)
+            RequestStatusDto requestStatus = await _postService.GetPostStatus(id);
+            if (requestStatus != null)
             {
-                return Ok(post);
+                return Ok(requestStatus);
             }
 
             return BadRequest($"Post with Id: '{id}' not found...");

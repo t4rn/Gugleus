@@ -64,20 +64,25 @@ namespace Gugleus.Core.Services
             return result;
         }
 
-        public async Task<ObjResult<RequestStatusDto>> GetPostStatus(long id)
+        public async Task<RequestStatusDto> GetPostStatus(long id)
         {
-            ObjResult<PostDto> result = new ObjResult<PostDto>();
-            Request request = await _requestRepository.GetRequestQueue(id);
+            RequestStatusDto result = new RequestStatusDto();
+            try
+            {
+                Request request = await _requestRepository.GetRequestDetails(id);
 
-            if (request != null)
-            {
-                var postDto = _mapper.Map<PostDto>(request);
-                result.Object = postDto;
-                result.IsOk = true;
+                if (request != null)
+                {
+                    result = PrepareRequestStatus(request);
+                }
+                else
+                {
+                    result.Error = $"Post of Id: {id} not found...";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                result.Message = $"Your post of Id: {id} is still in waiting queue...";
+                result.Error = $"Exception occured: {ex.Message}";
             }
 
             return result;
@@ -86,10 +91,30 @@ namespace Gugleus.Core.Services
         private Request PrepareRequest(Post post)
         {
             Request request = new Request();
-            request.Type = new DictionaryItem(DictionaryItem.RequestTypes.ADDPOST);
+            request.Type = new DictionaryItem(DictionaryItem.RequestType.ADDPOST);
             request.Input = _utilsService.SerializeToJson(post);
 
             return request;
+        }
+
+        private RequestStatusDto PrepareRequestStatus(Request request)
+        {
+            RequestStatusDto dto = new RequestStatusDto();
+
+            dto.Id = request.Id;
+            dto.Status = request.Queue.Status.Code;
+            if (dto.Status == DictionaryItem.RequestStatus.DONE.ToString())
+            {
+                dto.Url = GetUrlFromRequest(request.Output);
+            }
+            dto.Error = request.Queue.ErrorMsg;
+
+            return dto;
+        }
+        // TODO: impement
+        private string GetUrlFromRequest(string output)
+        {
+            return "http://www.asd.com";
         }
     }
 }

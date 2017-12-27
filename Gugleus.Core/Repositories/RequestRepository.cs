@@ -5,6 +5,7 @@ using NpgsqlTypes;
 using System.Data;
 using System.Threading.Tasks;
 using System.Linq;
+using Gugleus.Core.Domain;
 
 namespace Gugleus.Core.Repositories
 {
@@ -43,23 +44,44 @@ namespace Gugleus.Core.Repositories
             return id;
         }
 
-        public async Task<RequestQueue> GetRequestQueue(long id)
+        public async Task<Request> GetRequestDetails(long id)
         {
-            RequestQueue requestQueue = null;
+            Request requestWithQueue = null;
 
-            string query = @"SELECT id, r.id_ws_client, r.id_request_type,
-                                r.request_input, r.request_output, r.add_date, r.output_date,
-                                rq.id_status, rq.add_date, rq.process_start_date, rq.process_end_date, rq.error_msg
+            string query = @"SELECT id as Id, r.id_ws_client as WsClient,
+                                r.request_input as Input, r.request_output as Output,
+                                r.add_date as AddDate, r.output_date as OutputDate,
+
+                                r.id_request_type as Code,
+
+                                rq.add_date as AddDate,
+                                rq.process_start_date as ProcessStartDate, rq.process_end_date as ProcessEndDate,
+                                rq.error_msg as ErrorMsg,
+
+                                rq.id_status as Code
+
                             FROM he.requests r
                             JOIN he.requests_queue rq USING (id)
                             WHERE id = @id";
 
             using (NpgsqlConnection conn = new NpgsqlConnection(_connStr))
             {
-                requestQueue = await conn.QueryFirstOrDefaultAsync<RequestQueue>(query, param: new { id });
+                var cos = await conn.QueryAsync<Request, DictionaryItem, RequestQueue, DictionaryItem, Request>(
+                    query,
+                    (request, type, queue, status) =>
+                    {
+                        request.Queue = queue;
+                        request.Type = type;
+                        request.Queue.Status = status;
+                        return request;
+                    },
+                    param: new { id },
+                    splitOn: "Code, AddDate, Code");
+
+                requestWithQueue = cos.FirstOrDefault();
             }
 
-            return requestQueue;
+            return requestWithQueue;
         }
     }
 }

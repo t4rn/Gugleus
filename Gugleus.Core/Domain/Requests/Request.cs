@@ -11,5 +11,6 @@ namespace Gugleus.Core.Domain.Requests
         public string Output { get; set; }
         public DateTime AddDate { get; set; }
         public DateTime OutputDate { get; set; }
+        public RequestQueue Queue { get; set; }
     }
 }
