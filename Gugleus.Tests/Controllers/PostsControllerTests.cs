@@ -1,6 +1,9 @@
 ﻿using FluentAssertions;
 using Gugleus.Api.Controllers;
+using Gugleus.Core.Dto;
 using Gugleus.Core.Repositories;
+using Gugleus.Core.Results;
+using Gugleus.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -11,13 +14,15 @@ namespace Gugleus.Tests.Controllers
 {
     public class PostsControllerTests
     {
-        private readonly Mock<IPostRepository> _postRepositoryMock;
+        private readonly Mock<IPostService> _postServiceMock;
+        private readonly Mock<IValidationService> _validationServiceMock;
         private readonly PostsController _controller;
 
         public PostsControllerTests()
         {
-            _postRepositoryMock = new Mock<IPostRepository>();
-            _controller = new PostsController(_postRepositoryMock.Object);
+            _postServiceMock = new Mock<IPostService>();
+            _validationServiceMock = new Mock<IValidationService>();
+            _controller = new PostsController(_postServiceMock.Object, _validationServiceMock.Object);
         }
 
         [Fact(DisplayName = "GetPing")]
@@ -35,15 +40,17 @@ namespace Gugleus.Tests.Controllers
 
         [Theory(DisplayName = "PostNullInput")]
         [InlineData(null)]
-        public void PostNullInput(string newPost)
+        public void PostNullInput(PostDto newPost)
         {
             // Arrange
+            _validationServiceMock.Setup(x => x.ValidateNewPost(newPost))
+                .Returns(new MessageListResult() { IsOk = false });
 
             // Act
             Task<IActionResult> taskWithActionResult = _controller.Post(newPost);
 
             // Assert
-            _postRepositoryMock.Verify(x => x.AddPost(It.IsAny<string>()), Times.Never);
+            _postServiceMock.Verify(x => x.AddPost(It.IsAny<PostDto>()), Times.Never);
 
             taskWithActionResult.Result.Should().NotBeNull().And.BeOfType<BadRequestObjectResult>();
 

@@ -1,23 +1,23 @@
-﻿using Gugleus.Core.Repositories;
+﻿using Gugleus.Core.Dto;
 using Gugleus.Core.Results;
+using Gugleus.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Gugleus.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class PostsController : BaseController
     {
-        private readonly IPostRepository _postRepository;
+        private readonly IPostService _postService;
+        private readonly IValidationService _validationService;
 
-        public PostsController(IPostRepository postRepository)
+        public PostsController(IPostService postService, IValidationService validationService)
         {
-            _postRepository = postRepository;
+            _postService = postService;
+            _validationService = validationService;
         }
 
 
@@ -31,7 +31,7 @@ namespace Gugleus.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
-            var post = await _postRepository.GetPost(id);
+            var post = await _postService.GetPost(id);
             if (post != null)
             {
                 return Ok(post);
@@ -41,37 +41,28 @@ namespace Gugleus.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]string newPost)
+        public async Task<IActionResult> Post([FromBody]PostDto newPost)
         {
             IActionResult result;
 
-            if (newPost == null)
-            {
-                result = BadRequest("Null input.");
-            }
-            else if (!ModelState.IsValid)
+            MessageListResult validationResult = _validationService.ValidateNewPost(newPost);
+
+            if (!ModelState.IsValid)    // validating Data Annotation
             {
                 result = BadRequest(ModelState);
             }
+            else if (!validationResult.IsOk)    // additional validations
+            {
+                result = BadRequest(validationResult);
+            }
             else
             {
-                long id = await _postRepository.AddPost(newPost);
-                var res = new Result() { IsOk = true, Message = $"Successfully added post with Id: {id}." };
+                var addResult = await _postService.AddPost(newPost);
 
-                result = Ok(res);
+                result = Ok(addResult);
             }
 
             return result;
-        }
-
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

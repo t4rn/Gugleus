@@ -1,8 +1,7 @@
-﻿namespace Gugleus.Core.Posts
+﻿namespace Gugleus.Core.Domain
 {
-    public class Post
+    public class UserInfo
     {
-        public string Content { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
     }

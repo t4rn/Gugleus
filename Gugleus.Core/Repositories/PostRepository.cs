@@ -1,18 +1,20 @@
-﻿using System;
+﻿using Gugleus.Core.Domain;
+using System;
 using System.Threading.Tasks;
 
 namespace Gugleus.Core.Repositories
 {
     public class PostRepository : IPostRepository
     {
-        public async Task<long> AddPost(string post)
+        public async Task<long> AddPost(Post post)
         {
             return await Task.FromResult(new Random().Next(1, int.MaxValue));
         }
 
-        public async Task<string> GetPost(long id)
+        public async Task<Post> GetPost(long id)
         {
-            return await Task.FromResult($"Your post of Id: {id} is still in waiting queue...");
+            Post post = new Post() { Id = id };
+            return await Task.FromResult(post);
         }
     }
 }

@@ -18,6 +18,8 @@ namespace Gugleus.Core.AutofacModules
             //    .As<IUserRepository>().InstancePerRequest();
 
             builder.RegisterType<PostRepository>().As<IPostRepository>();
+            builder.RegisterType<PostService>().As<IPostService>();
+            builder.RegisterType<ValidationService>().As<IValidationService>();
 
             base.Load(builder);
         }

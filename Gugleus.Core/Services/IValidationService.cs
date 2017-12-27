@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Gugleus.Core.Dto;
+using Gugleus.Core.Results;
 
 namespace Gugleus.Core.Services
 {
     public interface IValidationService
     {
-        
+        MessageListResult ValidateNewPost(PostDto newPost);
     }
 }

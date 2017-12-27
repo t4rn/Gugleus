@@ -1,11 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using Gugleus.Core.Domain;
+using System.Threading.Tasks;
 
 namespace Gugleus.Core.Repositories
 {
     public interface IPostRepository
     {
-        Task<long> AddPost(string post);
+        Task<long> AddPost(Post post);
 
-        Task<string> GetPost(long id);
+        Task<Post> GetPost(long id);
     }
 }
