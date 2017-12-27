@@ -33,7 +33,7 @@ namespace Gugleus.Api
                     Title = "Gugleus API",
                     Description = "Gugleus Swagger Documentation",
                     TermsOfService = "None",
-                    Contact = new Contact { Name = "xx", Url = "xxx" },
+                    Contact = new Contact { Name = "t4rn", Url = "https://github.com/t4rn" },
                     License = new License { Name = "MIT", Url = "https://en.wikipedia.org/wiki/MIT_License" }
                 });
             });
@@ -41,7 +41,7 @@ namespace Gugleus.Api
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            builder.RegisterModule(new AutofacModule());
+            builder.RegisterModule(new AutofacModule(Configuration.GetConnectionString("cs")));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

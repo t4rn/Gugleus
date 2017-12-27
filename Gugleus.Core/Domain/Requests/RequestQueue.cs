@@ -5,6 +5,7 @@ namespace Gugleus.Core.Domain.Requests
     public class RequestQueue
     {
         public long Id { get; set; }
+        public Request Request { get; set; }
         public DictionaryItem Status { get; set; }
         public DateTime AddDate { get; set; }
         public DateTime ProcessStartDate { get; set; }

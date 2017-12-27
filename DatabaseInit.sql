@@ -1,6 +1,12 @@
-﻿-- drop schema he cascade;
+﻿CREATE ROLE gugleus LOGIN
+  ENCRYPTED PASSWORD 'md58bcdd12b689dadcbae49a1f7a17a5a89'
+  NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
+
+-- drop schema he cascade;
 create schema he;
-----------
+GRANT ALL ON SCHEMA he TO gugleus;
+GRANT ALL ON SCHEMA he TO gugleus;
+--********************************************************************************
 CREATE TABLE he.ws_clients
 (
   id serial primary key,
@@ -41,6 +47,8 @@ CREATE TABLE he.requests
   add_date timestamp without time zone DEFAULT now(),
   output_date timestamp without time zone
 ) WITH (OIDS=FALSE);
+GRANT ALL ON TABLE he.requests TO gugleus;
+GRANT ALL ON TABLE he.requests_id_seq TO gugleus;
 --********************************************************************************
 CREATE TABLE he.requests_queue
 (
@@ -51,3 +59,4 @@ CREATE TABLE he.requests_queue
   process_end_date timestamp without time zone,
   error_msg text
 )WITH (OIDS=FALSE);
+GRANT ALL ON TABLE he.requests_queue TO gugleus;

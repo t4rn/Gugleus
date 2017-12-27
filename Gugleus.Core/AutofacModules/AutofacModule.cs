@@ -8,16 +8,16 @@ namespace Gugleus.Core.AutofacModules
     {
         private readonly string _connStr;
 
-        public AutofacModule()
+        public AutofacModule(string connStr)
         {
+            _connStr = connStr;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            //builder.Register(c => new EfRepository(_connStr))
-            //    .As<IUserRepository>().InstancePerRequest();
-
-            builder.RegisterType<RequestRepository>().As<IRequestRepository>();
+            builder.Register(x => new RequestRepository(_connStr))
+                .As<IRequestRepository>();
+            //builder.RegisterType<RequestRepository>().As<IRequestRepository>();
             builder.RegisterType<PostService>().As<IPostService>();
             builder.RegisterType<ValidationService>().As<IValidationService>();
             builder.RegisterType<UtilsService>().As<IUtilsService>();

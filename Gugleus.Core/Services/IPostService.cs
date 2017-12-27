@@ -8,6 +8,6 @@ namespace Gugleus.Core.Services
     {
         Task<IdResult<long>> AddPost(PostDto postDto);
 
-        Task<ObjResult<PostDto>> GetPost(long id);
+        Task<ObjResult<RequestStatusDto>> GetPostStatus(long id);
     }
 }

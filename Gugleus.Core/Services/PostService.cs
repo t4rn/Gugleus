@@ -48,7 +48,7 @@ namespace Gugleus.Core.Services
                     }
                     else
                     {
-                        result.Message = "Something went wrong while adding request...";
+                        result.Message = "Something went wrong while adding request to db...";
                     }
                 }
                 else
@@ -58,16 +58,16 @@ namespace Gugleus.Core.Services
             }
             catch (Exception ex)
             {
-                result.Message = $"Exception occured: {ex}";
+                result.Message = $"Exception occured: {ex.Message}";
             }
 
             return result;
         }
 
-        public async Task<ObjResult<PostDto>> GetPost(long id)
+        public async Task<ObjResult<RequestStatusDto>> GetPostStatus(long id)
         {
             ObjResult<PostDto> result = new ObjResult<PostDto>();
-            Request request = await _requestRepository.GetRequest(id);
+            Request request = await _requestRepository.GetRequestQueue(id);
 
             if (request != null)
             {
