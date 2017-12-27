@@ -1,5 +1,6 @@
-﻿using AutoMapper;
-using Gugleus.Core.Repositories;
+﻿using Autofac;
+using AutoMapper;
+using Gugleus.Core.AutofacModules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +23,7 @@ namespace Gugleus.Api
             services.AddMvc();
             services.AddAutoMapper();
 
-            services.AddTransient<IPostRepository, PostRepository>();
+            //services.AddTransient<IPostRepository, PostRepository>();
 
             services.AddSwaggerGen(options =>
             {
@@ -36,7 +37,11 @@ namespace Gugleus.Api
                     License = new License { Name = "MIT", Url = "https://en.wikipedia.org/wiki/MIT_License" }
                 });
             });
+        }
 
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterModule(new AutofacModule());
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
