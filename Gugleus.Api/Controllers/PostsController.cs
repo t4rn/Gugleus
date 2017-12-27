@@ -1,4 +1,5 @@
-﻿using Gugleus.Core.Dto;
+﻿using Gugleus.Api.Middleware;
+using Gugleus.Core.Dto;
 using Gugleus.Core.Results;
 using Gugleus.Core.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -41,17 +42,14 @@ namespace Gugleus.Api.Controllers
         }
 
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> Post([FromBody]PostDto newPost)
         {
             IActionResult result;
 
             MessageListResult validationResult = _validationService.ValidateNewPost(newPost);
 
-            if (!ModelState.IsValid)    // validating Data Annotation
-            {
-                result = BadRequest(ModelState);
-            }
-            else if (!validationResult.IsOk)    // additional validations
+            if (!validationResult.IsOk)
             {
                 result = BadRequest(validationResult);
             }

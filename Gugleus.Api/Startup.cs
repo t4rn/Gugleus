@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
+using Gugleus.Api.Middleware;
 using Gugleus.Core.AutofacModules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -58,6 +59,7 @@ namespace Gugleus.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
+            app.UseMiddleware<HashAuthenticationMiddleware>();
 
             app.UseMvc();
         }
