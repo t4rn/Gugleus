@@ -29,7 +29,7 @@ namespace Gugleus.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(long id)
+        public async Task<IActionResult> GetPostStatus(long id)
         {
             RequestStatusDto requestStatus = await _postService.GetPostStatus(id);
             if (requestStatus != null)

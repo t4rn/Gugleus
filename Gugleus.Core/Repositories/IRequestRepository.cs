@@ -7,6 +7,6 @@ namespace Gugleus.Core.Repositories
     {
         Task<long> AddRequest(Request request);
 
-        Task<Request> GetRequestDetails(long id);
+        Task<Request> GetRequestWithQueue(long id);
     }
 }

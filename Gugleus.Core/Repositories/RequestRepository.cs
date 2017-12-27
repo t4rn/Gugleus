@@ -1,11 +1,12 @@
 ﻿using Dapper;
+using Gugleus.Core.Domain;
 using Gugleus.Core.Domain.Requests;
 using Npgsql;
 using NpgsqlTypes;
+using System.Collections.Generic;
 using System.Data;
-using System.Threading.Tasks;
 using System.Linq;
-using Gugleus.Core.Domain;
+using System.Threading.Tasks;
 
 namespace Gugleus.Core.Repositories
 {
@@ -36,15 +37,13 @@ namespace Gugleus.Core.Repositories
                 //await cmd.Connection.OpenAsync();
                 //object o = cmd.ExecuteScalar();
                 //if (o != null && o != DBNull.Value)
-                //{
                 //    id = Convert.ToInt64(o);
-                //}
             }
 
             return id;
         }
 
-        public async Task<Request> GetRequestDetails(long id)
+        public async Task<Request> GetRequestWithQueue(long id)
         {
             Request requestWithQueue = null;
 
@@ -66,9 +65,10 @@ namespace Gugleus.Core.Repositories
 
             using (NpgsqlConnection conn = new NpgsqlConnection(_connStr))
             {
-                var cos = await conn.QueryAsync<Request, DictionaryItem, RequestQueue, DictionaryItem, Request>(
-                    query,
-                    (request, type, queue, status) =>
+                IEnumerable<Request> queryResult = 
+                    await conn.QueryAsync<Request, DictionaryItem, RequestQueue, DictionaryItem, Request>(
+                    sql: query,
+                    map: (request, type, queue, status) =>
                     {
                         request.Queue = queue;
                         request.Type = type;
@@ -78,7 +78,7 @@ namespace Gugleus.Core.Repositories
                     param: new { id },
                     splitOn: "Code, AddDate, Code");
 
-                requestWithQueue = cos.FirstOrDefault();
+                requestWithQueue = queryResult.FirstOrDefault();
             }
 
             return requestWithQueue;

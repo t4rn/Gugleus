@@ -69,7 +69,7 @@ namespace Gugleus.Core.Services
             RequestStatusDto result = new RequestStatusDto();
             try
             {
-                Request request = await _requestRepository.GetRequestDetails(id);
+                Request request = await _requestRepository.GetRequestWithQueue(id);
 
                 if (request != null)
                 {
@@ -77,7 +77,7 @@ namespace Gugleus.Core.Services
                 }
                 else
                 {
-                    result.Error = $"Post of Id: {id} not found...";
+                    result.Error = $"Post with Id: {id} not found...";
                 }
             }
             catch (Exception ex)
@@ -111,8 +111,9 @@ namespace Gugleus.Core.Services
 
             return dto;
         }
+
         // TODO: impement
-        private string GetUrlFromRequest(string output)
+        private string GetUrlFromRequest(string json)
         {
             return "http://www.asd.com";
         }
