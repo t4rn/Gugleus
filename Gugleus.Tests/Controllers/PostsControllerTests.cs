@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Gugleus.Api.Controllers;
+using Gugleus.Core.Domain;
 using Gugleus.Core.Dto;
-using Gugleus.Core.Repositories;
 using Gugleus.Core.Results;
 using Gugleus.Core.Services;
 using Microsoft.AspNetCore.Http;
@@ -15,13 +15,13 @@ namespace Gugleus.Tests.Controllers
 {
     public class PostsControllerTests
     {
-        private readonly Mock<IPostService> _postServiceMock;
+        private readonly Mock<IRequestService> _postServiceMock;
         private readonly Mock<IValidationService> _validationServiceMock;
         private readonly PostsController _controller;
 
         public PostsControllerTests()
         {
-            _postServiceMock = new Mock<IPostService>();
+            _postServiceMock = new Mock<IRequestService>();
             _validationServiceMock = new Mock<IValidationService>();
             _controller = new PostsController(_postServiceMock.Object, _validationServiceMock.Object);
         }
@@ -49,10 +49,10 @@ namespace Gugleus.Tests.Controllers
                 .Returns(new MessageListResult() { IsOk = false, Message = expectedMsg });
 
             // Act
-            Task<IActionResult> taskWithActionResult = _controller.Post(newPost);
+            Task<IActionResult> taskWithActionResult = _controller.AddPost(newPost);
 
             // Assert
-            _postServiceMock.Verify(x => x.AddPost(It.IsAny<PostDto>()), Times.Never);
+            _postServiceMock.Verify(x => x.AddRequest(It.IsAny<PostDto>()), Times.Never);
 
             taskWithActionResult.Result.Should().NotBeNull().And.BeOfType<BadRequestObjectResult>();
 

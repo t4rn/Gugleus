@@ -4,57 +4,47 @@ using Gugleus.Core.Domain.Google;
 using Gugleus.Core.Domain.Requests;
 using Gugleus.Core.Dto;
 using Gugleus.Core.Repositories;
-using Gugleus.Core.Results;
 using System;
 using System.Threading.Tasks;
 
 namespace Gugleus.Core.Services
 {
-    public class PostService : IPostService
+    public class RequestService : IRequestService
     {
         private readonly IRequestRepository _requestRepository;
         private readonly IMapper _mapper;
         private readonly IUtilsService _utilsService;
 
-        public PostService(IRequestRepository requestRepository, IMapper mapper, IUtilsService utilsService)
+        public RequestService(IRequestRepository requestRepository, IMapper mapper, IUtilsService utilsService)
         {
             _requestRepository = requestRepository;
             _mapper = mapper;
             _utilsService = utilsService;
         }
 
-        public async Task<IdResult<long>> AddPost(PostDto postDto)
+        public async Task<IdResultDto<long>> AddRequest<T>(T requestDto)
+            where T : AbstractRequestDto
         {
-            IdResult<long> result = new IdResult<long>();
+            IdResultDto<long> result = new IdResultDto<long>();
 
             try
             {
-                // mapping
-                Post post = _mapper.Map<Post>(postDto);
+                // preparing request
+                Request request = PrepareRequest(requestDto);
 
-                if (post != null)
+                // saving to db
+                long id = await _requestRepository.AddRequest(request);
+
+                // preparing result
+                if (id > 0)
                 {
-                    // preparing request
-                    Request request = PrepareRequest(post);
-
-                    // saving to db
-                    long id = await _requestRepository.AddRequest(request);
-
-                    // preparing result
-                    if (id > 0)
-                    {
-                        result.IsOk = true;
-                        result.Id = id;
-                        result.Message = "Request successfully added to queue.";
-                    }
-                    else
-                    {
-                        result.Message = "Something went wrong while adding request to db...";
-                    }
+                    result.IsOk = true;
+                    result.Id = id;
+                    result.Message = "Request successfully added to queue.";
                 }
                 else
                 {
-                    result.Message = "Error mapping Post.";
+                    result.Message = "Something went wrong while adding request to db...";
                 }
             }
             catch (Exception ex)
@@ -68,6 +58,7 @@ namespace Gugleus.Core.Services
         public async Task<RequestStatusDto> GetPostStatus(long id)
         {
             RequestStatusDto result = new RequestStatusDto();
+
             try
             {
                 Request request = await _requestRepository.GetRequestWithQueue(id);
@@ -89,11 +80,11 @@ namespace Gugleus.Core.Services
             return result;
         }
 
-        private Request PrepareRequest(Post post)
+        private Request PrepareRequest(AbstractRequestDto requestDto)
         {
             Request request = new Request();
-            request.Type = new DictionaryItem(DictionaryItem.RequestType.ADDPOST);
-            request.Input = _utilsService.SerializeToJson(post);
+            request.Type = new DictionaryItem(requestDto.RequestType);
+            request.Input = _utilsService.SerializeToJson(requestDto);
 
             return request;
         }

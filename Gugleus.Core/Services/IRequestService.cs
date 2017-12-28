@@ -1,13 +1,11 @@
 ﻿using Gugleus.Core.Dto;
-using Gugleus.Core.Results;
 using System.Threading.Tasks;
 
 namespace Gugleus.Core.Services
 {
-    public interface IPostService
+    public interface IRequestService
     {
-        Task<IdResult<long>> AddPost(PostDto postDto);
-
+        Task<IdResultDto<long>> AddRequest<T>(T requestDto) where T : AbstractRequestDto;
         Task<RequestStatusDto> GetPostStatus(long id);
     }
 }
