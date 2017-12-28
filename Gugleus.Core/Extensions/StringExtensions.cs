@@ -7,7 +7,7 @@ namespace Gugleus.Core.Extensions
         public static bool IsValidUri(this string str)
         {
             Uri validatedUri;
-            return Uri.TryCreate(str, UriKind.RelativeOrAbsolute, out validatedUri);
+            return Uri.TryCreate(str, UriKind.Absolute, out validatedUri);
         }
     }
 }

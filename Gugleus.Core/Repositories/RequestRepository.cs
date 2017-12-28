@@ -43,7 +43,7 @@ namespace Gugleus.Core.Repositories
             return id;
         }
 
-        public async Task<Request> GetRequestWithQueue(long id)
+        public async Task<Request> GetRequestWithQueue(long id, string requestType)
         {
             Request requestWithQueue = null;
 
@@ -61,7 +61,7 @@ namespace Gugleus.Core.Repositories
 
                             FROM he.requests r
                             JOIN he.requests_queue rq USING (id)
-                            WHERE id = @id";
+                            WHERE id = @id AND r.id_request_type = @request_type";
 
             using (NpgsqlConnection conn = new NpgsqlConnection(_connStr))
             {
@@ -75,7 +75,7 @@ namespace Gugleus.Core.Repositories
                         request.Queue.Status = status;
                         return request;
                     },
-                    param: new { id },
+                    param: new { id, request_type = requestType },
                     splitOn: "Code, AddDate, Code");
 
                 requestWithQueue = queryResult.FirstOrDefault();

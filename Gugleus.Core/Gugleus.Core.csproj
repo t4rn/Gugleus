@@ -12,4 +12,8 @@
     <PackageReference Include="Npgsql" Version="3.2.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Gugleus.GoogleCore\Gugleus.GoogleCore.csproj" />
+  </ItemGroup>
+
 </Project>

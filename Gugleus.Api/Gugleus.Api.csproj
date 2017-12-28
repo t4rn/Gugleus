@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Gugleus.Core\Gugleus.Core.csproj" />
+    <ProjectReference Include="..\Gugleus.GoogleCore\Gugleus.GoogleCore.csproj" />
   </ItemGroup>
 
 </Project>

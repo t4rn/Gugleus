@@ -1,7 +1,10 @@
 ﻿using Gugleus.Api.Middleware;
+using Gugleus.Core.Domain;
 using Gugleus.Core.Dto;
+using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Results;
 using Gugleus.Core.Services;
+using Gugleus.GoogleCore;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
@@ -31,20 +34,7 @@ namespace Gugleus.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPostStatus(long id)
         {
-            RequestStatusDto requestStatus = await _requestService.GetPostStatus(id);
-            if (requestStatus != null)
-            {
-                return Ok(requestStatus);
-            }
-
-            return BadRequest($"Post with Id: '{id}' not found...");
-        }
-
-        [HttpPost("details")]
-        public async Task<IActionResult> GetPostDetails([FromBody]RequestDetailsDto requestDetailsDto)
-        {
-            IActionResult result = await ProcessRequestAsync(requestDetailsDto);
-
+            IActionResult result = await GetRequestResponse<GoogleInfo>(id, DictionaryItem.RequestType.ADDPOST);
             return result;
         }
 
@@ -53,6 +43,37 @@ namespace Gugleus.Api.Controllers
         public async Task<IActionResult> AddPost([FromBody]PostDto postDto)
         {
             IActionResult result = await ProcessRequestAsync(postDto);
+            return result;
+        }
+
+
+        [HttpGet("details/{id}")]
+        [ValidateModel]
+        public async Task<IActionResult> GetPostDetails(long id)
+        {
+            IActionResult result = await GetRequestResponse<ActivityInfo>(id, DictionaryItem.RequestType.GETINFO);
+            return result;
+        }
+
+        [HttpPost("details")]
+        [ValidateModel]
+        public async Task<IActionResult> AddPostDetailsRequest([FromBody]RequestDetailsDto requestDetailsDto)
+        {
+            IActionResult result = await ProcessRequestAsync(requestDetailsDto);
+            return result;
+        }
+
+
+        private async Task<IActionResult> GetRequestResponse<T>(long id, DictionaryItem.RequestType requestType) where T : class
+        {
+            IActionResult result;
+            RequestResponseDto<T> requestStatus =
+                await _requestService.GetRequestResponse<T>(id, requestType);
+
+            if (requestStatus != null)
+                result = Ok(requestStatus);
+            else
+                result = BadRequest($"Post with Id: '{id}' not found...");
 
             return result;
         }

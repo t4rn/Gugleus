@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Gugleus.Core.Domain;
-using Gugleus.Core.Domain.Google;
 using Gugleus.Core.Domain.Requests;
 using Gugleus.Core.Dto;
+using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Repositories;
 using System;
 using System.Threading.Tasks;
@@ -55,21 +55,21 @@ namespace Gugleus.Core.Services
             return result;
         }
 
-        public async Task<RequestStatusDto> GetPostStatus(long id)
+        public async Task<RequestResponseDto<T>> GetRequestResponse<T>(long id, DictionaryItem.RequestType requestType) where T : class
         {
-            RequestStatusDto result = new RequestStatusDto();
+            RequestResponseDto<T> result = new RequestResponseDto<T>();
 
             try
             {
-                Request request = await _requestRepository.GetRequestWithQueue(id);
+                Request request = await _requestRepository.GetRequestWithQueue(id, requestType.ToString());
 
                 if (request != null)
                 {
-                    result = PrepareRequestStatus(request);
+                    result = PrepareRequestResponse<T>(request);
                 }
                 else
                 {
-                    result.Error = $"Post with Id: {id} not found...";
+                    result.Error = $"Request with Id: {id} not found...";
                 }
             }
             catch (Exception ex)
@@ -89,36 +89,28 @@ namespace Gugleus.Core.Services
             return request;
         }
 
-        private RequestStatusDto PrepareRequestStatus(Request request)
+        private RequestResponseDto<T> PrepareRequestResponse<T>(Request request)
         {
-            RequestStatusDto dto = new RequestStatusDto();
+            RequestResponseDto<T> dto = new RequestResponseDto<T>();
 
             dto.Id = request.Id;
             dto.Status = request.Queue?.Status?.Code;
-            if (dto.Status == DictionaryItem.RequestStatus.DONE.ToString())
-            {
-                dto.Url = GetUrlFromRequest(request.Output);
-            }
             dto.Error = request.Queue?.ErrorMsg;
 
+            if (dto.Status == DictionaryItem.RequestStatus.DONE.ToString())
+            {
+                if (!string.IsNullOrWhiteSpace(request.Output))
+                {
+                    dto.Obj = _utilsService.DeserializeFromJson<T>(request.Output);
+                }
+                else
+                {
+                    string errMsg = "Empty json from db";
+                    dto.Error = !string.IsNullOrWhiteSpace(dto.Error) ? $"{dto.Error} | {errMsg}" : errMsg;
+                }
+            }
+
             return dto;
-        }
-
-        private string GetUrlFromRequest(string json)
-        {
-            string url = null;
-
-            PostUrlInfo postInfo = _utilsService.DeserializeFromJson<PostUrlInfo>(json);
-            if (postInfo.IsOk)
-            {
-                url = postInfo.RequestedUrl;
-            }
-            else
-            {
-                url = $"Not Ok returned from runner...";
-            }
-
-            return url;
         }
     }
 }
