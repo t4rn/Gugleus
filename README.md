@@ -11,3 +11,5 @@
 * Moq
 * FluentAssertions
 * Swashbuckle (Swagger)
+* IMemoryCache
+* NLog
