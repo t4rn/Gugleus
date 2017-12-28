@@ -21,6 +21,8 @@ namespace Gugleus.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+
             services.AddMvc();
             services.AddAutoMapper();
 

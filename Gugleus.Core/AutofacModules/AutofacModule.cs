@@ -21,6 +21,7 @@ namespace Gugleus.Core.AutofacModules
             builder.RegisterType<RequestService>().As<IRequestService>();
             builder.RegisterType<ValidationService>().As<IValidationService>();
             builder.RegisterType<UtilsService>().As<IUtilsService>();
+            builder.RegisterType<CacheService>().As<ICacheService>();
 
             base.Load(builder);
         }

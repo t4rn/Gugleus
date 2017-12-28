@@ -5,7 +5,6 @@
 -- drop schema he cascade;
 create schema he;
 GRANT ALL ON SCHEMA he TO gugleus;
-GRANT ALL ON SCHEMA he TO gugleus;
 --********************************************************************************
 CREATE TABLE he.ws_clients
 (
@@ -15,6 +14,7 @@ CREATE TABLE he.ws_clients
   ghost boolean NOT NULL DEFAULT false,
   add_date timestamp without time zone DEFAULT now()
 )WITH (OIDS=FALSE);
+GRANT SELECT ON TABLE he.ws_clients TO gugleus;
 INSERT INTO he.ws_clients (client_name, hash) VALUES ('TEST', 'abc');
 --********************************************************************************
 CREATE TABLE he.dic_request_status

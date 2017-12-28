@@ -33,7 +33,7 @@ namespace Gugleus.Core.Services
                 Request request = PrepareRequest(requestDto);
 
                 // saving to db
-                long id = await _requestRepository.AddRequest(request);
+                long id = await _requestRepository.AddRequestAsync(request);
 
                 // preparing result
                 if (id > 0)
@@ -61,7 +61,7 @@ namespace Gugleus.Core.Services
 
             try
             {
-                Request request = await _requestRepository.GetRequestWithQueue(id, requestType.ToString());
+                Request request = await _requestRepository.GetRequestWithQueueAsync(id, requestType.ToString());
 
                 if (request != null)
                 {

@@ -1,5 +1,8 @@
-﻿using Gugleus.Core.Results;
+﻿using Gugleus.Core.Domain;
+using Gugleus.Core.Results;
+using Gugleus.Core.Services;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Gugleus.Api.Middleware
@@ -7,10 +10,12 @@ namespace Gugleus.Api.Middleware
     public class HashAuthenticationMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ICacheService _cacheService;
 
-        public HashAuthenticationMiddleware(RequestDelegate next)
+        public HashAuthenticationMiddleware(RequestDelegate next, ICacheService cacheService)
         {
             _next = next;
+            _cacheService = cacheService;
         }
 
         public async Task Invoke(HttpContext context)
@@ -19,7 +24,7 @@ namespace Gugleus.Api.Middleware
             if (!string.IsNullOrWhiteSpace(hashFromHeader))
             {
                 // validating hash
-                Result validationResult = ValidateHash(hashFromHeader);
+                Result validationResult = await ValidateHash(hashFromHeader);
 
                 if (validationResult.IsOk)
                 {
@@ -40,11 +45,13 @@ namespace Gugleus.Api.Middleware
             }
         }
 
-        //TODO: get hashes from db and store in cache
-        private Result ValidateHash(string hashFromHeader)
+        private async Task<Result> ValidateHash(string hashFromHeader)
         {
             Result result = new Result();
-            if (hashFromHeader == "abc")
+
+            List<WsClient> wsClients = await _cacheService.GetWsClientsAsync();
+
+            if (wsClients.Exists(x => x.Hash == hashFromHeader))
             {
                 result.IsOk = true;
             }

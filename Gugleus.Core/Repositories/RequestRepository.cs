@@ -15,7 +15,7 @@ namespace Gugleus.Core.Repositories
         public RequestRepository(string connectionString) : base(connectionString)
         { }
 
-        public async Task<long> AddRequest(Request request)
+        public async Task<long> AddRequestAsync(Request request)
         {
             long id = -1;
             string query = @"he.add_request";
@@ -43,7 +43,7 @@ namespace Gugleus.Core.Repositories
             return id;
         }
 
-        public async Task<Request> GetRequestWithQueue(long id, string requestType)
+        public async Task<Request> GetRequestWithQueueAsync(long id, string requestType)
         {
             Request requestWithQueue = null;
 
@@ -65,7 +65,7 @@ namespace Gugleus.Core.Repositories
 
             using (NpgsqlConnection conn = new NpgsqlConnection(_connStr))
             {
-                IEnumerable<Request> queryResult = 
+                IEnumerable<Request> queryResult =
                     await conn.QueryAsync<Request, DictionaryItem, RequestQueue, DictionaryItem, Request>(
                     sql: query,
                     map: (request, type, queue, status) =>
@@ -82,6 +82,22 @@ namespace Gugleus.Core.Repositories
             }
 
             return requestWithQueue;
+        }
+
+        public async Task<List<WsClient>> GetWsClientsAsync()
+        {
+            List<WsClient> wsClients = null;
+
+            string query = @"SELECT id, client_name as Name, hash, ghost, add_date as AddDate
+                                FROM he.ws_clients
+                                WHERE ghost = false";
+
+            using (NpgsqlConnection conn = new NpgsqlConnection(_connStr))
+            {
+                wsClients = (await conn.QueryAsync<WsClient>(query)).ToList();
+            }
+
+            return wsClients;
         }
     }
 }
