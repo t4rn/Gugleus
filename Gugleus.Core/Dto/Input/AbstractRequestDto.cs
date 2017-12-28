@@ -1,7 +1,7 @@
 ﻿using Gugleus.Core.Domain;
 using Gugleus.Core.Results;
 
-namespace Gugleus.Core.Dto
+namespace Gugleus.Core.Dto.Input
 {
     public abstract class AbstractRequestDto
     {

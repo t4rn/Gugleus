@@ -1,6 +1,7 @@
-﻿using Gugleus.Api.Middleware;
+﻿using AutoMapper;
+using Gugleus.Api.Middleware;
 using Gugleus.Core.Domain;
-using Gugleus.Core.Dto;
+using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Results;
 using Gugleus.Core.Services;
@@ -16,12 +17,12 @@ namespace Gugleus.Api.Controllers
     public class PostsController : BaseController
     {
         private readonly IRequestService _requestService;
-        private readonly IValidationService _validationService;
+        private readonly IMapper _mapper;
 
-        public PostsController(IRequestService requestService, IValidationService validationService)
+        public PostsController(IRequestService requestService, IMapper mapper)
         {
             _requestService = requestService;
-            _validationService = validationService;
+            _mapper = mapper;
         }
 
         [HttpGet("")]
@@ -32,6 +33,9 @@ namespace Gugleus.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerResponse(200, Type = typeof(RequestResponseDto<GoogleInfo>))]
+        [SwaggerResponse(400, Type = typeof(string))]
+        [SwaggerResponse(500, Type = typeof(RequestResponseDto<GoogleInfo>))]
         public async Task<IActionResult> GetPostStatus(long id)
         {
             IActionResult result = await GetRequestResponse<GoogleInfo>(id, DictionaryItem.RequestType.ADDPOST);
@@ -40,6 +44,9 @@ namespace Gugleus.Api.Controllers
 
         [HttpPost]
         [ValidateModel]
+        [SwaggerResponse(200, Type = typeof(IdResultDto<long>))]
+        [SwaggerResponse(400, Type = typeof(ResultDto))]
+        [SwaggerResponse(500, Type = typeof(IdResultDto<long>))]
         public async Task<IActionResult> AddPost([FromBody]PostDto postDto)
         {
             IActionResult result = await ProcessRequestAsync(postDto);
@@ -49,6 +56,9 @@ namespace Gugleus.Api.Controllers
 
         [HttpGet("details/{id}")]
         [ValidateModel]
+        [SwaggerResponse(200, Type = typeof(RequestResponseDto<ActivityInfo>))]
+        [SwaggerResponse(400, Type = typeof(string))]
+        [SwaggerResponse(500, Type = typeof(RequestResponseDto<ActivityInfo>))]
         public async Task<IActionResult> GetPostDetails(long id)
         {
             IActionResult result = await GetRequestResponse<ActivityInfo>(id, DictionaryItem.RequestType.GETINFO);
@@ -57,6 +67,9 @@ namespace Gugleus.Api.Controllers
 
         [HttpPost("details")]
         [ValidateModel]
+        [SwaggerResponse(200, Type = typeof(IdResultDto<long>))]
+        [SwaggerResponse(400, Type = typeof(ResultDto))]
+        [SwaggerResponse(500, Type = typeof(IdResultDto<long>))]
         public async Task<IActionResult> AddPostDetailsRequest([FromBody]RequestDetailsDto requestDetailsDto)
         {
             IActionResult result = await ProcessRequestAsync(requestDetailsDto);
@@ -71,7 +84,16 @@ namespace Gugleus.Api.Controllers
                 await _requestService.GetRequestResponse<T>(id, requestType);
 
             if (requestStatus != null)
-                result = Ok(requestStatus);
+            {
+                if (string.IsNullOrWhiteSpace(requestStatus.Error))
+                {
+                    result = Ok(requestStatus);
+                }
+                else
+                {
+                    result = InternalServerError(requestStatus);
+                }
+            }
             else
                 result = BadRequest($"Post with Id: '{id}' not found...");
 
@@ -82,7 +104,7 @@ namespace Gugleus.Api.Controllers
         {
             IActionResult result;
 
-            if (requestDto == null) result = BadRequest("Null input.");
+            if (requestDto == null) result = BadRequest(new ResultDto { Message = "Null input." });
             else
             {
                 // validating input
@@ -90,7 +112,8 @@ namespace Gugleus.Api.Controllers
 
                 if (!validationResult.IsOk)
                 {
-                    result = BadRequest(validationResult);
+                    ResultDto badValidationResult = _mapper.Map<ResultDto>(validationResult);
+                    result = BadRequest(badValidationResult);
                 }
                 else
                 {
@@ -98,13 +121,9 @@ namespace Gugleus.Api.Controllers
                     IdResultDto<long> addResult = await _requestService.AddRequest(requestDto);
 
                     if (addResult.IsOk)
-                    {
                         result = Ok(addResult);
-                    }
                     else
-                    {
                         result = InternalServerError(addResult);
-                    }
                 }
             }
 

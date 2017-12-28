@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Gugleus.Core.Dto
+namespace Gugleus.Core.Dto.Input
 {
     public class UserInfoDto
     {

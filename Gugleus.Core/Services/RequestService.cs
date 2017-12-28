@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Gugleus.Core.Domain;
 using Gugleus.Core.Domain.Requests;
-using Gugleus.Core.Dto;
+using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Repositories;
 using System;

@@ -3,7 +3,7 @@ using Gugleus.Core.Domain;
 using Gugleus.Core.Extensions;
 using Gugleus.Core.Results;
 
-namespace Gugleus.Core.Dto
+namespace Gugleus.Core.Dto.Input
 {
     public class RequestDetailsDto : AbstractRequestDto
     {

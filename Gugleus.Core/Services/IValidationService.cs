@@ -1,4 +1,4 @@
-﻿using Gugleus.Core.Dto;
+﻿using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Results;
 
 namespace Gugleus.Core.Services

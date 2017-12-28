@@ -1,4 +1,4 @@
-﻿namespace Gugleus.Core.Dto
+﻿namespace Gugleus.Core.Dto.Output
 {
     public class ResultDto
     {

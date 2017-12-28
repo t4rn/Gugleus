@@ -40,6 +40,7 @@ namespace Gugleus.Api.Middleware
             }
         }
 
+        //TODO: get hashes from db and store in cache
         private Result ValidateHash(string hashFromHeader)
         {
             Result result = new Result();

@@ -1,13 +1,12 @@
-﻿using FluentAssertions;
+﻿using AutoMapper;
+using FluentAssertions;
 using Gugleus.Api.Controllers;
-using Gugleus.Core.Domain;
-using Gugleus.Core.Dto;
-using Gugleus.Core.Results;
+using Gugleus.Core.Dto.Input;
+using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -16,14 +15,14 @@ namespace Gugleus.Tests.Controllers
     public class PostsControllerTests
     {
         private readonly Mock<IRequestService> _postServiceMock;
-        private readonly Mock<IValidationService> _validationServiceMock;
+        private readonly Mock<IMapper> _mapperMock;
         private readonly PostsController _controller;
 
         public PostsControllerTests()
         {
             _postServiceMock = new Mock<IRequestService>();
-            _validationServiceMock = new Mock<IValidationService>();
-            _controller = new PostsController(_postServiceMock.Object, _validationServiceMock.Object);
+            _mapperMock = new Mock<IMapper>();
+            _controller = new PostsController(_postServiceMock.Object, _mapperMock.Object);
         }
 
         [Fact(DisplayName = "Ping")]
@@ -44,9 +43,6 @@ namespace Gugleus.Tests.Controllers
         public void PostNullInput(PostDto newPost)
         {
             // Arrange
-            string expectedMsg = Guid.NewGuid().ToString();
-            _validationServiceMock.Setup(x => x.ValidateNewPost(newPost))
-                .Returns(new MessageListResult() { IsOk = false, Message = expectedMsg });
 
             // Act
             Task<IActionResult> taskWithActionResult = _controller.AddPost(newPost);
@@ -58,10 +54,10 @@ namespace Gugleus.Tests.Controllers
 
             var badRequestResult = taskWithActionResult.Result as BadRequestObjectResult;
             badRequestResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-            badRequestResult.Value.Should().BeOfType<MessageListResult>();
-            var result = badRequestResult.Value as MessageListResult;
+            badRequestResult.Value.Should().BeOfType<ResultDto>();
+            var result = badRequestResult.Value as ResultDto;
             result.IsOk.Should().Be(false);
-            result.Message.Should().Be(expectedMsg);
+            result.Message.Should().Be("Null input.");
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Gugleus.Core.Domain;
-using Gugleus.Core.Dto;
+using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
 using System.Threading.Tasks;
 
