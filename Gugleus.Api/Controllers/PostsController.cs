@@ -7,6 +7,7 @@ using Gugleus.Core.Results;
 using Gugleus.Core.Services;
 using Gugleus.GoogleCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Threading.Tasks;
@@ -18,17 +19,20 @@ namespace Gugleus.Api.Controllers
     {
         private readonly IRequestService _requestService;
         private readonly IMapper _mapper;
+        private readonly ILogger<PostsController> _logger;
 
-        public PostsController(IRequestService requestService, IMapper mapper)
+        public PostsController(IRequestService requestService, IMapper mapper, ILogger<PostsController> logger)
         {
             _requestService = requestService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet("")]
         [SwaggerResponse(200, Type = typeof(string))]
         public IActionResult Ping()
         {
+            _logger.LogDebug("Ping START");
             return Ok($"Ping at {DateTime.Now}.");
         }
 
@@ -38,7 +42,7 @@ namespace Gugleus.Api.Controllers
         [SwaggerResponse(500, Type = typeof(RequestResponseDto<GoogleInfo>))]
         public async Task<IActionResult> GetPostStatus(long id)
         {
-            IActionResult result = await GetRequestResponse<GoogleInfo>(id, DictionaryItem.RequestType.ADDPOST);
+            IActionResult result = await GetRequestResponseAsync<GoogleInfo>(id, DictionaryItem.RequestType.ADDPOST);
             return result;
         }
 
@@ -61,7 +65,7 @@ namespace Gugleus.Api.Controllers
         [SwaggerResponse(500, Type = typeof(RequestResponseDto<ActivityInfo>))]
         public async Task<IActionResult> GetPostDetails(long id)
         {
-            IActionResult result = await GetRequestResponse<ActivityInfo>(id, DictionaryItem.RequestType.GETINFO);
+            IActionResult result = await GetRequestResponseAsync<ActivityInfo>(id, DictionaryItem.RequestType.GETINFO);
             return result;
         }
 
@@ -77,7 +81,7 @@ namespace Gugleus.Api.Controllers
         }
 
 
-        private async Task<IActionResult> GetRequestResponse<T>(long id, DictionaryItem.RequestType requestType) where T : class
+        private async Task<IActionResult> GetRequestResponseAsync<T>(long id, DictionaryItem.RequestType requestType) where T : class
         {
             IActionResult result;
             RequestResponseDto<T> requestStatus =
@@ -87,15 +91,22 @@ namespace Gugleus.Api.Controllers
             {
                 if (string.IsNullOrWhiteSpace(requestStatus.Error))
                 {
+                    _logger.LogDebug("[{0}] Ok for Id: '{1}' type: '{2}' -> {3}",
+                        nameof(GetRequestResponseAsync), id, requestType, requestStatus.Status);
                     result = Ok(requestStatus);
                 }
                 else
                 {
+                    _logger.LogError("[{0}] Error for Id: '{1}' type: '{2}' -> {3}",
+                        nameof(GetRequestResponseAsync), id, requestType, requestStatus.Error);
                     result = InternalServerError(requestStatus);
                 }
             }
             else
+            {
+                _logger.LogError($"[{nameof(GetRequestResponseAsync)}] Post with Id: '{id}' and type '{requestType}' not found");
                 result = BadRequest($"Post with Id: '{id}' not found...");
+            }
 
             return result;
         }
@@ -104,7 +115,11 @@ namespace Gugleus.Api.Controllers
         {
             IActionResult result;
 
-            if (requestDto == null) result = BadRequest(new ResultDto { Message = "Null input." });
+            if (requestDto == null)
+            {
+                _logger.LogError("[{0}] Null input for '{1}'", nameof(ProcessRequestAsync), typeof(T));
+                result = BadRequest(new ResultDto { Message = "Null input." });
+            }
             else
             {
                 // validating input
@@ -112,6 +127,8 @@ namespace Gugleus.Api.Controllers
 
                 if (!validationResult.IsOk)
                 {
+                    _logger.LogError("[{0}] ValidErr for '{1}': {2}", 
+                        nameof(ProcessRequestAsync), typeof(T), validationResult.Message);
                     ResultDto badValidationResult = _mapper.Map<ResultDto>(validationResult);
                     result = BadRequest(badValidationResult);
                 }
@@ -121,9 +138,17 @@ namespace Gugleus.Api.Controllers
                     IdResultDto<long> addResult = await _requestService.AddRequest(requestDto);
 
                     if (addResult.IsOk)
+                    {
+                        _logger.LogDebug("[{0}] Ok for: '{1}' -> Id: '{2}'",
+                            nameof(ProcessRequestAsync), typeof(T), addResult.Id);
                         result = Ok(addResult);
+                    }
                     else
+                    {
+                        _logger.LogError("[{0}] Error for: '{1}' -> Id: '{2}'",
+                            nameof(ProcessRequestAsync), typeof(T), addResult.Message);
                         result = InternalServerError(addResult);
+                    }
                 }
             }
 

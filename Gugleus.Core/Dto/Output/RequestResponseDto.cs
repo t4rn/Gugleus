@@ -5,6 +5,6 @@
         public long Id { get; set; }
         public string Status { get; set; }
         public string Error { get; set; }
-        public T Obj { get; set; }
+        public T Info { get; set; }
     }
 }

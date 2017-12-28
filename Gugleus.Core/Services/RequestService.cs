@@ -4,6 +4,7 @@ using Gugleus.Core.Domain.Requests;
 using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Repositories;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -14,12 +15,15 @@ namespace Gugleus.Core.Services
         private readonly IRequestRepository _requestRepository;
         private readonly IMapper _mapper;
         private readonly IUtilsService _utilsService;
+        private readonly ILogger<RequestService> _logger;
 
-        public RequestService(IRequestRepository requestRepository, IMapper mapper, IUtilsService utilsService)
+        public RequestService(IRequestRepository requestRepository, IMapper mapper, 
+            IUtilsService utilsService, ILogger<RequestService> logger)
         {
             _requestRepository = requestRepository;
             _mapper = mapper;
             _utilsService = utilsService;
+            _logger = logger;
         }
 
         public async Task<IdResultDto<long>> AddRequest<T>(T requestDto)
@@ -49,6 +53,7 @@ namespace Gugleus.Core.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError($"[{nameof(AddRequest)}] Ex: {ex}");
                 result.Message = $"Exception occured: {ex.Message}";
             }
 
@@ -74,6 +79,7 @@ namespace Gugleus.Core.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError($"[{nameof(GetRequestResponse)}] Ex: {ex}");
                 result.Error = $"Exception occured: {ex.Message}";
             }
 
@@ -101,7 +107,7 @@ namespace Gugleus.Core.Services
             {
                 if (!string.IsNullOrWhiteSpace(request.Output))
                 {
-                    dto.Obj = _utilsService.DeserializeFromJson<T>(request.Output);
+                    dto.Info = _utilsService.DeserializeFromJson<T>(request.Output);
                 }
                 else
                 {
