@@ -2,6 +2,8 @@
 using Gugleus.Core.Results;
 using Gugleus.Core.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,36 +13,49 @@ namespace Gugleus.Api.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ICacheService _cacheService;
+        private readonly ILogger<HashAuthenticationMiddleware> _log;
 
-        public HashAuthenticationMiddleware(RequestDelegate next, ICacheService cacheService)
+        public HashAuthenticationMiddleware(RequestDelegate next, ICacheService cacheService,
+            ILogger<HashAuthenticationMiddleware> log)
         {
             _next = next;
             _cacheService = cacheService;
+            _log = log;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            string hashFromHeader = context.Request.Headers["Hash"];
-            if (!string.IsNullOrWhiteSpace(hashFromHeader))
+            try
             {
-                // validating hash
-                Result validationResult = await ValidateHash(hashFromHeader);
-
-                if (validationResult.IsOk)
+                string hashFromHeader = context.Request.Headers["Hash"];
+                if (!string.IsNullOrWhiteSpace(hashFromHeader))
                 {
-                    await _next.Invoke(context);
+                    // validating hash
+                    Result validationResult = await ValidateHash(hashFromHeader);
+
+                    if (validationResult.IsOk)
+                    {
+                        await _next.Invoke(context);
+                    }
+                    else
+                    {
+                        // bad hash
+                        _log.LogDebug($"Auth failed for hash: {hashFromHeader}");
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return;
+                    }
                 }
                 else
                 {
-                    // bad hash
-                    context.Response.StatusCode = 401; //Unauthorized
+                    // no authorization header
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     return;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                // no authorization header
-                context.Response.StatusCode = 401; //Unauthorized
+                _log.LogError(ex, "Ex in Auth");
+                context.Response.StatusCode = StatusCodes.Status507InsufficientStorage;
                 return;
             }
         }
