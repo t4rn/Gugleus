@@ -4,8 +4,10 @@ using Gugleus.Api.Middleware;
 using Gugleus.Core.AutofacModules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using NLog.Web;
@@ -28,6 +30,8 @@ namespace Gugleus.Api
 
             services.AddMvc();
             services.AddAutoMapper();
+
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             //services.AddTransient<IPostRepository, PostRepository>();
 

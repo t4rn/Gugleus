@@ -54,7 +54,7 @@ namespace Gugleus.Api.Middleware
             }
             catch (Exception ex)
             {
-                _log.LogError(ex, "Ex in Auth");
+                _log.LogError(ex, "Ex in Auth:");
                 context.Response.StatusCode = StatusCodes.Status507InsufficientStorage;
                 return;
             }
