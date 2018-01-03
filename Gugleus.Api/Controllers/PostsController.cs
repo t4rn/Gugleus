@@ -90,7 +90,7 @@ namespace Gugleus.Api.Controllers
         {
             IActionResult result;
             RequestResponseDto<T> requestStatus =
-                await _requestService.GetRequestResponse<T>(id, requestType);
+                await _requestService.GetRequestResponseAsync<T>(id, requestType);
 
             if (requestStatus != null)
             {
@@ -140,7 +140,7 @@ namespace Gugleus.Api.Controllers
                 else
                 {
                     // adding request to queue
-                    IdResultDto<long> addResult = await _requestService.AddRequest(requestDto);
+                    IdResultDto<long> addResult = await _requestService.AddRequestAsync(requestDto);
 
                     if (addResult.IsOk)
                     {

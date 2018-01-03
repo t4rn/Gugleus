@@ -26,7 +26,7 @@ namespace Gugleus.Core.Services
             _logger = logger;
         }
 
-        public async Task<IdResultDto<long>> AddRequest<T>(T requestDto)
+        public async Task<IdResultDto<long>> AddRequestAsync<T>(T requestDto)
             where T : AbstractRequestDto
         {
             IdResultDto<long> result = new IdResultDto<long>();
@@ -53,14 +53,14 @@ namespace Gugleus.Core.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"[{nameof(AddRequest)}] Ex: {ex}");
+                _logger.LogError($"[{nameof(AddRequestAsync)}] Ex: {ex}");
                 result.Message = $"Exception occured: {ex.Message}";
             }
 
             return result;
         }
 
-        public async Task<RequestResponseDto<T>> GetRequestResponse<T>(long id, DictionaryItem.RequestType requestType) where T : class
+        public async Task<RequestResponseDto<T>> GetRequestResponseAsync<T>(long id, DictionaryItem.RequestType requestType) where T : class
         {
             RequestResponseDto<T> result = new RequestResponseDto<T>();
 
@@ -79,7 +79,7 @@ namespace Gugleus.Core.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"[{nameof(GetRequestResponse)}] Ex: {ex}");
+                _logger.LogError($"[{nameof(GetRequestResponseAsync)}] Ex: {ex}");
                 result.Error = $"Exception occured: {ex.Message}";
             }
 

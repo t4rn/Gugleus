@@ -6,6 +6,7 @@ using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System.Threading.Tasks;
 using Xunit;
@@ -16,13 +17,18 @@ namespace Gugleus.Tests.Controllers
     {
         private readonly Mock<IRequestService> _postServiceMock;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<ILogger<PostsController>> _loggerMock;
+        private readonly Mock<IHttpContextAccessor> _httpContextMock;
         private readonly PostsController _controller;
 
         public PostsControllerTests()
         {
             _postServiceMock = new Mock<IRequestService>();
             _mapperMock = new Mock<IMapper>();
-            _controller = new PostsController(_postServiceMock.Object, _mapperMock.Object);
+            _loggerMock = new Mock<ILogger<PostsController>>();
+            _httpContextMock = new Mock<IHttpContextAccessor>();
+            _controller = new PostsController(_postServiceMock.Object, _mapperMock.Object,
+                _loggerMock.Object, _httpContextMock.Object);
         }
 
         [Fact(DisplayName = "Ping")]
@@ -48,7 +54,7 @@ namespace Gugleus.Tests.Controllers
             Task<IActionResult> taskWithActionResult = _controller.AddPost(newPost);
 
             // Assert
-            _postServiceMock.Verify(x => x.AddRequest(It.IsAny<PostDto>()), Times.Never);
+            _postServiceMock.Verify(x => x.AddRequestAsync(It.IsAny<PostDto>()), Times.Never);
 
             taskWithActionResult.Result.Should().NotBeNull().And.BeOfType<BadRequestObjectResult>();
 
