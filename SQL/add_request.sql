@@ -8,7 +8,7 @@ BEGIN
 	
 	INSERT INTO he.requests(id_request_type, request_input) VALUES (p_id_request_type, p_input) RETURNING id INTO v_id_request;
 
-	INSERT INTO he.requests_queue(id, id_status) VALUES (v_id_request, 'WAIT');
+	INSERT INTO he.requests_queue(id, id_status, id_request_type) VALUES (v_id_request, 'WAIT', p_id_request_type);
 
 	NOTIFY "new post arrived";
 

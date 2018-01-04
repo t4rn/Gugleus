@@ -43,7 +43,7 @@ namespace Gugleus.Api
                     Title = "Gugleus API",
                     Description = "Gugleus Swagger Documentation",
                     TermsOfService = "None",
-                    Contact = new Contact { Name = "t4rn", Url = "https://github.com/t4rn" },
+                    Contact = new Contact { Name = "admin", Url = "" },
                     License = new License { Name = "MIT", Url = "https://en.wikipedia.org/wiki/MIT_License" }
                 });
             });

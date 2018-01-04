@@ -41,7 +41,7 @@ CREATE TABLE he.requests
 (
   id bigserial PRIMARY KEY,
   id_ws_client integer references he.ws_clients,
-  id_request_type character varying(8) references he.dic_request_type,
+  id_request_type character varying(8) references he.dic_request_type NOT NULL,
   request_input json,
   request_output json,
   add_date timestamp without time zone DEFAULT now(),
@@ -53,7 +53,8 @@ GRANT ALL ON TABLE he.requests_id_seq TO gugleus;
 CREATE TABLE he.requests_queue
 (
   id bigint primary key references he.requests,
-  id_status character varying(4) references he.dic_request_status,
+  id_status character varying(4) references he.dic_request_status NOT NULL,
+  id_request_type character varying(8) references he.dic_request_type NOT NULL,
   add_date timestamp without time zone DEFAULT now(),
   process_start_date timestamp without time zone,
   process_end_date timestamp without time zone,
