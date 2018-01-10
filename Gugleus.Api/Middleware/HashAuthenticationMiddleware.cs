@@ -35,7 +35,7 @@ namespace Gugleus.Api.Middleware
 
                     if (validationResult.IsOk)
                     {
-                        await _next.Invoke(context);
+                        await _next(context);
                     }
                     else
                     {
@@ -54,7 +54,7 @@ namespace Gugleus.Api.Middleware
             }
             catch (Exception ex)
             {
-                _log.LogError(ex, "Ex in Auth:");
+                _log.LogError($"[AuthMiddleware] Ex: {ex}");
                 context.Response.StatusCode = StatusCodes.Status507InsufficientStorage;
                 return;
             }

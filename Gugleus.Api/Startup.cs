@@ -28,7 +28,10 @@ namespace Gugleus.Api
         {
             services.AddMemoryCache();
 
-            services.AddMvc();
+            services.AddMvc(config =>
+            {
+                config.Filters.Add(new ValidateModelAttribute());
+            });
             services.AddAutoMapper();
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -74,6 +77,7 @@ namespace Gugleus.Api
             });
 
             app.UseMiddleware<HashAuthenticationMiddleware>();
+            app.UseMiddleware<LogInvalidRequestMiddleware>();
 
             app.UseMvc();
         }

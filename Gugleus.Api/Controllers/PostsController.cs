@@ -52,7 +52,7 @@ namespace Gugleus.Api.Controllers
         }
 
         [HttpPost]
-        [ValidateModel]
+        //[ValidateModel]
         [SwaggerResponse(200, Type = typeof(IdResultDto<long>))]
         [SwaggerResponse(400, Type = typeof(ResultDto))]
         [SwaggerResponse(500, Type = typeof(IdResultDto<long>))]
@@ -64,7 +64,7 @@ namespace Gugleus.Api.Controllers
 
 
         [HttpGet("details/{id}")]
-        [ValidateModel]
+        //[ValidateModel]
         [SwaggerResponse(200, Type = typeof(RequestResponseDto<ActivityInfo>))]
         [SwaggerResponse(400, Type = typeof(string))]
         [SwaggerResponse(500, Type = typeof(RequestResponseDto<ActivityInfo>))]
@@ -75,7 +75,7 @@ namespace Gugleus.Api.Controllers
         }
 
         [HttpPost("details")]
-        [ValidateModel]
+        //[ValidateModel]
         [SwaggerResponse(200, Type = typeof(IdResultDto<long>))]
         [SwaggerResponse(400, Type = typeof(ResultDto))]
         [SwaggerResponse(500, Type = typeof(IdResultDto<long>))]
