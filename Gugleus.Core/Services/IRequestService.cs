@@ -9,5 +9,6 @@ namespace Gugleus.Core.Services
     {
         Task<IdResultDto<long>> AddRequestAsync<T>(T requestDto) where T : AbstractRequestDto;
         Task<RequestResponseDto<T>> GetRequestResponseAsync<T>(long id, DictionaryItem.RequestType requestType) where T : class;
+        Task<RequestStatDto<DateFilterDto>> GetStatsByDate(DateFilterDto dateFilterDto);
     }
 }

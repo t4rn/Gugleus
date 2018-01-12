@@ -6,6 +6,7 @@ using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Gugleus.Core.Services
@@ -17,7 +18,7 @@ namespace Gugleus.Core.Services
         private readonly IUtilsService _utilsService;
         private readonly ILogger<RequestService> _logger;
 
-        public RequestService(IRequestRepository requestRepository, IMapper mapper, 
+        public RequestService(IRequestRepository requestRepository, IMapper mapper,
             IUtilsService utilsService, ILogger<RequestService> logger)
         {
             _requestRepository = requestRepository;
@@ -84,6 +85,27 @@ namespace Gugleus.Core.Services
             }
 
             return result;
+        }
+
+        public async Task<RequestStatDto<DateFilterDto>> GetStatsByDate(DateFilterDto dateFilterDto)
+        {
+            RequestStatDto<DateFilterDto> result = new RequestStatDto<DateFilterDto>();
+
+            result.Filter = dateFilterDto;
+            result.Jobs = new List<JobStatDto>
+            {
+                new JobStatDto{ Amount = 123, Status = DictionaryItem.RequestStatus.WAIT.ToString(), Type =  DictionaryItem.RequestType.ADDPOST.ToString() },
+                new JobStatDto{ Amount = 2, Status = DictionaryItem.RequestStatus.PROC.ToString(), Type =  DictionaryItem.RequestType.ADDPOST.ToString() },
+                new JobStatDto{ Amount = 44, Status = DictionaryItem.RequestStatus.DONE.ToString(), Type =  DictionaryItem.RequestType.ADDPOST.ToString() },
+                new JobStatDto{ Amount = 11, Status = DictionaryItem.RequestStatus.ERR.ToString(), Type =  DictionaryItem.RequestType.ADDPOST.ToString() },
+
+                new JobStatDto{ Amount = 555, Status = DictionaryItem.RequestStatus.WAIT.ToString(), Type =  DictionaryItem.RequestType.GETINFO.ToString() },
+                new JobStatDto{ Amount = 4, Status = DictionaryItem.RequestStatus.PROC.ToString(), Type =  DictionaryItem.RequestType.GETINFO.ToString() },
+                new JobStatDto{ Amount = 1227, Status = DictionaryItem.RequestStatus.DONE.ToString(), Type =  DictionaryItem.RequestType.GETINFO.ToString() },
+                new JobStatDto{ Amount = 88, Status = DictionaryItem.RequestStatus.ERR.ToString(), Type =  DictionaryItem.RequestType.GETINFO.ToString() },
+            };
+
+            return await Task.FromResult(result);
         }
 
         private Request PrepareRequest(AbstractRequestDto requestDto)

@@ -85,6 +85,18 @@ namespace Gugleus.Api.Controllers
             return result;
         }
 
+        [HttpGet("stats")]
+        [SwaggerResponse(200, Type = typeof(RequestStatDto<DateFilterDto>))]
+        [SwaggerResponse(400, Type = typeof(string))]
+        [SwaggerResponse(500, Type = typeof(string))]
+        public async Task<IActionResult> GetStats(DateFilterDto dateFilterDto)
+        {
+            RequestStatDto<DateFilterDto> result = await _requestService.GetStatsByDate(dateFilterDto);
+
+            return Ok(result);
+        }
+
+
 
         private async Task<IActionResult> GetRequestResponseAsync<T>(long id, DictionaryItem.RequestType requestType) where T : class
         {
