@@ -11,8 +11,8 @@ namespace Gugleus.Core.Dto.Input
         public UserInfoDto User { get; set; }
         [Required]
         public string Content { get; set; }
-        public string Place { get; set; }
-        public List<string> Images { get; set; }
+        //public string Place { get; set; }
+        public List<ImageDto> Images { get; set; }
 
         internal override DictionaryItem.RequestType RequestType => DictionaryItem.RequestType.ADDPOST;
 
