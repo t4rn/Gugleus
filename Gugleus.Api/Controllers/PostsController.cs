@@ -88,7 +88,9 @@ namespace Gugleus.Api.Controllers
 
         [HttpGet("stats/{from}/{to}")]
         [SwaggerResponse(200, Type = typeof(RequestStatDto<DateFilterDto>),
-            Description = "Example: https://dev.heapi.realizacje.it/stats/20180101/20180131")]
+            Description = "Example: http://localhost:65508/posts/stats/20170101/20180131")]
+        [SwaggerResponse(400, Type = typeof(string))]
+        [SwaggerResponse(500, Type = typeof(string))]
         public async Task<IActionResult> GetStats(string from, string to)
         {
             IActionResult result;
