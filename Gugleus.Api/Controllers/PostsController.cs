@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -85,15 +86,35 @@ namespace Gugleus.Api.Controllers
             return result;
         }
 
-        [HttpGet("stats")]
-        [SwaggerResponse(200, Type = typeof(RequestStatDto<DateFilterDto>))]
-        [SwaggerResponse(400, Type = typeof(string))]
-        [SwaggerResponse(500, Type = typeof(string))]
-        public async Task<IActionResult> GetStats(DateFilterDto dateFilterDto)
+        [HttpGet("stats/{from}/{to}")]
+        [SwaggerResponse(200, Type = typeof(RequestStatDto<DateFilterDto>),
+            Description = "Example: https://dev.heapi.realizacje.it/stats/20180101/20180131")]
+        public async Task<IActionResult> GetStats(string from, string to)
         {
-            RequestStatDto<DateFilterDto> result = await _requestService.GetStatsByDate(dateFilterDto);
+            IActionResult result;
 
-            return Ok(result);
+            try
+            {
+                DateTime fromDate = DateTime.ParseExact(from, "yyyyMMdd", CultureInfo.InvariantCulture);
+                DateTime toDate = DateTime.ParseExact(to, "yyyyMMdd", CultureInfo.InvariantCulture);
+
+                if (fromDate <= toDate)
+                {
+                    DateFilterDto dateFilterDto = new DateFilterDto() { From = fromDate, To = toDate };
+                    RequestStatDto<DateFilterDto> statResult = await _requestService.GetStatsByDate(dateFilterDto);
+                    result = Ok(statResult);
+                }
+                else
+                {
+                    result = BadRequest($"From date: '{fromDate}' is later then To date: '{toDate}'.");
+                }
+            }
+            catch (Exception ex)
+            {
+                result = InternalServerError(ex.Message);
+            }
+
+            return result;
         }
 
 

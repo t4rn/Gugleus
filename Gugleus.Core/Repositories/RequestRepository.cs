@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Gugleus.Core.Dto.Output;
+using System;
 
 namespace Gugleus.Core.Repositories
 {
@@ -82,6 +84,24 @@ namespace Gugleus.Core.Repositories
             }
 
             return requestWithQueue;
+        }
+
+        public async Task<List<JobStatDto>> GetStatsByDate(DateTime from, DateTime to)
+        {
+            List<JobStatDto> jobStats = null;
+
+            string query = @"SELECT id_request_type as Type, id_status as Status, count(*) as Amount, avg(process_end_date - process_start_date) as AvgProcessTime
+                                FROM he.requests_queue 
+                                WHERE add_date >= @from AND add_date <= @to
+                                GROUP BY id_request_type, id_status
+                                ORDER BY id_request_type";
+
+            using (NpgsqlConnection conn = new NpgsqlConnection(_connStr))
+            {
+                jobStats = (await conn.QueryAsync<JobStatDto>(query, new { from = from, to = to })).ToList();
+            }
+
+            return jobStats;
         }
 
         public async Task<List<WsClient>> GetWsClientsAsync()

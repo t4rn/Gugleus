@@ -7,6 +7,7 @@ using Gugleus.Core.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gugleus.Core.Services
@@ -92,20 +93,13 @@ namespace Gugleus.Core.Services
             RequestStatDto<DateFilterDto> result = new RequestStatDto<DateFilterDto>();
 
             result.Filter = dateFilterDto;
-            result.Jobs = new List<JobStatDto>
-            {
-                new JobStatDto{ Amount = 123, Status = DictionaryItem.RequestStatus.WAIT.ToString(), Type =  DictionaryItem.RequestType.ADDPOST.ToString() },
-                new JobStatDto{ Amount = 2, Status = DictionaryItem.RequestStatus.PROC.ToString(), Type =  DictionaryItem.RequestType.ADDPOST.ToString() },
-                new JobStatDto{ Amount = 44, Status = DictionaryItem.RequestStatus.DONE.ToString(), Type =  DictionaryItem.RequestType.ADDPOST.ToString() },
-                new JobStatDto{ Amount = 11, Status = DictionaryItem.RequestStatus.ERR.ToString(), Type =  DictionaryItem.RequestType.ADDPOST.ToString() },
+            result.Jobs = await _requestRepository.GetStatsByDate(dateFilterDto.From, dateFilterDto.To);
+            var groupedByType = result.Jobs.GroupBy(j => j.Type).Select(g => new { g.Key, Count = g.Count() });
 
-                new JobStatDto{ Amount = 555, Status = DictionaryItem.RequestStatus.WAIT.ToString(), Type =  DictionaryItem.RequestType.GETINFO.ToString() },
-                new JobStatDto{ Amount = 4, Status = DictionaryItem.RequestStatus.PROC.ToString(), Type =  DictionaryItem.RequestType.GETINFO.ToString() },
-                new JobStatDto{ Amount = 1227, Status = DictionaryItem.RequestStatus.DONE.ToString(), Type =  DictionaryItem.RequestType.GETINFO.ToString() },
-                new JobStatDto{ Amount = 88, Status = DictionaryItem.RequestStatus.ERR.ToString(), Type =  DictionaryItem.RequestType.GETINFO.ToString() },
-            };
+            foreach (var item in groupedByType)
+                result.Summary.Add(new SummaryDto { Name = item.Key, Count = item.Count });
 
-            return await Task.FromResult(result);
+            return result;
         }
 
         private Request PrepareRequest(AbstractRequestDto requestDto)

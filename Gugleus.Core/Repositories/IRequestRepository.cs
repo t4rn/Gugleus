@@ -2,6 +2,8 @@
 using Gugleus.Core.Domain.Requests;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Gugleus.Core.Dto.Output;
+using System;
 
 namespace Gugleus.Core.Repositories
 {
@@ -12,5 +14,6 @@ namespace Gugleus.Core.Repositories
         Task<Request> GetRequestWithQueueAsync(long id, string requestType);
 
         Task<List<WsClient>> GetWsClientsAsync();
+        Task<List<JobStatDto>> GetStatsByDate(DateTime from, DateTime to);
     }
 }
