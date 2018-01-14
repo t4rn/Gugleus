@@ -8,6 +8,7 @@ namespace Gugleus.Core.Dto.Input
     public class RequestDetailsDto : AbstractRequestDto
     {
         [Url(ErrorMessage = "Invalid Url")]
+        [RegularExpression(@"^(?i)(https:\/\/plus\.google\.com\/)\S+\/(posts)\/\S+", ErrorMessage = "Urls from plus.google.com allowed only.")]
         public string Url { get; set; }
 
         internal override DictionaryItem.RequestType RequestType => DictionaryItem.RequestType.GETINFO;
@@ -26,9 +27,10 @@ namespace Gugleus.Core.Dto.Input
             {
                 result.MessageList.Add("Invalid url.");
             }
-            else if (!Url.StartsWith("https://plus.google.com/"))
+            else if (!Url.ToLower().StartsWith("https://plus.google.com/"))
             {
-                result.MessageList.Add("Urls from plus.google.com allowed only.");
+                // done with Regex DataAnnotation
+                result.MessageList.Add("Not google url.");
             }
 
             // preparing result
