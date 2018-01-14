@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Gugleus.Core.Domain;
+﻿using Gugleus.Core.Domain;
 using Gugleus.Core.Extensions;
 using Gugleus.Core.Results;
+using System.ComponentModel.DataAnnotations;
 
 namespace Gugleus.Core.Dto.Input
 {
@@ -25,6 +25,10 @@ namespace Gugleus.Core.Dto.Input
             else if (!Url.IsValidUri())
             {
                 result.MessageList.Add("Invalid url.");
+            }
+            else if (!Url.StartsWith("https://plus.google.com/"))
+            {
+                result.MessageList.Add("Urls from plus.google.com allowed only.");
             }
 
             // preparing result
