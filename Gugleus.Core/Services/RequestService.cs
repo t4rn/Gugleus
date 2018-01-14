@@ -94,24 +94,19 @@ namespace Gugleus.Core.Services
 
             result.Filter = dateFilterDto;
             List<RequestStat> requestStats =  await _requestRepository.GetStatsByDate(dateFilterDto.From, dateFilterDto.To);
+            //result.Jobs = _mapper.Map<List<RequestTypeStatDto>>(requestStats);
+
             var groupedByType = requestStats.GroupBy(rs => rs.Type);
 
             foreach (var gr in groupedByType)
             {
                 RequestTypeStatDto jobStat = new RequestTypeStatDto { Type = gr.Key };
-                foreach (RequestStat rs in gr)
-                {
-                    jobStat.Summary.Add(new SummaryDto { AvgProcessTime = rs.Avg, Count = rs.Count, Status = rs.Status }); ;
-                }
+                jobStat.Summary = _mapper.Map<List<SummaryDto>>(gr);
 
                 result.Jobs.Add(jobStat);
             }
 
-
-            //result.Jobs = _mapper.Map<List<JobStatDto>>(requestStats);
-
             //var groupedByType = result.Jobs.GroupBy(j => j.Type).Select(g => new { g.Key, Count = g.Sum(d => d.Amount) });
-
             //foreach (var item in groupedByType)
             //    result.Summary.Add(new SummaryDto { Status = item.Key, Count = item.Count });
 

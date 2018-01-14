@@ -13,6 +13,7 @@ namespace Gugleus.Core.Repositories
         Task<Request> GetRequestWithQueueAsync(long id, string requestType);
 
         Task<List<WsClient>> GetWsClientsAsync();
+
         Task<List<RequestStat>> GetStatsByDate(DateTime from, DateTime to);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Gugleus.Core.Mapping;
 using Gugleus.Core.Repositories;
 using Gugleus.Core.Services;
 
@@ -17,11 +18,11 @@ namespace Gugleus.Core.AutofacModules
         {
             builder.Register(x => new RequestRepository(_connStr))
                 .As<IRequestRepository>();
-            //builder.RegisterType<RequestRepository>().As<IRequestRepository>();
             builder.RegisterType<RequestService>().As<IRequestService>();
             builder.RegisterType<ValidationService>().As<IValidationService>();
             builder.RegisterType<UtilsService>().As<IUtilsService>();
             builder.RegisterType<CacheService>().As<ICacheService>();
+            builder.RegisterInstance(AutoMapperConfig.Initialize()).SingleInstance();
 
             base.Load(builder);
         }
