@@ -3,12 +3,11 @@ using Gugleus.Core.Domain;
 using Gugleus.Core.Domain.Requests;
 using Npgsql;
 using NpgsqlTypes;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Gugleus.Core.Dto.Output;
-using System;
 
 namespace Gugleus.Core.Repositories
 {
@@ -86,9 +85,9 @@ namespace Gugleus.Core.Repositories
             return requestWithQueue;
         }
 
-        public async Task<List<JobStatDto>> GetStatsByDate(DateTime from, DateTime to)
+        public async Task<List<RequestStat>> GetStatsByDate(DateTime from, DateTime to)
         {
-            List<JobStatDto> jobStats = null;
+            List<RequestStat> requestStats = null;
 
             string query = @"SELECT id_request_type as Type, id_status as Status, count(*) as Amount, avg(process_end_date - process_start_date) as AvgProcessTime
                                 FROM he.requests_queue 
@@ -96,12 +95,30 @@ namespace Gugleus.Core.Repositories
                                 GROUP BY id_request_type, id_status
                                 ORDER BY id_request_type";
 
+            query = @"SELECT COALESCE(q.id_request_type, 'ADDPOST') as Type, dic.code as Status, COALESCE(q.count, 0) as Count, q.avg as Avg 
+                        FROM he.dic_request_status dic
+                        LEFT JOIN (
+                        SELECT  rq.id_status, rq.id_request_type, count(rq.id_status), avg(process_end_date - process_start_date) 
+                        FROM he.requests_queue rq 
+                        WHERE rq.id_request_type = 'ADDPOST' AND rq.add_date >= @from AND rq.add_date <= @to
+                        GROUP BY rq.id_status, rq.id_request_type) q ON q.id_status = dic.code
+                    UNION
+                        SELECT COALESCE(q.id_request_type, 'GETINFO'), dic.code, COALESCE(q.count, 0), q.avg 
+                        FROM he.dic_request_status dic
+                        LEFT JOIN (
+                        SELECT  rq.id_status, rq.id_request_type, count(rq.id_status), avg(process_end_date - process_start_date) 
+                        FROM he.requests_queue rq 
+                        WHERE rq.id_request_type = 'GETINFO' AND rq.add_date >= @from AND rq.add_date <= @to
+                        GROUP BY rq.id_status, rq.id_request_type) q ON q.id_status = dic.code
+                        ORDER BY 2, 1";
+
+
             using (NpgsqlConnection conn = new NpgsqlConnection(_connStr))
             {
-                jobStats = (await conn.QueryAsync<JobStatDto>(query, new { from = from, to = to })).ToList();
+                requestStats = (await conn.QueryAsync<RequestStat>(query, new { from = from, to = to })).ToList();
             }
 
-            return jobStats;
+            return requestStats;
         }
 
         public async Task<List<WsClient>> GetWsClientsAsync()

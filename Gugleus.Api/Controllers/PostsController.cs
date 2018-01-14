@@ -87,7 +87,7 @@ namespace Gugleus.Api.Controllers
         }
 
         [HttpGet("stats/{from}/{to}")]
-        [SwaggerResponse(200, Type = typeof(RequestStatDto<DateFilterDto>),
+        [SwaggerResponse(200, Type = typeof(RequestSummaryDto<DateFilterDto>),
             Description = "Example: http://localhost:65508/posts/stats/20170101/20180131")]
         [SwaggerResponse(400, Type = typeof(string))]
         [SwaggerResponse(500, Type = typeof(string))]
@@ -103,7 +103,7 @@ namespace Gugleus.Api.Controllers
                 if (fromDate <= toDate)
                 {
                     DateFilterDto dateFilterDto = new DateFilterDto() { From = fromDate, To = toDate };
-                    RequestStatDto<DateFilterDto> statResult = await _requestService.GetStatsByDate(dateFilterDto);
+                    RequestSummaryDto<DateFilterDto> statResult = await _requestService.GetStatsByDate(dateFilterDto);
                     result = Ok(statResult);
                 }
                 else

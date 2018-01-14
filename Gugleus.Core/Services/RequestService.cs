@@ -88,16 +88,32 @@ namespace Gugleus.Core.Services
             return result;
         }
 
-        public async Task<RequestStatDto<DateFilterDto>> GetStatsByDate(DateFilterDto dateFilterDto)
+        public async Task<RequestSummaryDto<DateFilterDto>> GetStatsByDate(DateFilterDto dateFilterDto)
         {
-            RequestStatDto<DateFilterDto> result = new RequestStatDto<DateFilterDto>();
+            RequestSummaryDto<DateFilterDto> result = new RequestSummaryDto<DateFilterDto>();
 
             result.Filter = dateFilterDto;
-            result.Jobs = await _requestRepository.GetStatsByDate(dateFilterDto.From, dateFilterDto.To);
-            var groupedByType = result.Jobs.GroupBy(j => j.Type).Select(g => new { g.Key, Count = g.Count() });
+            List<RequestStat> requestStats =  await _requestRepository.GetStatsByDate(dateFilterDto.From, dateFilterDto.To);
+            var groupedByType = requestStats.GroupBy(rs => rs.Type);
 
-            foreach (var item in groupedByType)
-                result.Summary.Add(new SummaryDto { Name = item.Key, Count = item.Count });
+            foreach (var gr in groupedByType)
+            {
+                RequestTypeStatDto jobStat = new RequestTypeStatDto { Type = gr.Key };
+                foreach (RequestStat rs in gr)
+                {
+                    jobStat.Summary.Add(new SummaryDto { AvgProcessTime = rs.Avg, Count = rs.Count, Status = rs.Status }); ;
+                }
+
+                result.Jobs.Add(jobStat);
+            }
+
+
+            //result.Jobs = _mapper.Map<List<JobStatDto>>(requestStats);
+
+            //var groupedByType = result.Jobs.GroupBy(j => j.Type).Select(g => new { g.Key, Count = g.Sum(d => d.Amount) });
+
+            //foreach (var item in groupedByType)
+            //    result.Summary.Add(new SummaryDto { Status = item.Key, Count = item.Count });
 
             return result;
         }

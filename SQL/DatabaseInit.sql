@@ -26,6 +26,7 @@ CREATE TABLE he.dic_request_status
 ) WITH (OIDS=FALSE);
 INSERT INTO he.dic_request_status (code, description) VALUES 
 ('WAIT', 'Waiting'),('PROC', 'Processing'),('DONE', 'Done'),('ERR', 'Error occured');
+GRANT SELECT ON TABLE he.dic_request_status TO gugleus;
 --********************************************************************************
 CREATE TABLE he.dic_request_type
 (
