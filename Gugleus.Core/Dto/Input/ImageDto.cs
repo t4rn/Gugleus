@@ -5,7 +5,7 @@ namespace Gugleus.Core.Dto.Input
     public class ImageDto
     {
         [Required]
-        public string Image { get; set; }
+        public string Content { get; set; }
         [Required]
         public string Format { get; set; }
     }
