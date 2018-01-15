@@ -2,6 +2,7 @@
 using AutoMapper;
 using Gugleus.Api.Middleware;
 using Gugleus.Core.AutofacModules;
+using Gugleus.Core.Mapping;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -32,7 +33,7 @@ namespace Gugleus.Api
             {
                 config.Filters.Add(new ValidateModelAttribute());
             });
-            services.AddAutoMapper();
+            services.AddAutoMapper(typeof(MappingProfile));
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
-using Gugleus.Core.Domain;
 using Gugleus.Core.Domain.Requests;
-using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
-using Gugleus.Core.Results;
 
 namespace Gugleus.Core.Mapping
 {
@@ -14,6 +11,9 @@ namespace Gugleus.Core.Mapping
             //CreateMap<PostDto, Post>().ReverseMap();
             //CreateMap<UserInfoDto, UserInfo>().ReverseMap();
             //CreateMap<MessageListResult, ResultDto>();
+
+            CreateMap<RequestStat, SummaryDto>()
+                .ForMember(dest => dest.AvgProcessTime, opt => opt.MapFrom(src => src.Avg));
         }
     }
 }

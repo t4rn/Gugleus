@@ -22,7 +22,7 @@ namespace Gugleus.Core.AutofacModules
             builder.RegisterType<ValidationService>().As<IValidationService>();
             builder.RegisterType<UtilsService>().As<IUtilsService>();
             builder.RegisterType<CacheService>().As<ICacheService>();
-            builder.RegisterInstance(AutoMapperConfig.Initialize()).SingleInstance();
+            //builder.RegisterInstance(AutoMapperConfig.Initialize()).SingleInstance();
 
             base.Load(builder);
         }
