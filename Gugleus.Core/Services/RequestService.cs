@@ -88,12 +88,12 @@ namespace Gugleus.Core.Services
             return result;
         }
 
-        public async Task<RequestSummaryDto<DateFilterDto>> GetStatsByDate(DateFilterDto dateFilterDto)
+        public async Task<RequestSummaryDto<DateFilterDto>> GetStatsByDate(DateTime from, DateTime to)
         {
             RequestSummaryDto<DateFilterDto> result = new RequestSummaryDto<DateFilterDto>();
 
-            result.Filter = dateFilterDto;
-            List<RequestStat> requestStats =  await _requestRepository.GetStatsByDate(dateFilterDto.From, dateFilterDto.To);
+            result.Filter = new DateFilterDto { From = from.ToShortDateString(), To = to.ToShortDateString() } ;
+            List<RequestStat> requestStats =  await _requestRepository.GetStatsByDate(from, to);
             //result.Jobs = _mapper.Map<List<RequestTypeStatDto>>(requestStats);
 
             var groupedByType = requestStats.GroupBy(rs => rs.Type);

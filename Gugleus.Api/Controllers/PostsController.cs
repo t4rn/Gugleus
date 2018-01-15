@@ -102,8 +102,7 @@ namespace Gugleus.Api.Controllers
 
                 if (fromDate <= toDate)
                 {
-                    DateFilterDto dateFilterDto = new DateFilterDto() { From = fromDate, To = toDate };
-                    RequestSummaryDto<DateFilterDto> statResult = await _requestService.GetStatsByDate(dateFilterDto);
+                    RequestSummaryDto<DateFilterDto> statResult = await _requestService.GetStatsByDate(fromDate, toDate);
                     result = Ok(statResult);
                 }
                 else
