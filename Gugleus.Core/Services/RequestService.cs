@@ -4,9 +4,11 @@ using Gugleus.Core.Domain.Requests;
 using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Repositories;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,14 +20,16 @@ namespace Gugleus.Core.Services
         private readonly IMapper _mapper;
         private readonly IUtilsService _utilsService;
         private readonly ILogger<RequestService> _logger;
+        private readonly IConfiguration _configuration;
 
         public RequestService(IRequestRepository requestRepository, IMapper mapper,
-            IUtilsService utilsService, ILogger<RequestService> logger)
+            IUtilsService utilsService, ILogger<RequestService> logger, IConfiguration configuration)
         {
             _requestRepository = requestRepository;
             _mapper = mapper;
             _utilsService = utilsService;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task<IdResultDto<long>> AddRequestAsync<T>(T requestDto)
@@ -35,6 +39,12 @@ namespace Gugleus.Core.Services
 
             try
             {
+                // saving img to disk
+                if (requestDto is PostDto)
+                {
+                    PreProcessingRequest((requestDto as PostDto).Image);
+                }
+
                 // preparing request
                 Request request = PrepareRequest(requestDto);
 
@@ -92,9 +102,9 @@ namespace Gugleus.Core.Services
         {
             RequestSummaryDto<DateFilterDto> result = new RequestSummaryDto<DateFilterDto>();
 
-            result.Filter = new DateFilterDto { From = from.ToShortDateString(), To = to.ToShortDateString() } ;
+            result.Filter = new DateFilterDto { From = from.ToShortDateString(), To = to.ToShortDateString() };
 
-            List<RequestStat> requestStats =  await _requestRepository.GetStatsByDate(from, to);
+            List<RequestStat> requestStats = await _requestRepository.GetStatsByDate(from, to);
             //result.Jobs = _mapper.Map<List<RequestTypeStatDto>>(requestStats);
             var groupedByType = requestStats.GroupBy(rs => rs.Type);
             foreach (var gr in groupedByType)
@@ -146,6 +156,40 @@ namespace Gugleus.Core.Services
             }
 
             return dto;
+        }
+
+        private void PreProcessingRequest(ImageDto imageDto)
+        {
+            if (!string.IsNullOrWhiteSpace(imageDto?.Content))
+            {
+                int i = 0;
+                string fileFolder = _configuration["img-dir"];
+                string fileName = $"{fileFolder}{Guid.NewGuid().ToString()}.{imageDto.Format}";
+
+                bool fileExists = File.Exists(fileName);
+
+                // checking if file exists
+                while (fileExists && i < 10)
+                {
+                    fileName = $"{fileFolder}{Guid.NewGuid().ToString()}.{imageDto.Format}";
+                    fileExists = File.Exists(fileName);
+                    i++;
+                }
+
+                if (!fileExists)
+                {
+                    if (!Directory.Exists(fileFolder)) Directory.CreateDirectory(fileFolder);
+
+                    // saving file
+                    File.WriteAllBytes(fileName, Convert.FromBase64String(imageDto.Content));
+                    // changing content of image to file location
+                    imageDto.Content = fileName;
+                }
+                else
+                {
+                    _logger.LogError($"[{nameof(PreProcessingRequest)}] fileExists: '{fileName}' - tried '{i}' times...");
+                }
+            }
         }
     }
 }
