@@ -7,6 +7,6 @@ namespace Gugleus.Core.Domain.Requests
         public string Type { get; set; }
         public string Status { get; set; }
         public long Count { get; set; }
-        public TimeSpan Avg { get; set; }
+        public TimeSpan? Avg { get; set; }
     }
 }

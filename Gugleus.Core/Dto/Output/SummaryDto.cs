@@ -6,6 +6,6 @@ namespace Gugleus.Core.Dto.Output
     {
         public string Status { get; set; }
         public long Count { get; set; }
-        public TimeSpan AvgProcessTime { get; set; }
+        //public TimeSpan? AvgProcessTime { get; set; }
     }
 }

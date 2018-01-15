@@ -12,8 +12,8 @@ namespace Gugleus.Core.Mapping
             //CreateMap<UserInfoDto, UserInfo>().ReverseMap();
             //CreateMap<MessageListResult, ResultDto>();
 
-            CreateMap<RequestStat, SummaryDto>()
-                .ForMember(dest => dest.AvgProcessTime, opt => opt.MapFrom(src => src.Avg));
+            //CreateMap<RequestStat, SummaryDto>()
+            //    .ForMember(dest => dest.AvgProcessTime, opt => opt.MapFrom(src => src.Avg));
         }
     }
 }
