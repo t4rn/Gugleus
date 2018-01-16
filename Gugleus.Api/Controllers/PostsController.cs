@@ -37,7 +37,6 @@ namespace Gugleus.Api.Controllers
         [HttpGet("")]
         public IActionResult Ping()
         {
-            var ip = Request.HttpContext.Connection.RemoteIpAddress;
             _logger.LogDebug($"{LogDescription()} Ping START");
             return Ok($"Ping at {DateTime.Now} from {_ip}.");
         }

@@ -1,13 +1,17 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using Gugleus.Api.Controllers;
+using Gugleus.Core.Domain;
 using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Services;
+using Gugleus.GoogleCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Internal;
 using Moq;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -43,22 +47,53 @@ namespace Gugleus.Tests.Controllers
             actionResult.Should().NotBeNull().And.BeOfType<OkObjectResult>();
         }
 
+        [Fact(DisplayName = "GetPostStatusBadRequest")]
+        public async void GetPostStatusBadRequest()
+        {
+            // Arrange
+            long postId = new Random().Next(int.MaxValue);
+            _postServiceMock
+                .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, DictionaryItem.RequestType.ADDPOST))
+                .ReturnsAsync((RequestResponseDto<GoogleInfo>)null);
+
+            // Act
+            IActionResult actionResult = await _controller.GetPostStatus(postId);
+
+            // Assert
+            _postServiceMock.Verify(
+                x => x.GetRequestResponseAsync<GoogleInfo>(postId, DictionaryItem.RequestType.ADDPOST),
+                Times.Once);
+            _loggerMock.Verify(m => m.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<FormattedLogValues>(v => v.ToString().Contains("not found")),
+                It.IsAny<Exception>(),
+                It.IsAny<Func<object, Exception, string>>()
+                ));
+
+            actionResult.Should().NotBeNull().And.BeOfType<BadRequestObjectResult>();
+
+            var badRequestResult = actionResult as BadRequestObjectResult;
+            badRequestResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            badRequestResult.Value.Should().NotBeNull().And.BeOfType<string>().And.Be($"Post with Id: '{postId}' not found...");
+        }
+
 
         [Theory(DisplayName = "PostNullInput")]
         [InlineData(null)]
-        public void PostNullInput(PostDto newPost)
+        public async void PostNullInput(PostDto newPost)
         {
             // Arrange
 
             // Act
-            Task<IActionResult> taskWithActionResult = _controller.AddPost(newPost);
+            IActionResult actionResult = await _controller.AddPost(newPost);
 
             // Assert
             _postServiceMock.Verify(x => x.AddRequestAsync(It.IsAny<PostDto>()), Times.Never);
 
-            taskWithActionResult.Result.Should().NotBeNull().And.BeOfType<BadRequestObjectResult>();
+            actionResult.Should().NotBeNull().And.BeOfType<BadRequestObjectResult>();
 
-            var badRequestResult = taskWithActionResult.Result as BadRequestObjectResult;
+            var badRequestResult = actionResult as BadRequestObjectResult;
             badRequestResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
             badRequestResult.Value.Should().BeOfType<ResultDto>();
             var result = badRequestResult.Value as ResultDto;
