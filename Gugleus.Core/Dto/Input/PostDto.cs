@@ -21,9 +21,13 @@ namespace Gugleus.Core.Dto.Input
             MessageListResult result = new MessageListResult();
 
             // validating
+            if (User == null)
+            {
+                result.MessageList.Add("Null User data.");
+            }
             if (string.IsNullOrWhiteSpace(Content))
             {
-                result.MessageList.Add("Null Post input.");
+                result.MessageList.Add("Null Content data.");
             }
 
             // preparing result

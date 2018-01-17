@@ -183,7 +183,7 @@ namespace Gugleus.Api.Controllers
                     }
                     else
                     {
-                        _logger.LogError("{0} Error for: '{1}' -> Id: '{2}'",
+                        _logger.LogError("{0} Error for: '{1}' -> Message: '{2}'",
                             LogDescription(), typeof(T), addResult.Message);
                         result = InternalServerError(addResult);
                     }

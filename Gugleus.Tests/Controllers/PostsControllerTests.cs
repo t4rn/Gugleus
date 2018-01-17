@@ -4,6 +4,7 @@ using Gugleus.Api.Controllers;
 using Gugleus.Core.Domain;
 using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
+using Gugleus.Core.Results;
 using Gugleus.Core.Services;
 using Gugleus.GoogleCore;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Internal;
 using Moq;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -52,8 +54,9 @@ namespace Gugleus.Tests.Controllers
         {
             // Arrange
             long postId = new Random().Next(int.MaxValue);
+            var requestType = DictionaryItem.RequestType.ADDPOST;
             _postServiceMock
-                .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, DictionaryItem.RequestType.ADDPOST))
+                .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
                 .ReturnsAsync((RequestResponseDto<GoogleInfo>)null);
 
             // Act
@@ -61,13 +64,14 @@ namespace Gugleus.Tests.Controllers
 
             // Assert
             _postServiceMock.Verify(
-                x => x.GetRequestResponseAsync<GoogleInfo>(postId, DictionaryItem.RequestType.ADDPOST),
+                x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType),
                 Times.Once);
             _loggerMock.Verify(m => m.Log(
                 LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<FormattedLogValues>(v => v.ToString().Contains("not found")),
-                It.IsAny<Exception>(),
+                0,
+                It.Is<FormattedLogValues>(v => v.ToString()
+                .Contains($"Post with Id: '{postId}' and type '{requestType}' not found")),
+                null,
                 It.IsAny<Func<object, Exception, string>>()
                 ));
 
@@ -78,27 +82,210 @@ namespace Gugleus.Tests.Controllers
             badRequestResult.Value.Should().NotBeNull().And.BeOfType<string>().And.Be($"Post with Id: '{postId}' not found...");
         }
 
+        [Fact(DisplayName = "GetPostStatusInternalServerError")]
+        public async void GetPostStatusInternalServerError()
+        {
+            // Arrange
+            long postId = new Random().Next(int.MaxValue);
+            var requestType = DictionaryItem.RequestType.ADDPOST;
+            string expectedError = Guid.NewGuid().ToString();
+            var expectedResponse = new RequestResponseDto<GoogleInfo>() { Error = expectedError };
+            _postServiceMock
+                .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
+                .ReturnsAsync(expectedResponse);
 
-        [Theory(DisplayName = "PostNullInput")]
-        [InlineData(null)]
-        public async void PostNullInput(PostDto newPost)
+            // Act
+            IActionResult actionResult = await _controller.GetPostStatus(postId);
+
+            // Assert
+            _postServiceMock.Verify(
+                x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType),
+                Times.Once);
+            _loggerMock.Verify(m => m.Log(
+                LogLevel.Error,
+                0,
+                It.Is<FormattedLogValues>(v => v.ToString()
+                .Contains($"Error for Id: '{postId}' type: '{requestType}' -> {expectedError}")),
+                null,
+                It.IsAny<Func<object, Exception, string>>()
+                ));
+
+            actionResult.Should().NotBeNull().And.BeOfType<ObjectResult>();
+
+            var objectResult = actionResult as ObjectResult;
+            objectResult.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+            objectResult.Value.Should().NotBeNull().And.BeOfType<RequestResponseDto<GoogleInfo>>();
+            var requestResponse = objectResult.Value as RequestResponseDto<GoogleInfo>;
+            requestResponse.Error.Should().Be(expectedError);
+        }
+
+        [Fact(DisplayName = "GetPostStatusOk")]
+        public async void GetPostStatusOk()
+        {
+            // Arrange
+            long postId = new Random().Next(int.MaxValue);
+            var requestType = DictionaryItem.RequestType.ADDPOST;
+            string expectedRequestStatus = Guid.NewGuid().ToString();
+            var expectedResponse = new RequestResponseDto<GoogleInfo>() { Id = postId, Status = expectedRequestStatus };
+            _postServiceMock
+                .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
+                .ReturnsAsync(expectedResponse);
+
+            // Act
+            IActionResult actionResult = await _controller.GetPostStatus(postId);
+
+            // Assert
+            _postServiceMock.Verify(
+                x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType),
+                Times.Once);
+            _loggerMock.Verify(m => m.Log(
+                LogLevel.Debug,
+                0,
+                It.Is<FormattedLogValues>(v => v.ToString()
+                .Contains($"Ok for Id: '{postId}' type: '{requestType}' -> {expectedRequestStatus}")),
+                null,
+                It.IsAny<Func<object, Exception, string>>()
+                ));
+
+            actionResult.Should().NotBeNull().And.BeOfType<OkObjectResult>();
+
+            var objectResult = actionResult as OkObjectResult;
+            objectResult.StatusCode.Should().Be(StatusCodes.Status200OK);
+            objectResult.Value.Should().NotBeNull().And.BeOfType<RequestResponseDto<GoogleInfo>>();
+            var requestResponse = objectResult.Value as RequestResponseDto<GoogleInfo>;
+            requestResponse.Error.Should().BeNull();
+            requestResponse.Id.Should().Be(postId);
+            requestResponse.Status.Should().Be(expectedRequestStatus);
+        }
+
+        [Fact(DisplayName = "AddPostNullInput")]
+        public async void AddPostNullInput()
         {
             // Arrange
 
             // Act
-            IActionResult actionResult = await _controller.AddPost(newPost);
+            IActionResult actionResult = await _controller.AddPost(null);
 
             // Assert
             _postServiceMock.Verify(x => x.AddRequestAsync(It.IsAny<PostDto>()), Times.Never);
+            _loggerMock.Verify(m => m.Log(
+                LogLevel.Error,
+                0,
+                It.Is<FormattedLogValues>(v => v.ToString()
+                .Contains($"Null input for '{typeof(PostDto)}'")),
+                null,
+                It.IsAny<Func<object, Exception, string>>()
+                ));
 
             actionResult.Should().NotBeNull().And.BeOfType<BadRequestObjectResult>();
 
             var badRequestResult = actionResult as BadRequestObjectResult;
             badRequestResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-            badRequestResult.Value.Should().BeOfType<ResultDto>();
-            var result = badRequestResult.Value as ResultDto;
-            result.IsOk.Should().Be(false);
-            result.Message.Should().Be("Null input.");
+            badRequestResult.Value.Should().NotBeNull().And.BeOfType<ResultDto>();
+            var resultDto = badRequestResult.Value as ResultDto;
+            resultDto.IsOk.Should().Be(false);
+            resultDto.Message.Should().NotBeNull().And.Be("Null input.");
+        }
+
+        [Fact(DisplayName = "AddPostNotValid")]
+        public async void AddPostNotValid()
+        {
+            // Arrange
+            PostDto postDto = new PostDto();
+            string expectedErrorMsg = "Validation errors: Null User data.;Null Content data";
+            ResultDto expectedResult = new ResultDto() { Message = expectedErrorMsg };
+            _mapperMock.Setup(x => x.Map<ResultDto>(It.IsAny<MessageListResult>()))
+                .Returns(expectedResult);
+
+            // Act
+            IActionResult actionResult = await _controller.AddPost(postDto);
+
+            // Assert
+            _postServiceMock.Verify(x => x.AddRequestAsync(postDto), Times.Never);
+            _loggerMock.Verify(m => m.Log(
+                LogLevel.Error,
+                0,
+                It.Is<FormattedLogValues>(v => v.ToString()
+                .Contains($"ValidErr for '{postDto.GetType()}': {expectedErrorMsg}")),
+                null,
+                It.IsAny<Func<object, Exception, string>>()
+                ));
+            _mapperMock.Verify(x => x.Map<ResultDto>(It.IsAny<MessageListResult>()), Times.Once);
+
+            actionResult.Should().NotBeNull().And.BeOfType<BadRequestObjectResult>();
+
+            var badRequestResult = actionResult as BadRequestObjectResult;
+            badRequestResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            badRequestResult.Value.Should().NotBeNull().And.BeOfType<ResultDto>();
+            var resultDto = badRequestResult.Value as ResultDto;
+            resultDto.IsOk.Should().Be(false);
+            resultDto.Message.Should().NotBeNull().And.Be(expectedErrorMsg);
+        }
+
+        [Fact(DisplayName = "AddPostNotOk")]
+        public async void AddPostNotOk()
+        {
+            // Arrange
+            PostDto postDto = new PostDto() { Content = Guid.NewGuid().ToString(), User = new UserInfoDto() };
+            IdResultDto<long> expectedResult = new IdResultDto<long>() { IsOk = false, Message = Guid.NewGuid().ToString() };
+            _postServiceMock.Setup(x => x.AddRequestAsync(postDto)).ReturnsAsync(expectedResult);
+
+            // Act
+            IActionResult actionResult = await _controller.AddPost(postDto);
+
+            // Assert
+            actionResult.Should().NotBeNull().And.BeOfType<ObjectResult>();
+
+            _postServiceMock.Verify(x => x.AddRequestAsync(postDto), Times.Once);
+            _loggerMock.Verify(m => m.Log(
+                LogLevel.Error,
+                0,
+                It.Is<FormattedLogValues>(v => v.ToString()
+                .Contains($"Error for: '{typeof(PostDto)}' -> Message: '{expectedResult.Message}'")),
+                null,
+                It.IsAny<Func<object, Exception, string>>()
+                ));
+
+            var objectResult = actionResult as ObjectResult;
+            objectResult.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
+            objectResult.Value.Should().NotBeNull().And.BeOfType(typeof(IdResultDto<long>));
+            var idResultDto = objectResult.Value as IdResultDto<long>;
+            idResultDto.IsOk.Should().Be(false);
+            idResultDto.Message.Should().NotBeNull().And.Be(expectedResult.Message);
+            idResultDto.Id.Should().Be(0);
+        }
+
+        [Fact(DisplayName = "AddPostOk")]
+        public async void AddPostOk()
+        {
+            // Arrange
+            PostDto postDto = new PostDto() { Content = Guid.NewGuid().ToString(), User = new UserInfoDto() };
+            IdResultDto<long> expectedResult = new IdResultDto<long>() { IsOk = true, Message = Guid.NewGuid().ToString(), Id = new Random().Next(int.MaxValue) };
+            _postServiceMock.Setup(x => x.AddRequestAsync(postDto)).ReturnsAsync(expectedResult);
+
+            // Act
+            IActionResult actionResult = await _controller.AddPost(postDto);
+
+            // Assert
+            actionResult.Should().NotBeNull().And.BeOfType<OkObjectResult>();
+
+            _postServiceMock.Verify(x => x.AddRequestAsync(postDto), Times.Once);
+            _loggerMock.Verify(m => m.Log(
+                LogLevel.Debug,
+                0,
+                It.Is<FormattedLogValues>(v => v.ToString()
+                .Contains($"Ok for: '{typeof(PostDto)}' -> Id: '{expectedResult.Id}'")),
+                null,
+                It.IsAny<Func<object, Exception, string>>()
+                ));
+
+            var objectResult = actionResult as OkObjectResult;
+            objectResult.StatusCode.Should().Be(StatusCodes.Status200OK);
+            objectResult.Value.Should().NotBeNull().And.BeOfType(typeof(IdResultDto<long>));
+            var idResultDto = objectResult.Value as IdResultDto<long>;
+            idResultDto.IsOk.Should().Be(true);
+            idResultDto.Message.Should().NotBeNull().And.Be(expectedResult.Message);
+            idResultDto.Id.Should().Be(expectedResult.Id);
         }
     }
 }
