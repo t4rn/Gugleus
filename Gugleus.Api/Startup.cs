@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Gugleus.Api.Middleware;
 using Gugleus.Core.AutofacModules;
@@ -13,19 +14,27 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
 
 namespace Gugleus.Api
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)//(IConfiguration configuration)
         {
-            Configuration = configuration;
+            //Configuration = configuration;
+
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
+        public IContainer ApplicationContainer { get; private set; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMemoryCache();
 
@@ -33,12 +42,14 @@ namespace Gugleus.Api
             {
                 config.Filters.Add(new ValidateModelAttribute());
             });
+
+            // AutoMapper
+            AutoMapper.ServiceCollectionExtensions.UseStaticRegistration = false; // for e2e tests
             services.AddAutoMapper(typeof(MappingProfile));
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            //services.AddTransient<IPostRepository, PostRepository>();
-
+            // Swagger
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new Info
@@ -51,12 +62,21 @@ namespace Gugleus.Api
                     License = new License { Name = "MIT", Url = "https://en.wikipedia.org/wiki/MIT_License" }
                 });
             });
+
+            // Autofac
+            var builder = new ContainerBuilder();
+            builder.Populate(services);
+            builder.RegisterModule(new AutofacModule(Configuration.GetConnectionString("cs")));
+            ApplicationContainer = builder.Build();
+
+            return new AutofacServiceProvider(ApplicationContainer);
         }
 
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
-            builder.RegisterModule(new AutofacModule(Configuration.GetConnectionString("cs")));
-        }
+        // Commented for E2E tests to work
+        //public void ConfigureContainer(ContainerBuilder builder)
+        //{
+        //    builder.RegisterModule(new AutofacModule(Configuration.GetConnectionString("cs")));
+        //}
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
@@ -64,6 +84,8 @@ namespace Gugleus.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            //env.ConfigureNLog("nlog.config");
 
             //add NLog to ASP.NET Core
             loggerFactory.AddNLog();
