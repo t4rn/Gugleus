@@ -13,6 +13,7 @@
 * Swashbuckle (Swagger)
 * IMemoryCache
 * NLog
+...
 
 ### Hosting on IIS [https://docs.microsoft.com/en-us/aspnet/core/publishing/iis?tabs=aspnetcore2x]:
 * Install .NET Core Windows Server Hosting bundle https://aka.ms/dotnetcore-2-windowshosting
