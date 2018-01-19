@@ -8,7 +8,7 @@ namespace Gugleus.Core.Services
 {
     public interface IRequestService
     {
-        Task<IdResultDto<long>> AddRequestAsync<T>(T requestDto) where T : AbstractRequestDto;
+        Task<IdResultDto<long>> AddRequestAsync<T>(T requestDto, WsClient wsClient) where T : AbstractRequestDto;
         Task<RequestResponseDto<T>> GetRequestResponseAsync<T>(long id, DictionaryItem.RequestType requestType) where T : class;
         Task<RequestSummaryDto<DateFilterDto>> GetStatsByDate(DateTime from, DateTime to);
     }

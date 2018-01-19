@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Internal;
 using Moq;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
@@ -25,6 +26,7 @@ namespace Gugleus.Tests.Controllers
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<ILogger<PostsController>> _loggerMock;
         private readonly Mock<IHttpContextAccessor> _httpContextMock;
+        private readonly Mock<ICacheService> _cacheServiceMock;
         private readonly PostsController _controller;
 
         public PostsControllerTests()
@@ -33,8 +35,9 @@ namespace Gugleus.Tests.Controllers
             _mapperMock = new Mock<IMapper>();
             _loggerMock = new Mock<ILogger<PostsController>>();
             _httpContextMock = new Mock<IHttpContextAccessor>();
+            _cacheServiceMock = new Mock<ICacheService>();
             _controller = new PostsController(_postServiceMock.Object, _mapperMock.Object,
-                _loggerMock.Object, _httpContextMock.Object);
+                _loggerMock.Object, _httpContextMock.Object, _cacheServiceMock.Object);
         }
 
         [Fact(DisplayName = "Ping")]
@@ -167,7 +170,8 @@ namespace Gugleus.Tests.Controllers
             IActionResult actionResult = await _controller.AddPost(null);
 
             // Assert
-            _postServiceMock.Verify(x => x.AddRequestAsync(It.IsAny<PostDto>()), Times.Never);
+            _cacheServiceMock.Verify(x => x.GetWsClientsAsync(), Times.Never);
+            _postServiceMock.Verify(x => x.AddRequestAsync(It.IsAny<PostDto>(), It.IsAny<WsClient>()), Times.Never);
             _loggerMock.Verify(m => m.Log(
                 LogLevel.Error,
                 0,
@@ -201,7 +205,8 @@ namespace Gugleus.Tests.Controllers
             IActionResult actionResult = await _controller.AddPost(postDto);
 
             // Assert
-            _postServiceMock.Verify(x => x.AddRequestAsync(postDto), Times.Never);
+            _cacheServiceMock.Verify(x => x.GetWsClientsAsync(), Times.Never);
+            _postServiceMock.Verify(x => x.AddRequestAsync(postDto, It.IsAny<WsClient>()), Times.Never);
             _loggerMock.Verify(m => m.Log(
                 LogLevel.Error,
                 0,
@@ -226,9 +231,11 @@ namespace Gugleus.Tests.Controllers
         public async void AddPostNotOk()
         {
             // Arrange
+            List<WsClient> expectedWsClients = new List<WsClient>() { new WsClient { Hash = Guid.NewGuid().ToString(), Id = new Random().Next(int.MaxValue) } };
             PostDto postDto = new PostDto() { Content = Guid.NewGuid().ToString(), User = new UserInfoDto() };
             IdResultDto<long> expectedResult = new IdResultDto<long>() { IsOk = false, Message = Guid.NewGuid().ToString() };
-            _postServiceMock.Setup(x => x.AddRequestAsync(postDto)).ReturnsAsync(expectedResult);
+            _postServiceMock.Setup(x => x.AddRequestAsync(postDto, It.IsAny<WsClient>())).ReturnsAsync(expectedResult);
+            _cacheServiceMock.Setup(x => x.GetWsClientsAsync()).ReturnsAsync(expectedWsClients);
 
             // Act
             IActionResult actionResult = await _controller.AddPost(postDto);
@@ -236,7 +243,8 @@ namespace Gugleus.Tests.Controllers
             // Assert
             actionResult.Should().NotBeNull().And.BeOfType<ObjectResult>();
 
-            _postServiceMock.Verify(x => x.AddRequestAsync(postDto), Times.Once);
+            _cacheServiceMock.Verify(x => x.GetWsClientsAsync(), Times.Once);
+            _postServiceMock.Verify(x => x.AddRequestAsync(postDto, It.IsAny<WsClient>()), Times.Once);
             _loggerMock.Verify(m => m.Log(
                 LogLevel.Error,
                 0,
@@ -259,9 +267,11 @@ namespace Gugleus.Tests.Controllers
         public async void AddPostOk()
         {
             // Arrange
+            List<WsClient> expectedWsClients = new List<WsClient>() { new WsClient { Hash = Guid.NewGuid().ToString(), Id = new Random().Next(int.MaxValue) } };
             PostDto postDto = new PostDto() { Content = Guid.NewGuid().ToString(), User = new UserInfoDto() };
             IdResultDto<long> expectedResult = new IdResultDto<long>() { IsOk = true, Message = Guid.NewGuid().ToString(), Id = new Random().Next(int.MaxValue) };
-            _postServiceMock.Setup(x => x.AddRequestAsync(postDto)).ReturnsAsync(expectedResult);
+            _postServiceMock.Setup(x => x.AddRequestAsync(postDto, It.IsAny<WsClient>())).ReturnsAsync(expectedResult);
+            _cacheServiceMock.Setup(x => x.GetWsClientsAsync()).ReturnsAsync(expectedWsClients);
 
             // Act
             IActionResult actionResult = await _controller.AddPost(postDto);
@@ -269,7 +279,8 @@ namespace Gugleus.Tests.Controllers
             // Assert
             actionResult.Should().NotBeNull().And.BeOfType<OkObjectResult>();
 
-            _postServiceMock.Verify(x => x.AddRequestAsync(postDto), Times.Once);
+            _cacheServiceMock.Verify(x => x.GetWsClientsAsync(), Times.Once);
+            _postServiceMock.Verify(x => x.AddRequestAsync(postDto, It.IsAny<WsClient>()), Times.Once);
             _loggerMock.Verify(m => m.Log(
                 LogLevel.Debug,
                 0,

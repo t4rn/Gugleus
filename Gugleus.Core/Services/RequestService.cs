@@ -32,7 +32,7 @@ namespace Gugleus.Core.Services
             _configuration = configuration;
         }
 
-        public async Task<IdResultDto<long>> AddRequestAsync<T>(T requestDto)
+        public async Task<IdResultDto<long>> AddRequestAsync<T>(T requestDto, WsClient wsClient)
             where T : AbstractRequestDto
         {
             IdResultDto<long> result = new IdResultDto<long>();
@@ -46,7 +46,7 @@ namespace Gugleus.Core.Services
                 }
 
                 // preparing request
-                Request request = PrepareRequest(requestDto);
+                Request request = PrepareRequest(requestDto, wsClient);
 
                 // saving to db
                 long id = await _requestRepository.AddRequestAsync(request);
@@ -125,11 +125,12 @@ namespace Gugleus.Core.Services
             return result;
         }
 
-        private Request PrepareRequest(AbstractRequestDto requestDto)
+        private Request PrepareRequest(AbstractRequestDto requestDto, WsClient wsClient)
         {
             Request request = new Request();
             request.Type = new DictionaryItem(requestDto.RequestType);
             request.Input = _utilsService.SerializeToJson(requestDto);
+            request.WsClient = wsClient;
 
             return request;
         }

@@ -28,7 +28,8 @@ namespace Gugleus.Core.Repositories
                     param: new
                     {
                         p_id_request_type = request.Type.Code,
-                        p_input = new CustomParameter(request.Input, NpgsqlDbType.Json)
+                        p_input = new CustomParameter(request.Input, NpgsqlDbType.Json),
+                        p_id_ws_client = request.WsClient?.Id
                     },
                     commandType: CommandType.StoredProcedure);
 

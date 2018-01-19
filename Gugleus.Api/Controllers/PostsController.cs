@@ -26,7 +26,7 @@ namespace Gugleus.Api.Controllers
         private readonly string _ip;
 
         public PostsController(IRequestService requestService, IMapper mapper, ILogger<PostsController> logger,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, ICacheService cacheService) : base(cacheService)
         {
             _requestService = requestService;
             _mapper = mapper;
@@ -172,8 +172,11 @@ namespace Gugleus.Api.Controllers
                 }
                 else
                 {
+                    // getting wsClient
+                    WsClient wsClient = await GetWsClient();
+
                     // adding request to queue
-                    IdResultDto<long> addResult = await _requestService.AddRequestAsync(requestDto);
+                    IdResultDto<long> addResult = await _requestService.AddRequestAsync(requestDto, wsClient);
 
                     if (addResult.IsOk)
                     {
