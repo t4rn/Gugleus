@@ -49,7 +49,7 @@ namespace Gugleus.Core.Repositories
         {
             Request requestWithQueue = null;
 
-            string query = @"SELECT id as Id, r.id_ws_client as WsClient,
+            string query = @"SELECT id as Id, --r.id_ws_client as WsClient,
                                 r.request_input as Input, r.request_output as Output,
                                 r.add_date as AddDate, r.output_date as OutputDate,
 
