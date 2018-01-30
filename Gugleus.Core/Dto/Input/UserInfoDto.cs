@@ -10,5 +10,6 @@ namespace Gugleus.Core.Dto.Input
         public string Password { get; set; }
         //[Required]
         public string AdditionalEmail { get; set; }
+        public string Phone { get; set; }
     }
 }

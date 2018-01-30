@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Gugleus.Core.Domain;
 using Gugleus.Core.Domain.Requests;
+using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
 
 namespace Gugleus.Core.Mapping
@@ -14,6 +16,14 @@ namespace Gugleus.Core.Mapping
 
             //CreateMap<RequestStat, SummaryDto>()
             //    .ForMember(dest => dest.AvgProcessTime, opt => opt.MapFrom(src => src.Avg));
+        }
+    }
+
+    public class PostResolver : IValueResolver<PostDto, Post, int?>
+    {
+        public int? Resolve(PostDto source, Post destination, int? destMember, ResolutionContext context)
+        {
+            return 123;
         }
     }
 }
