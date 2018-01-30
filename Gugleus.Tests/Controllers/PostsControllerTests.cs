@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using AutoFixture;
+using AutoMapper;
 using FluentAssertions;
 using Gugleus.Api.Controllers;
 using Gugleus.Core.Domain;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Logging.Internal;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
@@ -22,6 +24,7 @@ namespace Gugleus.Tests.Controllers
 {
     public class PostsControllerTests
     {
+        private readonly Fixture _fixture;
         private readonly Mock<IRequestService> _postServiceMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<ILogger<PostsController>> _loggerMock;
@@ -31,6 +34,9 @@ namespace Gugleus.Tests.Controllers
 
         public PostsControllerTests()
         {
+            _fixture = new Fixture();
+            _fixture.Customize(new RandomBooleanSequenceCustomization());
+
             _postServiceMock = new Mock<IRequestService>();
             _mapperMock = new Mock<IMapper>();
             _loggerMock = new Mock<ILogger<PostsController>>();
@@ -56,7 +62,7 @@ namespace Gugleus.Tests.Controllers
         public async void GetPostStatusBadRequest()
         {
             // Arrange
-            long postId = new Random().Next(int.MaxValue);
+            long postId = _fixture.Create<long>();
             var requestType = DictionaryItem.RequestType.ADDPOST;
             _postServiceMock
                 .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
@@ -89,9 +95,9 @@ namespace Gugleus.Tests.Controllers
         public async void GetPostStatusInternalServerError()
         {
             // Arrange
-            long postId = new Random().Next(int.MaxValue);
+            long postId = _fixture.Create<long>();
             var requestType = DictionaryItem.RequestType.ADDPOST;
-            string expectedError = Guid.NewGuid().ToString();
+            string expectedError = _fixture.Create<string>();
             var expectedResponse = new RequestResponseDto<GoogleInfo>() { Error = expectedError };
             _postServiceMock
                 .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
@@ -126,9 +132,9 @@ namespace Gugleus.Tests.Controllers
         public async void GetPostStatusOk()
         {
             // Arrange
-            long postId = new Random().Next(int.MaxValue);
+            long postId = _fixture.Create<long>();
             var requestType = DictionaryItem.RequestType.ADDPOST;
-            string expectedRequestStatus = Guid.NewGuid().ToString();
+            string expectedRequestStatus = _fixture.Create<string>();
             var expectedResponse = new RequestResponseDto<GoogleInfo>() { Id = postId, Status = expectedRequestStatus };
             _postServiceMock
                 .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
@@ -231,9 +237,12 @@ namespace Gugleus.Tests.Controllers
         public async void AddPostNotOk()
         {
             // Arrange
-            List<WsClient> expectedWsClients = new List<WsClient>() { new WsClient { Hash = Guid.NewGuid().ToString(), Id = new Random().Next(int.MaxValue) } };
-            PostDto postDto = new PostDto() { Content = Guid.NewGuid().ToString(), User = new UserInfoDto() };
-            IdResultDto<long> expectedResult = new IdResultDto<long>() { IsOk = false, Message = Guid.NewGuid().ToString() };
+            List<WsClient> expectedWsClients = _fixture.CreateMany<WsClient>(1).ToList();
+            PostDto postDto = _fixture.Create<PostDto>();
+            IdResultDto<long> expectedResult = _fixture.Build<IdResultDto<long>>()
+                .With(x => x.IsOk, false)
+                .Create();
+
             _postServiceMock.Setup(x => x.AddRequestAsync(postDto, It.IsAny<WsClient>())).ReturnsAsync(expectedResult);
             _cacheServiceMock.Setup(x => x.GetWsClientsAsync()).ReturnsAsync(expectedWsClients);
 
@@ -267,9 +276,11 @@ namespace Gugleus.Tests.Controllers
         public async void AddPostOk()
         {
             // Arrange
-            List<WsClient> expectedWsClients = new List<WsClient>() { new WsClient { Hash = Guid.NewGuid().ToString(), Id = new Random().Next(int.MaxValue) } };
-            PostDto postDto = new PostDto() { Content = Guid.NewGuid().ToString(), User = new UserInfoDto() };
-            IdResultDto<long> expectedResult = new IdResultDto<long>() { IsOk = true, Message = Guid.NewGuid().ToString(), Id = new Random().Next(int.MaxValue) };
+            List<WsClient> expectedWsClients = _fixture.CreateMany<WsClient>(1).ToList();
+            PostDto postDto = _fixture.Create<PostDto>();
+            IdResultDto<long> expectedResult = _fixture.Build<IdResultDto<long>>()
+                .With(x => x.IsOk, true)
+                .Create();
             _postServiceMock.Setup(x => x.AddRequestAsync(postDto, It.IsAny<WsClient>())).ReturnsAsync(expectedResult);
             _cacheServiceMock.Setup(x => x.GetWsClientsAsync()).ReturnsAsync(expectedWsClients);
 
