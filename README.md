@@ -9,6 +9,7 @@
 * Dapper
 * xUnit
 * Moq
+* AutoFixture
 * FluentAssertions
 * Swashbuckle (Swagger)
 * IMemoryCache
