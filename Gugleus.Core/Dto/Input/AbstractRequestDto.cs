@@ -10,6 +10,11 @@ namespace Gugleus.Core.Dto.Input
         internal abstract DictionaryItem.RequestType RequestType { get; }
 
         /// <summary>
+        /// Route name to method returning request status
+        /// </summary>
+        internal abstract string RouteName { get; }
+
+        /// <summary>
         /// Filles result with IsOk/Message
         /// </summary>
         protected virtual void PrepareResult(MessageListResult result)

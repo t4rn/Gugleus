@@ -4,6 +4,7 @@ using Gugleus.Core.Domain.Requests;
 using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -21,15 +22,17 @@ namespace Gugleus.Core.Services
         private readonly IUtilsService _utilsService;
         private readonly ILogger<RequestService> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IUrlHelper _urlHelper;
 
         public RequestService(IRequestRepository requestRepository, IMapper mapper,
-            IUtilsService utilsService, ILogger<RequestService> logger, IConfiguration configuration)
+            IUtilsService utilsService, ILogger<RequestService> logger, IConfiguration configuration, IUrlHelper urlHelper)
         {
             _requestRepository = requestRepository;
             _mapper = mapper;
             _utilsService = utilsService;
             _logger = logger;
             _configuration = configuration;
+            _urlHelper = urlHelper;
         }
 
         public async Task<IdResultDto<long>> AddRequestAsync<T>(T requestDto, WsClient wsClient)
@@ -57,6 +60,7 @@ namespace Gugleus.Core.Services
                     result.IsOk = true;
                     result.Id = id;
                     result.Message = "Request successfully added to queue.";
+                    result.Url = _urlHelper.Link(requestDto.RouteName, new { id });
                 }
                 else
                 {

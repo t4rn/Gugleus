@@ -16,6 +16,8 @@ namespace Gugleus.Core.Dto.Input
 
         internal override DictionaryItem.RequestType RequestType => DictionaryItem.RequestType.ADDPOST;
 
+        internal override string RouteName => "GetPostStatus";
+
         public override MessageListResult Validate()
         {
             MessageListResult result = new MessageListResult();

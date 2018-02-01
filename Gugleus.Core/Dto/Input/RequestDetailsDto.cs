@@ -13,6 +13,8 @@ namespace Gugleus.Core.Dto.Input
 
         internal override DictionaryItem.RequestType RequestType => DictionaryItem.RequestType.GETINFO;
 
+        internal override string RouteName => "GetPostDetails";
+
         public override MessageListResult Validate()
         {
             MessageListResult result = new MessageListResult();

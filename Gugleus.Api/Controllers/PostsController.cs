@@ -8,6 +8,7 @@ using Gugleus.Core.Services;
 using Gugleus.GoogleCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
@@ -26,12 +27,12 @@ namespace Gugleus.Api.Controllers
         private readonly string _ip;
 
         public PostsController(IRequestService requestService, IMapper mapper, ILogger<PostsController> logger,
-            IHttpContextAccessor httpContextAccessor, ICacheService cacheService) : base(cacheService)
+            IActionContextAccessor actionContextAccessor, ICacheService cacheService) : base(cacheService)
         {
             _requestService = requestService;
             _mapper = mapper;
             _logger = logger;
-            _ip = httpContextAccessor?.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+            _ip = actionContextAccessor?.ActionContext?.HttpContext?.Connection?.RemoteIpAddress?.ToString();
         }
 
         [HttpGet("")]
@@ -41,7 +42,7 @@ namespace Gugleus.Api.Controllers
             return Ok($"Ping at {DateTime.Now} from {_ip}.");
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetPostStatus")]
         [SwaggerResponse(200, Type = typeof(RequestResponseDto<GoogleInfo>))]
         [SwaggerResponse(400, Type = typeof(string))]
         [SwaggerResponse(500, Type = typeof(RequestResponseDto<GoogleInfo>))]
@@ -63,7 +64,7 @@ namespace Gugleus.Api.Controllers
         }
 
 
-        [HttpGet("details/{id}")]
+        [HttpGet("details/{id}", Name = "GetPostDetails")]
         //[ValidateModel]
         [SwaggerResponse(200, Type = typeof(RequestResponseDto<ActivityInfo>))]
         [SwaggerResponse(400, Type = typeof(string))]

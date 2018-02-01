@@ -10,6 +10,7 @@ using Gugleus.Core.Services;
 using Gugleus.GoogleCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Internal;
 using Moq;
@@ -28,7 +29,7 @@ namespace Gugleus.Tests.Controllers
         private readonly Mock<IRequestService> _postServiceMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<ILogger<PostsController>> _loggerMock;
-        private readonly Mock<IHttpContextAccessor> _httpContextMock;
+        private readonly Mock<IActionContextAccessor> _httpActionContextMock;
         private readonly Mock<ICacheService> _cacheServiceMock;
         private readonly PostsController _controller;
 
@@ -40,10 +41,10 @@ namespace Gugleus.Tests.Controllers
             _postServiceMock = new Mock<IRequestService>();
             _mapperMock = new Mock<IMapper>();
             _loggerMock = new Mock<ILogger<PostsController>>();
-            _httpContextMock = new Mock<IHttpContextAccessor>();
+            _httpActionContextMock = new Mock<IActionContextAccessor>();
             _cacheServiceMock = new Mock<ICacheService>();
             _controller = new PostsController(_postServiceMock.Object, _mapperMock.Object,
-                _loggerMock.Object, _httpContextMock.Object, _cacheServiceMock.Object);
+                _loggerMock.Object, _httpActionContextMock.Object, _cacheServiceMock.Object);
         }
 
         [Fact(DisplayName = "Ping")]
