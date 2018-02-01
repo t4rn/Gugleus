@@ -4,6 +4,7 @@ using Gugleus.Core.Domain.Requests;
 using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Repositories;
+using Gugleus.Core.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -40,66 +41,51 @@ namespace Gugleus.Core.Services
         {
             IdResultDto<long> result = new IdResultDto<long>();
 
-            try
+            // saving img to disk
+            if (requestDto is PostDto)
             {
-                // saving img to disk
-                if (requestDto is PostDto)
-                {
-                    PreProcessingRequest((requestDto as PostDto).Image);
-                }
-
-                // preparing request
-                Request request = PrepareRequest(requestDto, wsClient);
-
-                // saving to db
-                long id = await _requestRepository.AddRequestAsync(request);
-
-                // preparing result
-                if (id > 0)
-                {
-                    result.IsOk = true;
-                    result.Id = id;
-                    result.Message = "Request successfully added to queue.";
-                    result.Url = _urlHelper.Link(requestDto.RouteName, new { id });
-                }
-                else
-                {
-                    result.Message = "Something went wrong while adding request to db...";
-                }
+                PreProcessingRequest((requestDto as PostDto).Image);
             }
-            catch (Exception ex)
+
+            // preparing request
+            Request request = PrepareRequest(requestDto, wsClient);
+
+            // saving to db
+            long id = await _requestRepository.AddRequestAsync(request);
+
+            // preparing result
+            if (id > 0)
             {
-                _logger.LogError($"[{nameof(AddRequestAsync)}] Ex: {ex}");
-                result.Message = $"Exception occured: {ex.Message}";
+                result.IsOk = true;
+                result.Id = id;
+                result.Message = "Request successfully added to queue.";
+                result.Url = _urlHelper.Link(requestDto.RouteName, new { id });
+            }
+            else
+            {
+                result.Message = "Something went wrong while adding request to db...";
             }
 
             return result;
         }
 
-        public async Task<RequestResponseDto<T>> GetRequestResponseAsync<T>(long id, DictionaryItem.RequestType requestType) where T : class
+        public async Task<ObjResult<RequestResponseDto<T>>> GetRequestResponseAsync<T>(long id, DictionaryItem.RequestType requestType) where T : class
         {
-            RequestResponseDto<T> result = new RequestResponseDto<T>();
+            ObjResult<RequestResponseDto<T>> res = new ObjResult<RequestResponseDto<T>>();
 
-            try
+            Request request = await _requestRepository.GetRequestWithQueueAsync(id, requestType.ToString());
+
+            if (request != null)
             {
-                Request request = await _requestRepository.GetRequestWithQueueAsync(id, requestType.ToString());
-
-                if (request != null)
-                {
-                    result = PrepareRequestResponse<T>(request);
-                }
-                else
-                {
-                    result.Error = $"Request with Id: {id} not found...";
-                }
+                res.IsOk = true;
+                res.Object = PrepareRequestResponse<T>(request);
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError($"[{nameof(GetRequestResponseAsync)}] Ex: {ex}");
-                result.Error = $"Exception occured: {ex.Message}";
+                res.Message = $"Request with Id: '{id}' not found...";
             }
 
-            return result;
+            return res;
         }
 
         public async Task<RequestSummaryDto<DateFilterDto>> GetStatsByDate(DateTime from, DateTime to)
@@ -155,7 +141,7 @@ namespace Gugleus.Core.Services
                 }
                 else
                 {
-                    string errMsg = "Empty json from db";
+                    string errMsg = "Empty JSON from Google";
                     dto.Error = !string.IsNullOrWhiteSpace(dto.Error) ? $"{dto.Error} | {errMsg}" : errMsg;
                 }
             }

@@ -67,7 +67,7 @@ namespace Gugleus.Tests.Controllers
             var requestType = DictionaryItem.RequestType.ADDPOST;
             _postServiceMock
                 .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
-                .ReturnsAsync((RequestResponseDto<GoogleInfo>)null);
+                .ReturnsAsync((ObjResult<RequestResponseDto<GoogleInfo>>)null);
 
             // Act
             IActionResult actionResult = await _controller.GetPostStatus(postId);
@@ -99,7 +99,8 @@ namespace Gugleus.Tests.Controllers
             long postId = _fixture.Create<long>();
             var requestType = DictionaryItem.RequestType.ADDPOST;
             string expectedError = _fixture.Create<string>();
-            var expectedResponse = new RequestResponseDto<GoogleInfo>() { Error = expectedError };
+            var expectedResponse = new ObjResult<RequestResponseDto<GoogleInfo>>()
+            { Object = new RequestResponseDto<GoogleInfo> { Error = expectedError } };
             _postServiceMock
                 .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
                 .ReturnsAsync(expectedResponse);
@@ -136,7 +137,8 @@ namespace Gugleus.Tests.Controllers
             long postId = _fixture.Create<long>();
             var requestType = DictionaryItem.RequestType.ADDPOST;
             string expectedRequestStatus = _fixture.Create<string>();
-            var expectedResponse = new RequestResponseDto<GoogleInfo>() { Id = postId, Status = expectedRequestStatus };
+            var expectedResponse = new ObjResult<RequestResponseDto<GoogleInfo>>()
+            { Object = new RequestResponseDto<GoogleInfo> { Id = postId, Status = expectedRequestStatus } };
             _postServiceMock
                 .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
                 .ReturnsAsync(expectedResponse);

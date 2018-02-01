@@ -59,7 +59,17 @@ namespace Gugleus.Api.Controllers
         [SwaggerResponse(500, Type = typeof(IdResultDto<long>))]
         public async Task<IActionResult> AddPost([FromBody]PostDto postDto)
         {
-            IActionResult result = await ProcessRequestAsync(postDto);
+            IActionResult result;
+            try
+            {
+                result = await ProcessRequestAsync(postDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"[{LogDescription()}] Ex: {ex}");
+                result = InternalServerError(ex.Message);
+            }
+
             return result;
         }
 
@@ -82,7 +92,17 @@ namespace Gugleus.Api.Controllers
         [SwaggerResponse(500, Type = typeof(IdResultDto<long>))]
         public async Task<IActionResult> AddPostDetailsRequest([FromBody]RequestDetailsDto requestDetailsDto)
         {
-            IActionResult result = await ProcessRequestAsync(requestDetailsDto);
+            IActionResult result;
+            try
+            {
+                result = await ProcessRequestAsync(requestDetailsDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"[{LogDescription()}] Ex: {ex}");
+                result = InternalServerError(ex.Message);
+            }
+
             return result;
         }
 
@@ -123,30 +143,28 @@ namespace Gugleus.Api.Controllers
         private async Task<IActionResult> GetRequestResponseAsync<T>(long id, DictionaryItem.RequestType requestType) where T : class
         {
             IActionResult result;
-            RequestResponseDto<T> requestStatus =
-                await _requestService.GetRequestResponseAsync<T>(id, requestType);
-
-            if (requestStatus != null)
+            try
             {
-                if (string.IsNullOrWhiteSpace(requestStatus.Error))
+                ObjResult<RequestResponseDto<T>> requestStatusResult =
+                    await _requestService.GetRequestResponseAsync<T>(id, requestType);
+
+                if (requestStatusResult.IsOk)
                 {
                     _logger.LogDebug("{0} Ok for Id: '{1}' type: '{2}' -> {3}",
-                        LogDescription(), id, requestType, requestStatus.Status);
-                    result = Ok(requestStatus);
+                        LogDescription(), id, requestType, requestStatusResult.Object.Status);
+                    result = Ok(requestStatusResult.Object);
                 }
                 else
                 {
-                    _logger.LogError("{0} Error for Id: '{1}' type: '{2}' -> {3}",
-                        LogDescription(), id, requestType, requestStatus.Error);
-                    result = InternalServerError(requestStatus);
+                    _logger.LogError($"{LogDescription()} Request with Id: '{id}' and type '{requestType}' not found");
+                    result = BadRequest($"Request with Id: '{id}' not found...");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                _logger.LogError($"{LogDescription()} Post with Id: '{id}' and type '{requestType}' not found");
-                result = BadRequest($"Post with Id: '{id}' not found...");
+                _logger.LogError($"[{nameof(GetRequestResponseAsync)}] Ex: {ex}");
+                result = InternalServerError(ex.Message);
             }
-
             return result;
         }
 
@@ -187,6 +205,7 @@ namespace Gugleus.Api.Controllers
                     }
                     else
                     {
+                        // when ID from DB <= 0
                         _logger.LogError("{0} Error for: '{1}' -> Message: '{2}'",
                             LogDescription(), typeof(T), addResult.Message);
                         result = InternalServerError(addResult);

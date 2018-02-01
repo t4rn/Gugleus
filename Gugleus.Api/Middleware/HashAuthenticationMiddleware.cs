@@ -55,7 +55,7 @@ namespace Gugleus.Api.Middleware
             catch (Exception ex)
             {
                 _log.LogError($"[AuthMiddleware] Ex: {ex}");
-                context.Response.StatusCode = StatusCodes.Status506VariantAlsoNegotiates;
+                context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
 
                 return;
             }
