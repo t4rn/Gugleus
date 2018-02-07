@@ -15,5 +15,6 @@ namespace Gugleus.Core.Repositories
         Task<List<WsClient>> GetWsClientsAsync();
 
         Task<List<RequestStat>> GetStatsByDate(DateTime from, DateTime to);
+        Task<List<Request>> GetRequestsAsync();
     }
 }
