@@ -1,19 +1,25 @@
 ﻿@model RequestListVM
 
 @{
-    ViewData["Title"] = "Dev";
+    ViewData["Title"] = @ViewBag.Message;
 }
 
-<h2>Dev</h2>
+<h2>@ViewBag.Message</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @ViewBag.Message
 </p>
 <table class="table">
     <thead>
         <tr>
                 <th>
                     @Html.DisplayNameFor(model => model.Requests[0].Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Requests[0].WsClient)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Requests[0].RequestType)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Requests[0].Input)
@@ -37,6 +43,12 @@
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.WsClient)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RequestType)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Input)
             </td>
             <td>
@@ -49,9 +61,8 @@
                 @Html.DisplayFor(modelItem => item.OutputDate)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Edit", "Edit", new {  id=item.Id }) |
+                @Html.ActionLink("Details", "Details", new {  id=item.Id  })
             </td>
         </tr>
 }

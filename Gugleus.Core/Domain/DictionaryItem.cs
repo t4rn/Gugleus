@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Gugleus.Core.Domain
 {
@@ -13,7 +14,7 @@ namespace Gugleus.Core.Domain
         {
             Code = type.ToString();
         }
-
+        [Key]
         public string Code { get; set; }
         public string Description { get; set; }
         public bool Ghost { get; set; }

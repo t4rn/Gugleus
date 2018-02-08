@@ -1,14 +1,9 @@
-﻿using Gugleus.Core.Domain.Requests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Gugleus.WebUI.Models
 {
     public class RequestListVM
     {
-        public List<Request> Requests { get; set; }
+        public List<RequestVM> Requests { get; set; }
     }
 }

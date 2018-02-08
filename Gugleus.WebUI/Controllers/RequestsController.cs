@@ -1,6 +1,8 @@
-﻿using Gugleus.Core.Domain.Requests;
+﻿using AutoMapper;
+using Gugleus.Core.Domain.Requests;
 using Gugleus.Core.Services;
 using Gugleus.WebUI.Models;
+using Gugleus.WebUI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,11 +15,13 @@ namespace Gugleus.WebUI.Controllers
 {
     public class RequestsController : Controller
     {
-        private readonly IRequestService _requestService;
+        private readonly IRequestRepository _requestService;
+        private readonly IMapper _mapper;
 
-        public RequestsController(IRequestService requestService)
+        public RequestsController(IRequestRepository requestService, IMapper mapper)
         {
             _requestService = requestService;
+            _mapper = mapper;
         }
 
         public IActionResult Index()
@@ -25,12 +29,13 @@ namespace Gugleus.WebUI.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Dev()
+        public IActionResult Dev()
         {
             RequestListVM model = new RequestListVM();
-            model.Requests = await _requestService.GetRequestsAsync();
+            var requests = _requestService.GetAll();
 
-            ViewData["Message"] = "Your requests.";
+            model.Requests = _mapper.Map<List<RequestVM>>(requests);
+            ViewBag.Message = "Requests from Dev";
 
             return View(model);
         }
