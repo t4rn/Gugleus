@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Gugleus.Core.Domain.Requests;
-using Gugleus.Core.Services;
+using Gugleus.Core.Domain;
 using Gugleus.WebUI.Models;
 using Gugleus.WebUI.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,13 +15,13 @@ namespace Gugleus.WebUI.Controllers
 {
     public class RequestsController : Controller
     {
-        private readonly IRequestRepository _requestRepository;
         private readonly IMapper _mapper;
+        private readonly IRequestSrv _requestSrv;
 
-        public RequestsController(IRequestRepository requestService, IMapper mapper)
+        public RequestsController(IMapper mapper, IRequestSrv requestSrv)
         {
-            _requestRepository = requestService;
             _mapper = mapper;
+            _requestSrv = requestSrv;
         }
 
         public IActionResult Index()
@@ -29,22 +29,26 @@ namespace Gugleus.WebUI.Controllers
             return View();
         }
 
-        public IActionResult Dev()
+        public async Task<IActionResult> Dev()
         {
             RequestListVM model = new RequestListVM();
-            var requests = _requestRepository.GetAll().OrderByDescending(x => x.Id);
+            var requests = (await _requestSrv.GetAllAsync(EnvType.Dev)).OrderByDescending(x => x.Id);
 
             model.Requests = _mapper.Map<List<RequestVM>>(requests);
             ViewBag.Message = "Requests from Dev";
 
-            return View(model);
+            return View("RequestList", model);
         }
 
-        public IActionResult Rc()
+        public async Task<IActionResult> Rc()
         {
-            ViewData["Message"] = "Your contact page.";
+            RequestListVM model = new RequestListVM();
+            var requests = (await _requestSrv.GetAllAsync(EnvType.Rc)).OrderByDescending(x => x.Id);
 
-            return View();
+            model.Requests = _mapper.Map<List<RequestVM>>(requests);
+            ViewBag.Message = "Requests from Rc";
+
+            return View("RequestList", model);
         }
 
         public IActionResult Prod()
@@ -52,10 +56,10 @@ namespace Gugleus.WebUI.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public IActionResult Details(long id)
+        public async Task<IActionResult> Details(long id)
         {
             RequestListVM model = new RequestListVM();
-            var request = _requestRepository.GetRequestById(id);
+            var request = await _requestSrv.GetRequestByIdAsync(EnvType.Dev, id);
 
             var requestVM = _mapper.Map<RequestVM>(request);
 

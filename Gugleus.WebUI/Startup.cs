@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
+using Gugleus.Core.Repositories;
 using Gugleus.WebUI.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,7 +27,7 @@ namespace Gugleus.WebUI
         {
             // EF
             var connectionString = Configuration.GetConnectionString("csDev");
-            services.AddEntityFrameworkNpgsql().AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+            services.AddEntityFrameworkNpgsql().AddDbContext<AppDbContext>();// options => options.UseNpgsql(connectionString));
 
             // MVC
             services.AddMvc();
@@ -47,7 +48,8 @@ namespace Gugleus.WebUI
                 return new UrlHelper(actionContext);
             });
 
-            services.AddScoped<IRequestRepository, RequestRepository>();
+            services.AddScoped<IRequestSrv, RequestSrv>();
+            //services.AddScoped<IRequestRepository, RequestRepository>();
 
             //// Autofac
             //var builder = new ContainerBuilder();

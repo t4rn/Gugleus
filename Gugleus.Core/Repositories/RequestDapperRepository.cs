@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace Gugleus.Core.Repositories
 {
-    public class RequestRepository : AbstractRepository, IRequestRepository
+    public class RequestDapperRepository : AbstractRepository, IRequestRepository
     {
-        public RequestRepository(string connectionString) : base(connectionString)
+        public RequestDapperRepository(string connectionString) : base(connectionString)
         { }
 
         public async Task<long> AddRequestAsync(Request request)
@@ -46,7 +46,7 @@ namespace Gugleus.Core.Repositories
             return id;
         }
 
-        public async Task<List<Request>> GetRequestsAsync()
+        public async Task<List<Request>> GetAllAsync()
         {
             List<Request> requests = null;
 
@@ -83,6 +83,11 @@ namespace Gugleus.Core.Repositories
             }
 
             return requests;
+        }
+
+        public Task<Request> GetRequestByIdAsync(long requestId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<Request> GetRequestWithQueueAsync(long id, string requestType)

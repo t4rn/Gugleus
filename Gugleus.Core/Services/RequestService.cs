@@ -91,7 +91,7 @@ namespace Gugleus.Core.Services
 
         public async Task<List<Request>> GetRequestsAsync()
         {
-            var requests = await _requestRepository.GetRequestsAsync();
+            var requests = await _requestRepository.GetAllAsync();
             return requests.OrderByDescending(x => x.Id).ToList();
         }
 
