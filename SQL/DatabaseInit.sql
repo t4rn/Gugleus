@@ -37,6 +37,7 @@ CREATE TABLE he.dic_request_type
 ) WITH (OIDS=FALSE);
 INSERT INTO he.dic_request_type (code, description) VALUES 
 ('ADDPOST', 'Add post'),('GETINFO', 'Get post info');
+GRANT SELECT ON TABLE he.dic_request_type TO gugleus;
 --********************************************************************************
 CREATE TABLE he.requests
 (

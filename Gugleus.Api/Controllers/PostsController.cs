@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Gugleus.Api.Middleware;
 using Gugleus.Core.Domain;
+using Gugleus.Core.Domain.Dictionaries;
 using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Results;
@@ -48,7 +49,7 @@ namespace Gugleus.Api.Controllers
         [SwaggerResponse(500, Type = typeof(RequestResponseDto<GoogleInfo>))]
         public async Task<IActionResult> GetPostStatus(long id)
         {
-            IActionResult result = await GetRequestResponseAsync<GoogleInfo>(id, DictionaryItem.RequestType.ADDPOST);
+            IActionResult result = await GetRequestResponseAsync<GoogleInfo>(id, RequestType.RequestTypeCode.ADDPOST);
             return result;
         }
 
@@ -81,7 +82,7 @@ namespace Gugleus.Api.Controllers
         [SwaggerResponse(500, Type = typeof(RequestResponseDto<ActivityInfo>))]
         public async Task<IActionResult> GetPostDetails(long id)
         {
-            IActionResult result = await GetRequestResponseAsync<ActivityInfo>(id, DictionaryItem.RequestType.GETINFO);
+            IActionResult result = await GetRequestResponseAsync<ActivityInfo>(id, RequestType.RequestTypeCode.GETINFO);
             return result;
         }
 
@@ -140,7 +141,7 @@ namespace Gugleus.Api.Controllers
 
 
 
-        private async Task<IActionResult> GetRequestResponseAsync<T>(long id, DictionaryItem.RequestType requestType) where T : class
+        private async Task<IActionResult> GetRequestResponseAsync<T>(long id, RequestType.RequestTypeCode requestType) where T : class
         {
             IActionResult result;
             try

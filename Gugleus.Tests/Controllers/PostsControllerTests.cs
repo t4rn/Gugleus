@@ -3,6 +3,7 @@ using AutoMapper;
 using FluentAssertions;
 using Gugleus.Api.Controllers;
 using Gugleus.Core.Domain;
+using Gugleus.Core.Domain.Dictionaries;
 using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Results;
@@ -64,7 +65,7 @@ namespace Gugleus.Tests.Controllers
         {
             // Arrange
             long postId = _fixture.Create<long>();
-            var requestType = DictionaryItem.RequestType.ADDPOST;
+            var requestType = RequestType.RequestTypeCode.ADDPOST;
             _postServiceMock
                 .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
                 .ReturnsAsync((ObjResult<RequestResponseDto<GoogleInfo>>)null);
@@ -97,7 +98,7 @@ namespace Gugleus.Tests.Controllers
         {
             // Arrange
             long postId = _fixture.Create<long>();
-            var requestType = DictionaryItem.RequestType.ADDPOST;
+            var requestType = RequestType.RequestTypeCode.ADDPOST;
             string expectedError = _fixture.Create<string>();
             var expectedResponse = new ObjResult<RequestResponseDto<GoogleInfo>>()
             { Object = new RequestResponseDto<GoogleInfo> { Error = expectedError } };
@@ -135,7 +136,7 @@ namespace Gugleus.Tests.Controllers
         {
             // Arrange
             long postId = _fixture.Create<long>();
-            var requestType = DictionaryItem.RequestType.ADDPOST;
+            var requestType = RequestType.RequestTypeCode.ADDPOST;
             string expectedRequestStatus = _fixture.Create<string>();
             var expectedResponse = new ObjResult<RequestResponseDto<GoogleInfo>>()
             { Object = new RequestResponseDto<GoogleInfo> { Id = postId, Status = expectedRequestStatus } };

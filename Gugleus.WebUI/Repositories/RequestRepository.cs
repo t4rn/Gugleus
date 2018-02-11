@@ -16,14 +16,21 @@ namespace Gugleus.WebUI.Repositories
 
         public IEnumerable<Request> GetAll()
         {
-            return _appDbContext.Requests
+            return _appDbContext.Requests.AsNoTracking()
                 .Include(x => x.WsClient)
-                .Include(x => x.Type);
+                .Include(x => x.Type)
+                .Include(x => x.Queue)
+                .Include(x => x.Queue.Status);
         }
 
         public Request GetRequestById(long requestId)
         {
-            return _appDbContext.Requests.FirstOrDefault(x => x.Id == requestId);
+            return _appDbContext.Requests.AsNoTracking()
+                .Include(x => x.WsClient)
+                .Include(x => x.Type)
+                .Include(x => x.Queue)
+                .Include(x => x.Queue.Status)
+                .FirstOrDefault(x => x.Id == requestId);
         }
     }
 }

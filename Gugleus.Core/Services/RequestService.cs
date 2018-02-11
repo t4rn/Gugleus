@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Gugleus.Core.Domain;
+using Gugleus.Core.Domain.Dictionaries;
 using Gugleus.Core.Domain.Requests;
 using Gugleus.Core.Dto.Input;
 using Gugleus.Core.Dto.Output;
@@ -69,7 +70,7 @@ namespace Gugleus.Core.Services
             return result;
         }
 
-        public async Task<ObjResult<RequestResponseDto<T>>> GetRequestResponseAsync<T>(long id, DictionaryItem.RequestType requestType) where T : class
+        public async Task<ObjResult<RequestResponseDto<T>>> GetRequestResponseAsync<T>(long id, RequestType.RequestTypeCode requestType) where T : class
         {
             ObjResult<RequestResponseDto<T>> res = new ObjResult<RequestResponseDto<T>>();
 
@@ -124,7 +125,7 @@ namespace Gugleus.Core.Services
         private Request PrepareRequest(AbstractRequestDto requestDto, WsClient wsClient)
         {
             Request request = new Request();
-            request.Type = new DictionaryItem(requestDto.RequestType);
+            request.Type = new RequestType(requestDto.RequestType);
             request.Input = _utilsService.SerializeToJson(requestDto);
             request.WsClient = wsClient;
 
@@ -139,7 +140,7 @@ namespace Gugleus.Core.Services
             dto.Status = request.Queue?.Status?.Code;
             dto.Error = request.Queue?.ErrorMsg;
 
-            if (dto.Status == DictionaryItem.RequestStatus.DONE.ToString())
+            if (dto.Status == RequestStatus.RequestStatusCode.DONE.ToString())
             {
                 if (!string.IsNullOrWhiteSpace(request.Output))
                 {

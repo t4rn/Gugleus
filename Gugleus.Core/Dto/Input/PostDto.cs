@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Gugleus.Core.Domain;
 using Gugleus.Core.Results;
+using Gugleus.Core.Domain.Dictionaries;
 
 namespace Gugleus.Core.Dto.Input
 {
@@ -14,7 +15,7 @@ namespace Gugleus.Core.Dto.Input
         //public string Place { get; set; }
         public ImageDto Image { get; set; }
 
-        internal override DictionaryItem.RequestType RequestType => DictionaryItem.RequestType.ADDPOST;
+        internal override RequestType.RequestTypeCode RequestType => Domain.Dictionaries.RequestType.RequestTypeCode.ADDPOST;
 
         internal override string RouteName => "GetPostStatus";
 

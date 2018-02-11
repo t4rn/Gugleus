@@ -1,4 +1,5 @@
 ﻿using Gugleus.Core.Domain;
+using Gugleus.Core.Domain.Dictionaries;
 using Gugleus.Core.Extensions;
 using Gugleus.Core.Results;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +12,7 @@ namespace Gugleus.Core.Dto.Input
         [RegularExpression(@"^(?i)(https:\/\/plus\.google\.com\/)\S+\/(posts)\/\S+", ErrorMessage = "Urls from plus.google.com allowed only.")]
         public string Url { get; set; }
 
-        internal override DictionaryItem.RequestType RequestType => DictionaryItem.RequestType.GETINFO;
+        internal override RequestType.RequestTypeCode RequestType => Domain.Dictionaries.RequestType.RequestTypeCode.GETINFO;
 
         internal override string RouteName => "GetPostDetails";
 

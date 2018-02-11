@@ -9,5 +9,13 @@ namespace Gugleus.Core.Extensions
             Uri validatedUri;
             return Uri.TryCreate(str, UriKind.Absolute, out validatedUri);
         }
+
+        public static string Shorten(this string str, int chars)
+        {
+            if (!string.IsNullOrWhiteSpace(str) && str.Length > chars)
+                return str.Substring(0, chars);
+
+            return str;
+        }
     }
 }

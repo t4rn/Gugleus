@@ -1,0 +1,44 @@
+﻿@model Gugleus.WebUI.Models.RequestQueueVM
+
+<div>
+    <h4>Request Queue details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AddDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AddDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProcessStartDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProcessStartDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ProcessEndDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProcessEndDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ErrorMsg)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ErrorMsg)
+        </dd>
+    </dl>
+</div>

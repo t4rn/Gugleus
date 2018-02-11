@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Gugleus.Core.Domain;
+using Gugleus.Core.Domain.Dictionaries;
 using Gugleus.Core.Domain.Requests;
 using Npgsql;
 using NpgsqlTypes;
@@ -68,7 +69,7 @@ namespace Gugleus.Core.Repositories
             {
                 requests =
                     (
-                        await conn.QueryAsync<Request, DictionaryItem, RequestQueue, DictionaryItem, Request>(
+                        await conn.QueryAsync<Request, RequestType, RequestQueue, RequestStatus, Request>(
                         sql: query,
                         map: (request, type, queue, status) =>
                         {
@@ -107,7 +108,7 @@ namespace Gugleus.Core.Repositories
             using (NpgsqlConnection conn = new NpgsqlConnection(_connStr))
             {
                 IEnumerable<Request> queryResult =
-                    await conn.QueryAsync<Request, DictionaryItem, RequestQueue, DictionaryItem, Request>(
+                    await conn.QueryAsync<Request, RequestType, RequestQueue, RequestStatus, Request>(
                     sql: query,
                     map: (request, type, queue, status) =>
                     {

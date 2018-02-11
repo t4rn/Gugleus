@@ -15,12 +15,12 @@ namespace Gugleus.WebUI.Controllers
 {
     public class RequestsController : Controller
     {
-        private readonly IRequestRepository _requestService;
+        private readonly IRequestRepository _requestRepository;
         private readonly IMapper _mapper;
 
         public RequestsController(IRequestRepository requestService, IMapper mapper)
         {
-            _requestService = requestService;
+            _requestRepository = requestService;
             _mapper = mapper;
         }
 
@@ -32,7 +32,7 @@ namespace Gugleus.WebUI.Controllers
         public IActionResult Dev()
         {
             RequestListVM model = new RequestListVM();
-            var requests = _requestService.GetAll();
+            var requests = _requestRepository.GetAll().OrderByDescending(x => x.Id);
 
             model.Requests = _mapper.Map<List<RequestVM>>(requests);
             ViewBag.Message = "Requests from Dev";
@@ -50,6 +50,16 @@ namespace Gugleus.WebUI.Controllers
         public IActionResult Prod()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult Details(long id)
+        {
+            RequestListVM model = new RequestListVM();
+            var request = _requestRepository.GetRequestById(id);
+
+            var requestVM = _mapper.Map<RequestVM>(request);
+
+            return View(requestVM);
         }
     }
 }

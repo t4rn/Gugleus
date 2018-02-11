@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gugleus.Core.Extensions;
+using System;
 
 namespace Gugleus.WebUI.Models
 {
@@ -12,5 +13,21 @@ namespace Gugleus.WebUI.Models
         public DateTime AddDate { get; set; }
         public DateTime OutputDate { get; set; }
         public RequestQueueVM Queue { get; set; }
+
+        public string InputShort(int chars)
+        {
+            if (!string.IsNullOrWhiteSpace(Input))
+                return Input.Shorten(chars);
+
+            return string.Empty;
+        }
+
+        public string OutputShort(int chars)
+        {
+            if (!string.IsNullOrWhiteSpace(Output))
+                return Output.Shorten(chars);
+
+            return string.Empty;
+        }
     }
 }

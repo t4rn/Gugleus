@@ -1,4 +1,4 @@
-﻿using Gugleus.Core.Domain;
+﻿using Gugleus.Core.Domain.Dictionaries;
 using Gugleus.Core.Results;
 
 namespace Gugleus.Core.Dto.Input
@@ -7,7 +7,7 @@ namespace Gugleus.Core.Dto.Input
     {
         public abstract MessageListResult Validate();
 
-        internal abstract DictionaryItem.RequestType RequestType { get; }
+        internal abstract RequestType.RequestTypeCode RequestType { get; }
 
         /// <summary>
         /// Route name to method returning request status
