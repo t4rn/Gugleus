@@ -1,0 +1,60 @@
+﻿@model FileLogListVM
+
+@{
+    ViewData["Title"] = Model.Description;
+}
+
+<h2>@Model.Description</h2>
+
+<br />
+
+<div class="dropdown">
+    <span>Logs per page </span>
+    <button class="btn btn-default dropdown-toggle" type="button" id="cbLogsPerPage" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        All
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="logsPerPage">
+        <li><a href="#">20</a></li>
+        <li><a href="#">50</a></li>
+        <li><a href="#">100</a></li>
+        <li role="separator" class="divider"></li>
+        <li><a href="#">All</a></li>
+    </ul>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Logs[0].FileName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Logs[0].FileSize)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Logs[0].ModificationDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Logs) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FileName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FileSize)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModificationDate)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", routeValues: new {  fileName = item.FileName, env = Model.Env  },
+                htmlAttributes: new { @class = "btn btn-info btn-sm" })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

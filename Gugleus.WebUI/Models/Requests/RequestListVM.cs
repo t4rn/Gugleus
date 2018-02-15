@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Gugleus.Core.Domain;
 
-namespace Gugleus.WebUI.Models
+namespace Gugleus.WebUI.Models.Requests
 {
     public class RequestListVM
     {

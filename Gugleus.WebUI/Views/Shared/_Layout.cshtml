@@ -31,7 +31,8 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Requests <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" 
+                           role="button" aria-haspopup="true" aria-expanded="false">Requests <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a asp-area="" asp-controller="Requests" asp-action="Dev">Dev</a></li>
                             <li><a asp-area="" asp-controller="Requests" asp-action="Rc">Rc</a></li>
@@ -40,7 +41,8 @@
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Stats <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" 
+                           role="button" aria-haspopup="true" aria-expanded="false">Stats <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Dev</a></li>
                             <li><a href="#">Rc</a></li>
@@ -49,12 +51,13 @@
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Logs <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" 
+                           role="button" aria-haspopup="true" aria-expanded="false">Logs <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Dev</a></li>
-                            <li><a href="#">Rc</a></li>
+                            <li><a asp-area="" asp-controller="Logs" asp-action="Dev">Dev</a></li>
+                            <li><a asp-area="" asp-controller="Logs" asp-action="Rc">Rc</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">Prod</a></li>
+                            <li><a asp-area="" asp-controller="Logs" asp-action="Prod">Prod</a></li>
                         </ul>
                     </li>
                     @*<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>

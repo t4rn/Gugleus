@@ -49,7 +49,7 @@ namespace Gugleus.WebUI
             });
 
             services.AddScoped<IRequestSrv, RequestSrv>();
-            //services.AddScoped<IRequestRepository, RequestRepository>();
+            services.AddScoped<IFileLogsService, FileLogsService>();
 
             //// Autofac
             //var builder = new ContainerBuilder();

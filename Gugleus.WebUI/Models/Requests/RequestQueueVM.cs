@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gugleus.WebUI.Models
+namespace Gugleus.WebUI.Models.Requests
 {
     public class RequestQueueVM
     {

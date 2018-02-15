@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using Gugleus.Core.Domain;
-using Gugleus.WebUI.Models;
+using Gugleus.WebUI.Models.Requests;
 using Gugleus.WebUI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Gugleus.WebUI.Controllers
@@ -61,10 +59,9 @@ namespace Gugleus.WebUI.Controllers
         {
             _logger.LogDebug($"[{nameof(Details)}] Start for id = '{id}' and env = '{env}'");
 
-            RequestListVM model = new RequestListVM();
             var request = await _requestSrv.GetRequestByIdAsync(env.Value, id);
 
-            var requestVM = _mapper.Map<RequestVM>(request);
+            RequestVM requestVM = _mapper.Map<RequestVM>(request);
             requestVM.Env = env;
 
             return View(requestVM);
