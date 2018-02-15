@@ -1,4 +1,4 @@
-﻿@model Gugleus.WebUI.Models.Logs.FileLogVM
+﻿@model FileLogVM
 
 @{
     ViewData["Title"] = "Details";
@@ -31,7 +31,7 @@
         <dt>
             @Html.DisplayNameFor(model => model.FileContent)
         </dt>
-        <dd style="white-space: pre-wrap;"> @*style="white-space: pre-wrap;"*@
+        <dd style="white-space: pre-wrap;">
             @Html.DisplayFor(model => model.FileContent)
         </dd>
     </dl>
