@@ -33,7 +33,7 @@ namespace Gugleus.WebUI.Repositories
             return await repo.GetRequestByIdAsync(requestId);
         }
 
-        private RequestRepository PrepareRepository(EnvType envType)
+        private RequestEfRepository PrepareRepository(EnvType envType)
         {
             string csName = null;
             switch (envType)
@@ -48,7 +48,7 @@ namespace Gugleus.WebUI.Repositories
                     csName = "csProd";
                     break;
             }
-            return new RequestRepository(_ctx, _config.GetConnectionString(csName));
+            return new RequestEfRepository(_ctx, _config.GetConnectionString(csName));
         }
     }
 }

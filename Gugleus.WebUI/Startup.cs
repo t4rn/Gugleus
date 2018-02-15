@@ -1,15 +1,15 @@
 ﻿using Autofac;
 using AutoMapper;
-using Gugleus.Core.Repositories;
 using Gugleus.WebUI.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 
 namespace Gugleus.WebUI
 {
@@ -59,7 +59,7 @@ namespace Gugleus.WebUI
             //return new AutofacServiceProvider(ApplicationContainer);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -73,6 +73,11 @@ namespace Gugleus.WebUI
 
             app.UseStatusCodePages();
             app.UseStaticFiles();
+
+            //add NLog to ASP.NET Core
+            loggerFactory.AddNLog();
+            //add NLog.Web
+            //app.AddNLogWeb();
 
             app.UseMvc(routes =>
             {

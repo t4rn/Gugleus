@@ -3,10 +3,9 @@ using Gugleus.Core.Domain;
 using Gugleus.WebUI.Models;
 using Gugleus.WebUI.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,51 +16,56 @@ namespace Gugleus.WebUI.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IRequestSrv _requestSrv;
+        private readonly ILogger<RequestsController> _logger;
 
-        public RequestsController(IMapper mapper, IRequestSrv requestSrv)
+        public RequestsController(IMapper mapper, IRequestSrv requestSrv, ILogger<RequestsController> logger)
         {
             _mapper = mapper;
             _requestSrv = requestSrv;
-        }
-
-        public IActionResult Index()
-        {
-            return View();
+            _logger = logger;
         }
 
         public async Task<IActionResult> Dev()
         {
-            RequestListVM model = new RequestListVM();
-            var requests = (await _requestSrv.GetAllAsync(EnvType.Dev)).OrderByDescending(x => x.Id);
-
-            model.Requests = _mapper.Map<List<RequestVM>>(requests);
-            ViewBag.Message = "Requests from Dev";
-
+            // TODO: pagination
+            RequestListVM model = await PrepareModel(EnvType.Dev);
             return View("RequestList", model);
         }
 
         public async Task<IActionResult> Rc()
         {
-            RequestListVM model = new RequestListVM();
-            var requests = (await _requestSrv.GetAllAsync(EnvType.Rc)).OrderByDescending(x => x.Id);
-
-            model.Requests = _mapper.Map<List<RequestVM>>(requests);
-            ViewBag.Message = "Requests from Rc";
-
+            RequestListVM model = await PrepareModel(EnvType.Rc);
             return View("RequestList", model);
         }
 
-        public IActionResult Prod()
+        public async Task<IActionResult> Prod()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            RequestListVM model = await PrepareModel(EnvType.Prod);
+            return View("RequestList", model);
         }
 
-        public async Task<IActionResult> Details(long id)
+        private async Task<RequestListVM> PrepareModel(EnvType env)
         {
             RequestListVM model = new RequestListVM();
-            var request = await _requestSrv.GetRequestByIdAsync(EnvType.Dev, id);
+            var requests = (await _requestSrv.GetAllAsync(env)).OrderByDescending(x => x.Id);
+
+            model.Requests = _mapper.Map<List<RequestVM>>(requests);
+            model.Env = env;
+            model.Description = $"Requests from {model.Env}";
+
+            return model;
+        }
+
+        [Route("[controller]/Details/{env}/{id}")]
+        public async Task<IActionResult> Details(long id, EnvType? env)
+        {
+            _logger.LogDebug($"[{nameof(Details)}] Start for id = '{id}' and env = '{env}'");
+
+            RequestListVM model = new RequestListVM();
+            var request = await _requestSrv.GetRequestByIdAsync(env.Value, id);
 
             var requestVM = _mapper.Map<RequestVM>(request);
+            requestVM.Env = env;
 
             return View(requestVM);
         }

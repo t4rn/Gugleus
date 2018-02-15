@@ -1,4 +1,5 @@
-﻿using Gugleus.Core.Extensions;
+﻿using Gugleus.Core.Domain;
+using Gugleus.Core.Extensions;
 using System;
 
 namespace Gugleus.WebUI.Models
@@ -13,6 +14,7 @@ namespace Gugleus.WebUI.Models
         public DateTime AddDate { get; set; }
         public DateTime OutputDate { get; set; }
         public RequestQueueVM Queue { get; set; }
+        public EnvType? Env { get; internal set; }
 
         public string InputShort(int chars)
         {

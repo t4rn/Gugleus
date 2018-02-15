@@ -1,15 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Gugleus.WebUI.Models;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Gugleus.WebUI.Models;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace Gugleus.WebUI.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ILogger<HomeController> _logger;
+
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -31,7 +36,17 @@ namespace Gugleus.WebUI.Controllers
 
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            // Get the details of the exception that occurred
+            var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+
+            _logger.LogError("GlobalEx: {0}", exceptionFeature?.Error?.GetBaseException());
+
+            return View(new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                Path = exceptionFeature?.Path,
+                Exception = exceptionFeature?.Error?.GetBaseException()?.ToString()
+            });
         }
     }
 }

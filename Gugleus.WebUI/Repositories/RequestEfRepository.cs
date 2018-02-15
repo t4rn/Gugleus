@@ -9,11 +9,11 @@ using System;
 
 namespace Gugleus.WebUI.Repositories
 {
-    public class RequestRepository : IRequestRepository
+    public class RequestEfRepository : IRequestRepository
     {
         private readonly AppDbContext _appDbContext;
 
-        public RequestRepository(AppDbContext appDbContext, string connectionString)
+        public RequestEfRepository(AppDbContext appDbContext, string connectionString)
         {
             _appDbContext = appDbContext;
             _appDbContext.SetConnectionString(connectionString);

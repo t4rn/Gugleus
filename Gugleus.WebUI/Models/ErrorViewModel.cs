@@ -7,5 +7,8 @@ namespace Gugleus.WebUI.Models
         public string RequestId { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+
+        public string Path { get; set; }
+        public string Exception { get; set; }
     }
 }
