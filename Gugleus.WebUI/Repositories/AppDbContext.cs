@@ -1,19 +1,19 @@
 ﻿using Gugleus.Core.Domain.Requests;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace Gugleus.WebUI.Repositories
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<IdentityUser>
     {
         private string _cs;
+        private readonly IConfiguration _config;
 
-        public AppDbContext(DbContextOptions<AppDbContext> options): base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration config) : base(options)
         {
+            _config = config;
         }
 
         public DbSet<Request> Requests { get; set; }
@@ -34,6 +34,12 @@ namespace Gugleus.WebUI.Repositories
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             string connectionString = _cs;
+
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                connectionString = _config.GetConnectionString("csErexus");
+            }
+
             optionsBuilder.UseNpgsql(connectionString);
         }
     }

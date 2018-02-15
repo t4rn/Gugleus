@@ -4,10 +4,12 @@ using AutoMapper;
 using Gugleus.WebUI.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,6 +32,8 @@ namespace Gugleus.WebUI
             // EF
             services.AddEntityFrameworkNpgsql().AddDbContext<AppDbContext>();// options => options.UseNpgsql(connectionString));
 
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>();
             // MVC
             services.AddMvc();
 
@@ -59,6 +63,8 @@ namespace Gugleus.WebUI
 
             app.UseStatusCodePages();
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             //add NLog to ASP.NET Core
             loggerFactory.AddNLog();
