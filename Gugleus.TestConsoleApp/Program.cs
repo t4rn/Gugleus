@@ -11,9 +11,17 @@ namespace Gugleus.TestConsoleApp
         static void Main(string[] args)
         {
             string url = "http://localhost:65508";
-            string filePath = @"C:\img.jpg";
+            string filePath = @"C:\img6mb.jpg";
             byte[] fileIntByteArray = File.ReadAllBytes(filePath);
             string fileInBase64String = Convert.ToBase64String(fileIntByteArray);
+
+            FileInfo fileInfo = new FileInfo(filePath);
+            Console.WriteLine($"File size: {fileInfo.Length / 1024} kB");
+
+            int fileByteCount = System.Text.ASCIIEncoding.ASCII.GetByteCount(fileInBase64String);
+            string base64FileSize = $"{fileByteCount / 1024} kB";
+
+            Console.WriteLine($"Base64String file size: {base64FileSize} - for string.Length = {fileInBase64String.Length}");
 
             HitApi(url, fileInBase64String);
 
