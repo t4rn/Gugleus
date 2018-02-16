@@ -44,7 +44,7 @@ namespace Gugleus.WebUI.Controllers
         private FileLogListVM PrepareModel(EnvType env)
         {
             FileLogListVM model = new FileLogListVM();
-            var fileInfoList =  _fileLogsService.GetAllAsync(env).OrderByDescending(x => x.LastWriteTime);
+            var fileInfoList = _fileLogsService.GetAllAsync(env).OrderByDescending(x => x.LastWriteTime);
 
             model.Logs = _mapper.Map<List<FileLogVM>>(fileInfoList);
             model.Env = env;
@@ -68,7 +68,7 @@ namespace Gugleus.WebUI.Controllers
                 string s = "";
                 while ((s = sr.ReadLine()) != null)
                 {
-                    requestVM.FileContent +=  $"{s}\n\n";
+                    requestVM.FileContent += $"{s}\n\n";
                 }
             }
 

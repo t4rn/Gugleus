@@ -1,16 +1,16 @@
-﻿@model LoginVM
+﻿@model Gugleus.WebUI.Models.LoginVM
 
 @{
     Layout = "~/Views/Shared/_LayoutUnauth.cshtml";
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Register";
 }
 
-<h2>Login</h2>
+<h2>Register</h2>
 
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Login" asp-controller="Account">
+        <form asp-action="Register">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="UserName" class="control-label"></label>
@@ -23,9 +23,8 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Log in" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-

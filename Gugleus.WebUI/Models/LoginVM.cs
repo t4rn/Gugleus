@@ -10,6 +10,7 @@ namespace Gugleus.WebUI.Models
 
         [Required]
         [DataType(DataType.Password)]
+        [StringLength(16, MinimumLength = 3, ErrorMessage = "Password must be between 3 and 16 chars long")]
         public string Password { get; set; }
     }
 }

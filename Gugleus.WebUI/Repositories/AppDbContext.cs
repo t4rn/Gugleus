@@ -24,6 +24,7 @@ namespace Gugleus.WebUI.Repositories
             //modelBuilder.Entity<Request>()
             //    .ToTable("requests", schema: "he")
             //    .Property(x => x.Id).HasColumnName("id");
+            base.OnModelCreating(modelBuilder);
         }
 
         internal void SetConnectionString(string cs)

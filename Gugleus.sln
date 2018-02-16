@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gugleus.Core", "Gugleus.Core\Gugleus.Core.csproj", "{01405A31-C11D-4C9B-AF42-A3CAE4F0A60D}"
 EndProject
@@ -13,13 +13,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{89439C18-62A
 	ProjectSection(SolutionItems) = preProject
 		SQL\add_request.sql = SQL\add_request.sql
 		SQL\DatabaseInit.sql = SQL\DatabaseInit.sql
+		erexus.sql = erexus.sql
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gugleus.GoogleCore", "Gugleus.GoogleCore\Gugleus.GoogleCore.csproj", "{1BCC8645-E321-4A88-A31F-F6BC39737D26}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gugleus.TestConsoleApp", "Gugleus.TestConsoleApp\Gugleus.TestConsoleApp.csproj", "{5ECCAB83-5614-43DF-94AF-D2B77490BEEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gugleus.WebUI", "Gugleus.WebUI\Gugleus.WebUI.csproj", "{EC1C0C97-EA58-4D14-BC7C-D6393F93C3A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gugleus.WebUI", "Gugleus.WebUI\Gugleus.WebUI.csproj", "{EC1C0C97-EA58-4D14-BC7C-D6393F93C3A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

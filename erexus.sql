@@ -1,0 +1,1 @@
+﻿grant all on database erexus to gugleus;
