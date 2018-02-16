@@ -58,14 +58,12 @@ namespace Gugleus.WebUI.Controllers
             return View(loginVM);
         }
 
-        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterVM registerVM)
         {
             if (ModelState.IsValid)

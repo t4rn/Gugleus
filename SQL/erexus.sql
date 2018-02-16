@@ -1,4 +1,5 @@
-﻿grant all on database erexus to gugleus;
+﻿grant all on database erexus to erexus;
+grant gugleus to erexus;
 
   -- Table: public."AspNetUsers"
 
