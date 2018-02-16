@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Gugleus.WebUI.Models
+namespace Gugleus.WebUI.Models.Accounts
 {
     public class LoginVM
     {

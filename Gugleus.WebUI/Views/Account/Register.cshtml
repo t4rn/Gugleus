@@ -1,7 +1,7 @@
-﻿@model Gugleus.WebUI.Models.LoginVM
+﻿@model RegisterVM
 
 @{
-    Layout = "~/Views/Shared/_LayoutUnauth.cshtml";
+    //Layout = "~/Views/Shared/_LayoutUnauth.cshtml";
     ViewData["Title"] = "Register";
 }
 
@@ -21,6 +21,11 @@
                 <label asp-for="Password" class="control-label"></label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PasswordRepeat" class="control-label"></label>
+                <input asp-for="PasswordRepeat" class="form-control" />
+                <span asp-validation-for="PasswordRepeat" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

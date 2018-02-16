@@ -1,12 +1,59 @@
 ﻿grant all on database erexus to gugleus;
 
+  -- Table: public."AspNetUsers"
+
+-- DROP TABLE public."AspNetUsers";
+
+CREATE TABLE public."AspNetUsers"
+(
+  "Id" text NOT NULL,
+  "AccessFailedCount" integer NOT NULL,
+  "ConcurrencyStamp" text,
+  "Email" character varying(256),
+  "EmailConfirmed" boolean NOT NULL,
+  "LockoutEnabled" boolean NOT NULL,
+  "LockoutEnd" timestamp with time zone,
+  "NormalizedEmail" character varying(256),
+  "NormalizedUserName" character varying(256),
+  "PasswordHash" text,
+  "PhoneNumber" text,
+  "PhoneNumberConfirmed" boolean NOT NULL,
+  "SecurityStamp" text,
+  "TwoFactorEnabled" boolean NOT NULL,
+  "UserName" character varying(256),
+  CONSTRAINT "PK_AspNetUsers" PRIMARY KEY ("Id")
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public."AspNetUsers"
+  OWNER TO gugleus;
+  
+  -- Table: public."AspNetRoles"
+
+-- DROP TABLE public."AspNetRoles";
+
+CREATE TABLE public."AspNetRoles"
+(
+  "Id" text NOT NULL,
+  "ConcurrencyStamp" text,
+  "Name" character varying(256),
+  "NormalizedName" character varying(256),
+  CONSTRAINT "PK_AspNetRoles" PRIMARY KEY ("Id")
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public."AspNetRoles"
+  OWNER TO gugleus;
+  
 -- Table: public."AspNetRoleClaims"
 
 -- DROP TABLE public."AspNetRoleClaims";
 
 CREATE TABLE public."AspNetRoleClaims"
 (
-  "Id" integer NOT NULL DEFAULT nextval('"AspNetRoleClaims_Id_seq"'::regclass),
+  "Id" serial NOT NULL,
   "ClaimType" text,
   "ClaimValue" text,
   "RoleId" text NOT NULL,
@@ -31,23 +78,7 @@ CREATE INDEX "IX_AspNetRoleClaims_RoleId"
   ("RoleId" COLLATE pg_catalog."default");
 
 
-  -- Table: public."AspNetRoles"
 
--- DROP TABLE public."AspNetRoles";
-
-CREATE TABLE public."AspNetRoles"
-(
-  "Id" text NOT NULL,
-  "ConcurrencyStamp" text,
-  "Name" character varying(256),
-  "NormalizedName" character varying(256),
-  CONSTRAINT "PK_AspNetRoles" PRIMARY KEY ("Id")
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE public."AspNetRoles"
-  OWNER TO gugleus;
 
 -- Index: public."RoleNameIndex"
 
@@ -65,7 +96,7 @@ CREATE UNIQUE INDEX "RoleNameIndex"
 
 CREATE TABLE public."AspNetUserClaims"
 (
-  "Id" integer NOT NULL DEFAULT nextval('"AspNetUserClaims_Id_seq"'::regclass),
+  "Id" serial NOT NULL,
   "ClaimType" text,
   "ClaimValue" text,
   "UserId" text NOT NULL,
@@ -173,34 +204,7 @@ WITH (
 ALTER TABLE public."AspNetUserTokens"
   OWNER TO gugleus;
 
-  -- Table: public."AspNetUsers"
 
--- DROP TABLE public."AspNetUsers";
-
-CREATE TABLE public."AspNetUsers"
-(
-  "Id" text NOT NULL,
-  "AccessFailedCount" integer NOT NULL,
-  "ConcurrencyStamp" text,
-  "Email" character varying(256),
-  "EmailConfirmed" boolean NOT NULL,
-  "LockoutEnabled" boolean NOT NULL,
-  "LockoutEnd" timestamp with time zone,
-  "NormalizedEmail" character varying(256),
-  "NormalizedUserName" character varying(256),
-  "PasswordHash" text,
-  "PhoneNumber" text,
-  "PhoneNumberConfirmed" boolean NOT NULL,
-  "SecurityStamp" text,
-  "TwoFactorEnabled" boolean NOT NULL,
-  "UserName" character varying(256),
-  CONSTRAINT "PK_AspNetUsers" PRIMARY KEY ("Id")
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE public."AspNetUsers"
-  OWNER TO gugleus;
 
 -- Index: public."EmailIndex"
 

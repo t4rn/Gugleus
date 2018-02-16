@@ -1,4 +1,4 @@
-﻿using Gugleus.WebUI.Models;
+﻿using Gugleus.WebUI.Models.Accounts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -58,20 +58,22 @@ namespace Gugleus.WebUI.Controllers
             return View(loginVM);
         }
 
+        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(LoginVM loginVM)
+        [AllowAnonymous]
+        public async Task<IActionResult> Register(RegisterVM registerVM)
         {
             if (ModelState.IsValid)
             {
-                _logger.LogDebug($"[{nameof(Register)}] Start for name = '{loginVM.UserName}'");
+                _logger.LogDebug($"[{nameof(Register)}] Start for name = '{registerVM.UserName}'");
 
-                var user = new IdentityUser() { UserName = loginVM.UserName };
-                var result = await _userManager.CreateAsync(user, loginVM.Password);
+                var user = new IdentityUser() { UserName = registerVM.UserName };
+                var result = await _userManager.CreateAsync(user, registerVM.Password);
 
                 if (result.Succeeded)
                 {
@@ -87,7 +89,7 @@ namespace Gugleus.WebUI.Controllers
                     _logger.LogDebug($"[{nameof(Register)}] Errors: '{string.Join(";", result.Errors)}'");
                 }
             }
-            return View(loginVM);
+            return View(registerVM);
         }
 
         [HttpPost]

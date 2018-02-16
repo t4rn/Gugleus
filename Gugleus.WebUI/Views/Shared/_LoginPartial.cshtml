@@ -13,6 +13,11 @@
                    role="button" aria-haspopup="true" aria-expanded="false">@User.Identity.Name<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li>
+                        <a id="registerLink" asp-controller="Account" asp-action="Register">
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Register new user
+                        </a>
+                    </li>
+                    <li>
                         <a href="javascript:document.getElementById('logoutForm').submit()">
                             <span class="glyphicon glyphicon-off" aria-hidden="true"></span> Log off
                         </a>
@@ -23,10 +28,9 @@
         </ul>
     </form>
 }
-else
-{
-    <ul class="nav navbar-nav navbar-right">
-        @*<li><a id="registerLink" asp-controller="Account" asp-action="Register">Register</a></li>*@
-        <li><a asp-area="" asp-controller="Account" asp-action="Login">Log in</a></li>
-    </ul>
-}
+    @*else
+        {
+            <ul class="nav navbar-nav navbar-right">
+                <li><a asp-area="" asp-controller="Account" asp-action="Login">Log in</a></li>
+            </ul>
+        }*@
