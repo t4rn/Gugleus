@@ -15,6 +15,7 @@ namespace Gugleus.WebUI.Controllers
         private readonly IFileLogsService _fileLogsService;
         private readonly ILogger<LogsController> _logger;
 
+        // TODO: clean sql -> erexus instead of gugleus
         public LogsController(IMapper mapper, IFileLogsService fileLogsService, ILogger<LogsController> logger)
         {
             _mapper = mapper;
@@ -38,6 +39,12 @@ namespace Gugleus.WebUI.Controllers
         public IActionResult Prod()
         {
             FileLogListVM model = PrepareModel(EnvType.Prod);
+            return View("FileLogsList", model);
+        }
+
+        public IActionResult Erexus()
+        {
+            FileLogListVM model = PrepareModel(EnvType.Erexus);
             return View("FileLogsList", model);
         }
 

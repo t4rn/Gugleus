@@ -89,12 +89,6 @@ namespace Gugleus.Core.Services
             return res;
         }
 
-        public async Task<List<Request>> GetRequestsAsync()
-        {
-            var requests = await _requestRepository.GetAllAsync();
-            return requests.OrderByDescending(x => x.Id).ToList();
-        }
-
         public async Task<RequestSummaryDto<DateFilterDto>> GetStatsByDate(DateTime from, DateTime to)
         {
             RequestSummaryDto<DateFilterDto> result = new RequestSummaryDto<DateFilterDto>();

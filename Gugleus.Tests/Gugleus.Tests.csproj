@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Gugleus.Api\Gugleus.Api.csproj" />
+    <ProjectReference Include="..\Gugleus.WebUI\Gugleus.WebUI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

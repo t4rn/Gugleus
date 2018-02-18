@@ -2,6 +2,6 @@
 {
     public enum EnvType
     {
-        Dev, Rc, Prod
+        Dev, Rc, Prod, Erexus
     }
 }

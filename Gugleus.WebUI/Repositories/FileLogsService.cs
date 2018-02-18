@@ -46,6 +46,9 @@ namespace Gugleus.WebUI.Repositories
                 case EnvType.Prod:
                     path = @"C:\logs\prod";
                     break;
+                case EnvType.Erexus:
+                    path = @"C:\logs\erexus";
+                    break;
             }
 
             return path;

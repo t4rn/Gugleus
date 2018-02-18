@@ -46,43 +46,9 @@ namespace Gugleus.Core.Repositories
             return id;
         }
 
-        public async Task<List<Request>> GetAllAsync()
+        public Task<List<Request>> GetAllAsync()
         {
-            List<Request> requests = null;
-
-            string query = @"SELECT id as Id, --r.id_ws_client as WsClient,
-                                r.request_input as Input, r.request_output as Output,
-                                r.add_date as AddDate, r.output_date as OutputDate,
-
-                                r.id_request_type as Code,
-
-                                rq.add_date as AddDate,
-                                rq.process_start_date as ProcessStartDate, rq.process_end_date as ProcessEndDate,
-                                rq.error_msg as ErrorMsg,
-
-                                rq.id_status as Code
-
-                            FROM he.requests r
-                            JOIN he.requests_queue rq USING (id)";
-
-            using (NpgsqlConnection conn = new NpgsqlConnection(_connStr))
-            {
-                requests =
-                    (
-                        await conn.QueryAsync<Request, RequestType, RequestQueue, RequestStatus, Request>(
-                        sql: query,
-                        map: (request, type, queue, status) =>
-                        {
-                            request.Queue = queue;
-                            request.Type = type;
-                            request.Queue.Status = status;
-                            return request;
-                        },
-                        splitOn: "Code, AddDate, Code")
-                    ).ToList();
-            }
-
-            return requests;
+            throw new NotImplementedException();
         }
 
         public Task<Request> GetRequestByIdAsync(long requestId)
