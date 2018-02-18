@@ -6,6 +6,7 @@
 * Autofac
 * AutoMapper
 * Npgsql
+* Entity Framework Core
 * Dapper
 * xUnit
 * Moq
