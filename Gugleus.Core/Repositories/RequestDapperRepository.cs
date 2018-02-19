@@ -51,6 +51,11 @@ namespace Gugleus.Core.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<IQueryable<Request>> GetAllQueryableAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Request> GetRequestByIdAsync(long requestId)
         {
             throw new NotImplementedException();

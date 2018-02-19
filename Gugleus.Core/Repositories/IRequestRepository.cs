@@ -3,6 +3,7 @@ using Gugleus.Core.Domain.Requests;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Gugleus.Core.Repositories
 {
@@ -19,5 +20,6 @@ namespace Gugleus.Core.Repositories
         Task<List<Request>> GetAllAsync();
 
         Task<Request> GetRequestByIdAsync(long requestId);
+        Task<IQueryable<Request>> GetAllQueryableAsync();
     }
 }

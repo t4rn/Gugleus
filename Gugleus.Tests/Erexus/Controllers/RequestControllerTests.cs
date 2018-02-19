@@ -36,7 +36,7 @@ namespace Gugleus.Tests.Erexus.Controllers
             // Arrange
 
             // Act
-            IActionResult actionResult = await _controller.Dev();
+            IActionResult actionResult = await _controller.Dev(null, null);
 
             // Assert
             actionResult.Should().NotBeNull().And.BeOfType<OkObjectResult>();

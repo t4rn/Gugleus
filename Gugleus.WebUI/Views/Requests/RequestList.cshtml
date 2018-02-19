@@ -17,22 +17,20 @@
     <ul class="dropdown-menu" aria-labelledby="requestsPerPage">
         <li><a href="#">20</a></li>
         <li><a href="#">50</a></li>
-        <li><a href="#">100</a></li>
+        <li><a href="#">1000</a></li>
         <li role="separator" class="divider"></li>
         <li><a href="#">All</a></li>
     </ul>
 </div>
+  
+@Html.DropDownListFor(M => M.PageSize, new List<SelectListItem>
+     { new SelectListItem { Text = "10", Value = "20", Selected=true},
+       new SelectListItem { Text = "20", Value = "50" }
+       })
 
 <br />
 
-<nav aria-label="Request navigation">
-    <ul class="pagination">
-        <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-        <li><a href="#">2 <span class="sr-only">(current)</span></a></li>
-        <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-    </ul>
-</nav>
+@Html.PagedListPager((IPagedList)Model.Requests, page => Url.Action(Model.Env.ToString(), new { page, pageSize = Model.PageSize }))
 
 <table class="table">
     <thead>
@@ -103,11 +101,11 @@
     </tbody>
 </table>
 
-<nav aria-label="Request navigation">
+@*<nav aria-label="Request navigation">
     <ul class="pagination">
         <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
         <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
         <li><a href="#">2 <span class="sr-only">(current)</span></a></li>
         <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
     </ul>
-</nav>
+</nav>*@

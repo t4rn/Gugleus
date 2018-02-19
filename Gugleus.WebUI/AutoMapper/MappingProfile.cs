@@ -2,7 +2,9 @@
 using Gugleus.Core.Domain.Requests;
 using Gugleus.WebUI.Models.Logs;
 using Gugleus.WebUI.Models.Requests;
+using System.Collections.Generic;
 using System.IO;
+using X.PagedList;
 
 namespace Gugleus.WebUI.AutoMapper
 {
@@ -38,4 +40,16 @@ namespace Gugleus.WebUI.AutoMapper
             return result;
         }
     }
+
+    public static class Extens
+    {
+        public static IPagedList<TDestination> ToMappedPagedList<TSource, TDestination>(this IPagedList<TSource> list)
+        {
+            IEnumerable<TDestination> sourceList = Mapper.Map<IEnumerable<TSource>, IEnumerable<TDestination>>(list);
+            IPagedList<TDestination> pagedResult = new StaticPagedList<TDestination>(sourceList, list.GetMetaData());
+            return pagedResult;
+
+        }
+    }
+
 }

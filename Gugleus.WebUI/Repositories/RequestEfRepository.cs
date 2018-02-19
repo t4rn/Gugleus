@@ -24,6 +24,23 @@ namespace Gugleus.WebUI.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<List<Request>> GetAllWithPaginationAsync(int page = 0, int pageSize = 0)
+        {
+            IQueryable<Request> linqQuery = _appDbContext.Requests.AsNoTracking()
+                .Include(x => x.WsClient)
+                .Include(x => x.Type)
+                .Include(x => x.Queue)
+                .Include(x => x.Queue.Status);
+
+            if (page > 0 && pageSize > 0)
+            {
+                linqQuery = linqQuery.OrderBy(r => r.Id)
+                    .Skip((page - 1) * pageSize).Take(pageSize);
+            }
+
+            return await linqQuery.ToListAsync();
+        }
+
         public async Task<List<Request>> GetAllAsync()
         {
             return await _appDbContext.Requests.AsNoTracking()
@@ -56,6 +73,15 @@ namespace Gugleus.WebUI.Repositories
         public Task<List<WsClient>> GetWsClientsAsync()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IQueryable<Request>> GetAllQueryableAsync()
+        {
+            return _appDbContext.Requests.AsNoTracking()
+                .Include(x => x.WsClient)
+                .Include(x => x.Type)
+                .Include(x => x.Queue)
+                .Include(x => x.Queue.Status);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Gugleus.Core.Domain;
+using Gugleus.WebUI.AutoMapper;
 using Gugleus.WebUI.Models.Requests;
 using Gugleus.WebUI.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace Gugleus.WebUI.Controllers
 {
@@ -23,10 +25,11 @@ namespace Gugleus.WebUI.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Dev()
+        [Route("[controller]/Dev/{page?}/{pageSize?}")]
+        public async Task<IActionResult> Dev(int? page, int? pageSize = 20)
         {
             // TODO: pagination
-            RequestListVM model = await PrepareModel(EnvType.Dev);
+            RequestListVM model = await PrepareModel(EnvType.Dev, page, pageSize);
             return View("RequestList", model);
         }
 
@@ -42,17 +45,29 @@ namespace Gugleus.WebUI.Controllers
             return View("RequestList", model);
         }
 
-        private async Task<RequestListVM> PrepareModel(EnvType env)
+        private async Task<RequestListVM> PrepareModel(EnvType env, int? page = null, int? pageSize = null)
         {
             RequestListVM model = new RequestListVM();
-            var requests = (await _requestSrv.GetAllAsync(env)).OrderByDescending(x => x.Id);
+            //var requests = (await _requestSrv.GetAllAsync(env)).OrderByDescending(x => x.Id);
 
-            model.Requests = _mapper.Map<List<RequestVM>>(requests);
+            var requests = (await _requestSrv.GetAllQueryableAsync(env)).OrderByDescending(x => x.Id);
+
+            var pageNumber = page ?? 1; // if no page was specified in the querystring, default to the first page (1)
+            var size = pageSize ?? 100;
+            var onePageOfProducts = requests.ToPagedList(pageNumber, size)
+                .ToMappedPagedList<Core.Domain.Requests.Request, RequestVM>();
+
+            ViewBag.OnePageOfProducts = onePageOfProducts;
+
+            model.Requests = onePageOfProducts; // _mapper.Map<IPagedList<RequestVM>>(onePageOfProducts);
             model.Env = env;
             model.Description = $"Requests from {model.Env}";
+            model.PageSize = size;
 
             return model;
         }
+
+
 
         [Route("[controller]/Details/{env}/{id}")]
         public async Task<IActionResult> Details(long id, EnvType? env)
