@@ -6,31 +6,13 @@
 
 <h2>@Model.Description</h2>
 
-<br />
-
-<div class="dropdown">
-    <span>Logs per page: </span>
-    <button class="btn btn-default dropdown-toggle" type="button" id="cbLogsPerPage" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        All
-        <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="logsPerPage">
-        <li><a href="#">20</a></li>
-        <li><a href="#">50</a></li>
-        <li><a href="#">100</a></li>
-        <li role="separator" class="divider"></li>
-        <li><a href="#">All</a></li>
-    </ul>
+<div class="row">
+    <div class="col-md-4 vcenter">
+        Total <b>@Model.Logs.TotalItemCount</b> items on <b>@Model.Logs.PageCount</b> pages.
+    </div><div class="col-md-8 text-right vcenter">
+        @Html.PagedListPager(Model.Logs, page => Url.Action(Model.Env.ToString(), new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+    </div>
 </div>
-
-<nav aria-label="Logs navigation">
-    <ul class="pagination">
-        <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-        <li><a href="#">2 <span class="sr-only">(current)</span></a></li>
-        <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-    </ul>
-</nav>
 
 <table class="table">
     <thead>
@@ -71,11 +53,6 @@
     </tbody>
 </table>
 
-<nav aria-label="Logs navigation">
-    <ul class="pagination">
-        <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-        <li><a href="#">2 <span class="sr-only">(current)</span></a></li>
-        <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-    </ul>
-</nav>
+<div class="text-right">
+    @Html.PagedListPager(Model.Logs, page => Url.Action(Model.Env.ToString(), new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+</div>

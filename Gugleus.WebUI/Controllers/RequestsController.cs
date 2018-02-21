@@ -25,7 +25,7 @@ namespace Gugleus.WebUI.Controllers
         }
 
         [Route("[controller]/Dev/{page?}/{pageSize?}")]
-        public async Task<IActionResult> Dev(int? page, int? pageSize = 20)
+        public async Task<IActionResult> Dev(int? page, int? pageSize)
         {
             // TODO: pagination
             RequestListVM model = await PrepareModel(EnvType.Dev, page, pageSize);
@@ -33,14 +33,14 @@ namespace Gugleus.WebUI.Controllers
         }
 
         [Route("[controller]/Rc/{page?}/{pageSize?}")]
-        public async Task<IActionResult> Rc(int? page, int? pageSize = 20)
+        public async Task<IActionResult> Rc(int? page, int? pageSize)
         {
             RequestListVM model = await PrepareModel(EnvType.Rc, page, pageSize);
             return View("RequestList", model);
         }
 
         [Route("[controller]/Prod/{page?}/{pageSize?}")]
-        public async Task<IActionResult> Prod(int? page, int? pageSize = 20)
+        public async Task<IActionResult> Prod(int? page, int? pageSize)
         {
             RequestListVM model = await PrepareModel(EnvType.Prod, page, pageSize);
             return View("RequestList", model);
@@ -54,7 +54,7 @@ namespace Gugleus.WebUI.Controllers
             var requests = (await _requestSrv.GetAllQueryableAsync(env)).OrderByDescending(x => x.Id);
 
             var pageNumber = page ?? 1;
-            var size = pageSize ?? 100;
+            var size = pageSize ?? 20;
             var onePageOfProducts = requests.ToPagedList(pageNumber, size)
                 .ToMappedPagedList<Core.Domain.Requests.Request, RequestVM>();
 

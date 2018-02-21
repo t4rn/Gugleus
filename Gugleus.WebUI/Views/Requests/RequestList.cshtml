@@ -28,13 +28,17 @@
 *@
 
 @*<div>
-    <a asp-controller="Requests" asp-action="@Model.Env" asp-route-id="All" asp-route-env="@Model.Env" class="btn btn-info btn-sm">Show all</a>
-</div>*@
+        <a asp-controller="Requests" asp-action="@Model.Env" asp-route-id="All" asp-route-env="@Model.Env" class="btn btn-info btn-sm">Show all</a>
+    </div>*@
 
-<div class="text-right">
-    @Html.PagedListPager((IPagedList)Model.Requests, page => Url.Action(Model.Env.ToString(), new { page, pageSize = Model.PageSize }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+
+<div class="row">
+    <div class="col-md-4 vcenter">
+        Total <b>@Model.Requests.TotalItemCount</b> items on <b>@Model.Requests.PageCount</b> pages.
+    </div><div class="col-md-8 text-right vcenter">
+        @Html.PagedListPager(Model.Requests, page => Url.Action(Model.Env.ToString(), new { page, pageSize = Model.PageSize }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+    </div>
 </div>
-
 
 <table class="table">
     <thead>
@@ -69,44 +73,44 @@
     <tbody>
         @foreach (var item in Model.Requests)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WsClient)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RequestType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Queue.Status)
-            </td>
-            <td>
-                @item.InputShort(20)
-            </td>
-            <td>
-                @item.OutputShort(20)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AddDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OutputDate)
-            </td>
-            <td>
-                <a asp-controller="Requests" asp-action="Details" asp-route-id="@item.Id" asp-route-env="@Model.Env"
-                   class="btn btn-info btn-sm">
-                    Details
-                </a>
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WsClient)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RequestType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Queue.Status)
+                </td>
+                <td>
+                    @item.InputShort(20)
+                </td>
+                <td>
+                    @item.OutputShort(20)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AddDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OutputDate)
+                </td>
+                <td>
+                    <a asp-controller="Requests" asp-action="Details" asp-route-id="@item.Id" asp-route-env="@Model.Env"
+                       class="btn btn-info btn-sm">
+                        Details
+                    </a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
 
 <div class="text-right">
-    @Html.PagedListPager((IPagedList)Model.Requests, page => Url.Action(Model.Env.ToString(), new { page, pageSize = Model.PageSize }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+    @Html.PagedListPager(Model.Requests, page => Url.Action(Model.Env.ToString(), new { page, pageSize = Model.PageSize }), PagedListRenderOptions.ClassicPlusFirstAndLast)
 </div>
 
 @*<nav aria-label="Request navigation">
