@@ -20,6 +20,7 @@ namespace Gugleus.Core.Repositories
         Task<List<Request>> GetAllAsync();
 
         Task<Request> GetRequestByIdAsync(long requestId);
-        Task<IQueryable<Request>> GetAllQueryableAsync();
+
+        IQueryable<Request> GetAllQueryable();
     }
 }

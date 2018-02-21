@@ -26,11 +26,7 @@ namespace Gugleus.WebUI.Repositories
 
         public async Task<List<Request>> GetAllWithPaginationAsync(int page = 0, int pageSize = 0)
         {
-            IQueryable<Request> linqQuery = _appDbContext.Requests.AsNoTracking()
-                .Include(x => x.WsClient)
-                .Include(x => x.Type)
-                .Include(x => x.Queue)
-                .Include(x => x.Queue.Status);
+            IQueryable<Request> linqQuery = GetAllLinqQuery();
 
             if (page > 0 && pageSize > 0)
             {
@@ -43,11 +39,7 @@ namespace Gugleus.WebUI.Repositories
 
         public async Task<List<Request>> GetAllAsync()
         {
-            return await _appDbContext.Requests.AsNoTracking()
-                .Include(x => x.WsClient)
-                .Include(x => x.Type)
-                .Include(x => x.Queue)
-                .Include(x => x.Queue.Status).ToListAsync();
+            return await GetAllLinqQuery().ToListAsync();
         }
 
         public async Task<Request> GetRequestByIdAsync(long requestId)
@@ -75,7 +67,12 @@ namespace Gugleus.WebUI.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IQueryable<Request>> GetAllQueryableAsync()
+        public IQueryable<Request> GetAllQueryable()
+        {
+            return GetAllLinqQuery();
+        }
+
+        private IQueryable<Request> GetAllLinqQuery()
         {
             return _appDbContext.Requests.AsNoTracking()
                 .Include(x => x.WsClient)

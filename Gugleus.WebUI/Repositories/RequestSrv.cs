@@ -30,7 +30,7 @@ namespace Gugleus.WebUI.Repositories
         public async Task<IQueryable<Request>> GetAllQueryableAsync(EnvType envType)
         {
             IRequestRepository repo = PrepareRepository(envType);
-            return await repo.GetAllQueryableAsync();
+            return await Task.FromResult(repo.GetAllQueryable());
         }
 
         public async Task<Request> GetRequestByIdAsync(EnvType envType, long requestId)
