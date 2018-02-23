@@ -34,10 +34,10 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                            role="button" aria-haspopup="true" aria-expanded="false">Requests<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a asp-area="" asp-controller="Requests" asp-action="Dev">Dev</a></li>
-                            <li><a asp-area="" asp-controller="Requests" asp-action="Rc">Rc</a></li>
+                            <li><a asp-area="" asp-controller="Requests" asp-action="Dev" asp-route-page="">Dev</a></li>
+                            <li><a asp-area="" asp-controller="Requests" asp-action="Rc" asp-route-page="">Rc</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a asp-area="" asp-controller="Requests" asp-action="Prod">Prod</a></li>
+                            <li><a asp-area="" asp-controller="Requests" asp-action="Prod" asp-route-page="">Prod</a></li>
                         </ul>
                     </li>
                     @*<li class="dropdown">
@@ -54,9 +54,9 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                            role="button" aria-haspopup="true" aria-expanded="false">Logs<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a asp-area="" asp-controller="Logs" asp-action="Dev">Dev</a></li>
-                            <li><a asp-area="" asp-controller="Logs" asp-action="Rc">Rc</a></li>
-                            <li><a asp-area="" asp-controller="Logs" asp-action="Prod">Prod</a></li>
+                            <li><a asp-area="" asp-controller="Logs" asp-action="Dev" asp-route-page="">Dev</a></li>
+                            <li><a asp-area="" asp-controller="Logs" asp-action="Rc" asp-route-page="">Rc</a></li>
+                            <li><a asp-area="" asp-controller="Logs" asp-action="Prod" asp-route-page="">Prod</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a asp-area="" asp-controller="Logs" asp-action="Erexus">Erexus</a></li>
                         </ul>
