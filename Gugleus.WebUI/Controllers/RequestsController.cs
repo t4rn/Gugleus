@@ -27,7 +27,6 @@ namespace Gugleus.WebUI.Controllers
         [Route("[controller]/Dev/{page?}/{pageSize?}")]
         public async Task<IActionResult> Dev(int? page, int? pageSize)
         {
-            // TODO: pagination
             RequestListVM model = await PrepareModel(EnvType.Dev, page, pageSize);
             return View("RequestList", model);
         }
@@ -71,6 +70,7 @@ namespace Gugleus.WebUI.Controllers
         [Route("[controller]/Details/{env}/{id}")]
         public async Task<IActionResult> Details(long id, EnvType? env)
         {
+            // TODO: details in dialog (popup)
             _logger.LogDebug($"[{nameof(Details)}] Start for id = '{id}' and env = '{env}'");
 
             var request = await _requestSrv.GetRequestByIdAsync(env.Value, id);
