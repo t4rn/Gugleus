@@ -27,8 +27,7 @@ CREATE TABLE public."AspNetUsers"
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public."AspNetUsers"
-  OWNER TO gugleus;
+ALTER TABLE public."AspNetUsers" OWNER TO erexus;
   
   -- Table: public."AspNetRoles"
 
@@ -45,8 +44,7 @@ CREATE TABLE public."AspNetRoles"
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public."AspNetRoles"
-  OWNER TO gugleus;
+ALTER TABLE public."AspNetRoles" OWNER TO erexus;
   
 -- Table: public."AspNetRoleClaims"
 
@@ -66,8 +64,7 @@ CREATE TABLE public."AspNetRoleClaims"
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public."AspNetRoleClaims"
-  OWNER TO gugleus;
+ALTER TABLE public."AspNetRoleClaims" OWNER TO erexus;
 
 -- Index: public."IX_AspNetRoleClaims_RoleId"
 
@@ -109,8 +106,7 @@ CREATE TABLE public."AspNetUserClaims"
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public."AspNetUserClaims"
-  OWNER TO gugleus;
+ALTER TABLE public."AspNetUserClaims" OWNER TO erexus;
 
 -- Index: public."IX_AspNetUserClaims_UserId"
 
@@ -139,8 +135,7 @@ CREATE TABLE public."AspNetUserLogins"
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public."AspNetUserLogins"
-  OWNER TO gugleus;
+ALTER TABLE public."AspNetUserLogins" OWNER TO erexus;
 
 -- Index: public."IX_AspNetUserLogins_UserId"
 
@@ -171,8 +166,7 @@ CREATE TABLE public."AspNetUserRoles"
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public."AspNetUserRoles"
-  OWNER TO gugleus;
+ALTER TABLE public."AspNetUserRoles" OWNER TO erexus;
 
 -- Index: public."IX_AspNetUserRoles_RoleId"
 
@@ -202,8 +196,7 @@ CREATE TABLE public."AspNetUserTokens"
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public."AspNetUserTokens"
-  OWNER TO gugleus;
+ALTER TABLE public."AspNetUserTokens" OWNER TO erexus;
 
 
 
@@ -238,11 +231,5 @@ CREATE TABLE public."__EFMigrationsHistory"
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public."__EFMigrationsHistory"
-  OWNER TO gugleus;
-
-
-
-
-
+ALTER TABLE public."__EFMigrationsHistory" OWNER TO erexus;
 
