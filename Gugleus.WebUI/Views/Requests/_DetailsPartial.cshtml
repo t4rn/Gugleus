@@ -1,0 +1,61 @@
+﻿@model RequestVM
+
+<h4>Environment: @Model.Env</h4>
+
+<div>
+
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.WsClient)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.WsClient)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RequestType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RequestType)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Queue.Status)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Queue.Status)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Input)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Input)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Output)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Output)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AddDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AddDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.OutputDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OutputDate)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    @{ Html.RenderPartial("_QueueDetails", Model.Queue);}
+</div>

@@ -2,6 +2,8 @@
   "name": "asp.net",
   "private": true,
   "dependencies": {
-    "bootswatch": "~3.3.7"
+    "bootswatch": "~3.3.7",
+    "jquery-ajax-unobtrusive": "~3.2.4"
+
   }
 }

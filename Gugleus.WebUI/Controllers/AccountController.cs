@@ -31,8 +31,8 @@ namespace Gugleus.WebUI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginVM loginVM, string returnUrl)
         {
-            // TODO: prepare SQL with Login tables
             // TODO: returnUrl
+            // TODO: create backup in publish script
             if (!ModelState.IsValid)
                 return View(loginVM);
 
@@ -54,7 +54,7 @@ namespace Gugleus.WebUI.Controllers
             }
 
             _logger.LogDebug($"[{nameof(Login)}] Failed for login = '{loginVM.UserName}' and pass = '{loginVM.Password}'");
-            ModelState.AddModelError("", "User name/password not found");
+            ModelState.AddModelError("", "Invalid User name/password.");
             return View(loginVM);
         }
 

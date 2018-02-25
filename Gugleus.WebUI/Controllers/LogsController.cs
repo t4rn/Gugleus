@@ -17,7 +17,6 @@ namespace Gugleus.WebUI.Controllers
         private readonly IFileLogsService _fileLogsService;
         private readonly ILogger<LogsController> _logger;
 
-        // TODO: clean sql -> erexus instead of gugleus
         public LogsController(IMapper mapper, IFileLogsService fileLogsService, ILogger<LogsController> logger)
         {
             _mapper = mapper;
