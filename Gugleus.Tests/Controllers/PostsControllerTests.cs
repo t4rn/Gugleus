@@ -279,6 +279,7 @@ namespace Gugleus.Tests.Controllers
         [Fact(DisplayName = "AddPostOk")]
         public async void AddPostOk()
         {
+            // TODO: fix tests
             // Arrange
             List<WsClient> expectedWsClients = _fixture.CreateMany<WsClient>(1).ToList();
             PostDto postDto = _fixture.Create<PostDto>();

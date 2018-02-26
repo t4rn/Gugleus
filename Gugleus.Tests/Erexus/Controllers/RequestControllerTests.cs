@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using FluentAssertions;
+using Gugleus.Core.Domain;
 using Gugleus.WebUI.Controllers;
 using Gugleus.WebUI.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -30,13 +31,14 @@ namespace Gugleus.Tests.Erexus.Controllers
                 _loggerMock.Object);
         }
 
-        [Fact(DisplayName = "Dev")]
-        public async void Dev()
+        [Theory(DisplayName = "Dev")]
+        [InlineData(EnvType.Dev)]
+        public async void Dev(EnvType env)
         {
             // Arrange
 
             // Act
-            IActionResult actionResult = await _controller.Dev(null, null);
+            IActionResult actionResult = await _controller.List(env, null, null);
 
             // Assert
             actionResult.Should().NotBeNull().And.BeOfType<OkObjectResult>();
