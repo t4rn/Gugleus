@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Gugleus.Core.Domain;
+﻿using Gugleus.Core.Domain;
 using X.PagedList;
 
 namespace Gugleus.WebUI.Models.Requests
@@ -10,5 +9,6 @@ namespace Gugleus.WebUI.Models.Requests
         public IPagedList<RequestVM> Requests { get; set; }
         public EnvType? Env { get; internal set; }
         public int PageSize { get; set; }
+        public bool ShowingAll { get; set; }
     }
 }

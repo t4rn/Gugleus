@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Gugleus.Core.Domain;
+using Gugleus.Core.Domain.Requests;
 using Gugleus.WebUI.AutoMapper;
 using Gugleus.WebUI.Models.Requests;
 using Gugleus.WebUI.Repositories;
@@ -24,27 +25,48 @@ namespace Gugleus.WebUI.Controllers
             _logger = logger;
         }
 
+        [Route("[controller]/All/{env}")]
+        public async Task<IActionResult> All(EnvType env)
+        {
+            RequestListVM model = await PrepareRequestListVM(env);
+            return View("RequestList", model);
+        }
+
         [Route("[controller]/List/{env}/{page?}/{pageSize?}")]
         public async Task<IActionResult> List(EnvType env, int? page, int? pageSize)
         {
-            // TODO: show all requests
             RequestListVM model = await PrepareRequestListVM(env, page, pageSize);
             return View("RequestList", model);
+        }
+
+        private async Task<RequestListVM> PrepareRequestListVM(EnvType env)
+        {
+            RequestListVM model = new RequestListVM();
+
+            var requests = (await _requestSrv.GetAllAsync(env)).OrderByDescending(x => x.Id);
+
+            model.Requests = requests.ToPagedList().ToMappedPagedList<Request, RequestVM>();
+            model.Env = env;
+            model.Description = $"All Requests from {model.Env}";
+            model.PageSize = 1;
+            model.ShowingAll = true;
+
+            return model;
         }
 
         private async Task<RequestListVM> PrepareRequestListVM(EnvType env, int? page, int? pageSize)
         {
             RequestListVM model = new RequestListVM();
-            //var requests = (await _requestSrv.GetAllAsync(env)).OrderByDescending(x => x.Id);
 
             var requests = (await _requestSrv.GetAllQueryableAsync(env)).OrderByDescending(x => x.Id);
 
             var pageNumber = page ?? 1;
             var size = pageSize ?? 20;
             var onePageOfProducts = requests.ToPagedList(pageNumber, size)
-                .ToMappedPagedList<Core.Domain.Requests.Request, RequestVM>();
+                .ToMappedPagedList<Request, RequestVM>();
 
-            model.Requests = onePageOfProducts; // _mapper.Map<IPagedList<RequestVM>>(onePageOfProducts);
+            model.Requests = onePageOfProducts;
+
             model.Env = env;
             model.Description = $"Requests from {model.Env}";
             model.PageSize = size;

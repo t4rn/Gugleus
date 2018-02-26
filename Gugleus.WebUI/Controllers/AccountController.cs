@@ -32,7 +32,6 @@ namespace Gugleus.WebUI.Controllers
         public async Task<IActionResult> Login(LoginVM loginVM, string returnUrl)
         {
             // TODO: returnUrl
-            // TODO: create backup in publish script
             if (!ModelState.IsValid)
                 return View(loginVM);
 
