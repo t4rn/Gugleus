@@ -24,25 +24,11 @@ namespace Gugleus.WebUI.Controllers
             _logger = logger;
         }
 
-        [Route("[controller]/Dev/{page?}/{pageSize?}")]
-        public async Task<IActionResult> Dev(int? page, int? pageSize)
+        [Route("[controller]/List/{env}/{page?}/{pageSize?}")]
+        public async Task<IActionResult> List(EnvType env, int? page, int? pageSize)
         {
             // TODO: show all requests
-            RequestListVM model = await PrepareRequestListVM(EnvType.Dev, page, pageSize);
-            return View("RequestList", model);
-        }
-
-        [Route("[controller]/Rc/{page?}/{pageSize?}")]
-        public async Task<IActionResult> Rc(int? page, int? pageSize)
-        {
-            RequestListVM model = await PrepareRequestListVM(EnvType.Rc, page, pageSize);
-            return View("RequestList", model);
-        }
-
-        [Route("[controller]/Prod/{page?}/{pageSize?}")]
-        public async Task<IActionResult> Prod(int? page, int? pageSize)
-        {
-            RequestListVM model = await PrepareRequestListVM(EnvType.Prod, page, pageSize);
+            RequestListVM model = await PrepareRequestListVM(env, page, pageSize);
             return View("RequestList", model);
         }
 

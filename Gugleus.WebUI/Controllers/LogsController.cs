@@ -24,46 +24,11 @@ namespace Gugleus.WebUI.Controllers
             _logger = logger;
         }
 
-        [Route("[controller]/Dev/{page?}")]
-        public IActionResult Dev(int? page)
+        [Route("[controller]/List/{env}/{page?}")]
+        public IActionResult List(EnvType env, int? page)
         {
-            FileLogListVM model = PrepareModel(EnvType.Dev, page);
+            FileLogListVM model = PrepareListModel(env, page);
             return View("FileLogsList", model);
-        }
-
-        [Route("[controller]/Rc/{page?}")]
-        public IActionResult Rc(int? page)
-        {
-            FileLogListVM model = PrepareModel(EnvType.Rc, page);
-            return View("FileLogsList", model);
-        }
-
-        [Route("[controller]/Prod/{page?}")]
-        public IActionResult Prod(int? page)
-        {
-            FileLogListVM model = PrepareModel(EnvType.Prod, page);
-            return View("FileLogsList", model);
-        }
-
-        [Route("[controller]/Erexus/{page?}")]
-        public IActionResult Erexus(int? page)
-        {
-            FileLogListVM model = PrepareModel(EnvType.Erexus, page);
-            return View("FileLogsList", model);
-        }
-
-        private FileLogListVM PrepareModel(EnvType env, int? page, int pageSize = 20)
-        {
-            FileLogListVM model = new FileLogListVM();
-            var fileInfoList = _fileLogsService.GetAllAsync(env).OrderByDescending(x => x.LastWriteTime);
-
-            int pageNumber = page ?? 1;
-
-            model.Logs = fileInfoList.ToPagedList(pageNumber, pageSize).ToMappedPagedList<FileInfo, FileLogVM>(); // _mapper.Map<List<FileLogVM>>(fileInfoList);
-            model.Env = env;
-            model.Description = $"Requests from {model.Env}";
-
-            return model;
         }
 
         [Route("[controller]/Details/{env}/{fileName}")]
@@ -86,6 +51,22 @@ namespace Gugleus.WebUI.Controllers
             }
 
             return View(requestVM);
+        }
+
+
+        private FileLogListVM PrepareListModel(EnvType env, int? page, int pageSize = 20)
+        {
+            FileLogListVM model = new FileLogListVM();
+            var fileInfoList = _fileLogsService.GetAllAsync(env).OrderByDescending(x => x.LastWriteTime);
+
+            int pageNumber = page ?? 1;
+
+            model.Logs = fileInfoList.ToPagedList(pageNumber, pageSize)
+                .ToMappedPagedList<FileInfo, FileLogVM>(); // _mapper.Map<List<FileLogVM>>(fileInfoList);
+            model.Env = env;
+            model.Description = $"Logs from {model.Env}";
+
+            return model;
         }
     }
 }

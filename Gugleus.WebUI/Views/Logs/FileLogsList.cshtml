@@ -10,7 +10,7 @@
     <div class="col-md-4 vcenter">
         Total <b>@Model.Logs.TotalItemCount</b> items on <b>@Model.Logs.PageCount</b> pages.
     </div><div class="col-md-8 text-right vcenter">
-        @Html.PagedListPager(Model.Logs, page => Url.Action(Model.Env.ToString(), new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+        @Html.PagedListPager(Model.Logs, page => Url.Action("List", new { env = Model.Env, page = page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
     </div>
 </div>
 
@@ -54,5 +54,5 @@
 </table>
 
 <div class="text-right">
-    @Html.PagedListPager(Model.Logs, page => Url.Action(Model.Env.ToString(), new { page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+    @Html.PagedListPager(Model.Logs, page => Url.Action("List", new { env = Model.Env, page = page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
 </div>

@@ -32,10 +32,10 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                            role="button" aria-haspopup="true" aria-expanded="false">Requests<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a asp-area="" asp-controller="Requests" asp-action="Dev" asp-route-page="">Dev</a></li>
-                            <li><a asp-area="" asp-controller="Requests" asp-action="Rc" asp-route-page="">Rc</a></li>
+                            <li><a asp-area="" asp-controller="Requests" asp-action="List" asp-route-env="Dev" asp-route-page="">Dev</a></li>
+                            <li><a asp-area="" asp-controller="Requests" asp-action="List" asp-route-env="Rc" asp-route-page="">Rc</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a asp-area="" asp-controller="Requests" asp-action="Prod" asp-route-page="">Prod</a></li>
+                            <li><a asp-area="" asp-controller="Requests" asp-action="List" asp-route-env="Prod" asp-route-page="">Prod</a></li>
                         </ul>
                     </li>
                     @*<li class="dropdown">
@@ -52,11 +52,11 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                            role="button" aria-haspopup="true" aria-expanded="false">Logs<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a asp-area="" asp-controller="Logs" asp-action="Dev" asp-route-page="">Dev</a></li>
-                            <li><a asp-area="" asp-controller="Logs" asp-action="Rc" asp-route-page="">Rc</a></li>
-                            <li><a asp-area="" asp-controller="Logs" asp-action="Prod" asp-route-page="">Prod</a></li>
+                            <li><a asp-area="" asp-controller="Logs" asp-action="List" asp-route-env="Dev" asp-route-page="">Dev</a></li>
+                            <li><a asp-area="" asp-controller="Logs" asp-action="List" asp-route-env="Rc" asp-route-page="">Rc</a></li>
+                            <li><a asp-area="" asp-controller="Logs" asp-action="List" asp-route-env="Prod" asp-route-page="">Prod</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a asp-area="" asp-controller="Logs" asp-action="Erexus">Erexus</a></li>
+                            <li><a asp-area="" asp-controller="Logs" asp-action="List" asp-route-env="Erexus" asp-route-page="">Erexus</a></li>
                         </ul>
                     </li>
                 </ul>

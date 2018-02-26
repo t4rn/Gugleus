@@ -36,7 +36,7 @@
     <div class="col-md-4 vcenter">
         Total <b>@Model.Requests.TotalItemCount</b> items on <b>@Model.Requests.PageCount</b> pages.
     </div><div class="col-md-8 text-right vcenter">
-        @Html.PagedListPager(Model.Requests, page => Url.Action(Model.Env.ToString(), new { page, pageSize = Model.PageSize }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+        @Html.PagedListPager(Model.Requests, page => Url.Action("List", new {env = Model.Env, page = page, pageSize = Model.PageSize }), PagedListRenderOptions.ClassicPlusFirstAndLast)
     </div>
 </div>
 
@@ -121,7 +121,7 @@
 
 <!-- Pagination -->
 <div class="text-right">
-    @Html.PagedListPager(Model.Requests, page => Url.Action(Model.Env.ToString(), new { page, pageSize = Model.PageSize }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+    @Html.PagedListPager(Model.Requests, page => Url.Action("List", new { env = Model.Env, page = page, pageSize = Model.PageSize }), PagedListRenderOptions.ClassicPlusFirstAndLast)
 </div>
 
 
