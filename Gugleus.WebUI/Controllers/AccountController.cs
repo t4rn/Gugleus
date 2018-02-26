@@ -31,7 +31,6 @@ namespace Gugleus.WebUI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginVM loginVM, string returnUrl)
         {
-            // TODO: returnUrl
             if (!ModelState.IsValid)
                 return View(loginVM);
 
@@ -48,7 +47,15 @@ namespace Gugleus.WebUI.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogDebug($"[{nameof(Login)}] Success for name = '{loginVM.UserName}'");
-                    return RedirectToAction("Index", "Home");
+
+                    if (string.IsNullOrWhiteSpace(returnUrl))
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        return Redirect(returnUrl);
+                    }
                 }
             }
 
