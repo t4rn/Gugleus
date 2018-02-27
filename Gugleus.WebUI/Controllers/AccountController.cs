@@ -31,37 +31,43 @@ namespace Gugleus.WebUI.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginVM loginVM, string returnUrl)
         {
+            IActionResult result;
+
             if (!ModelState.IsValid)
-                return View(loginVM);
-
-            _logger.LogDebug($"[{nameof(Login)}] Start for name = '{loginVM.UserName}'");
-
-            var user = await _userManager.FindByNameAsync(loginVM.UserName);
-
-            if (user != null)
+                result = View(loginVM);
+            else
             {
-                var result = await
-                    _signInManager.PasswordSignInAsync
-                    (user, loginVM.Password, false, false);
+                _logger.LogDebug($"[{nameof(Login)}] Start for user = '{loginVM.UserName}'");
 
-                if (result.Succeeded)
+                var user = await _userManager.FindByNameAsync(loginVM.UserName);
+                if (user != null)
                 {
-                    _logger.LogDebug($"[{nameof(Login)}] Success for name = '{loginVM.UserName}'");
-
-                    if (string.IsNullOrWhiteSpace(returnUrl))
+                    var signInResult = await _signInManager.PasswordSignInAsync(user, loginVM.Password, false, false);
+                    if (signInResult.Succeeded)
                     {
-                        return RedirectToAction("Index", "Home");
+                        _logger.LogDebug($"[{nameof(Login)}] Success for user = '{loginVM.UserName}'");
+
+                        if (string.IsNullOrWhiteSpace(returnUrl))
+                            result = RedirectToAction("Index", "Home");
+                        else
+                            result = Redirect(returnUrl);
                     }
                     else
                     {
-                        return Redirect(returnUrl);
+                        _logger.LogDebug($"[{nameof(Login)}] Failed for login = '{loginVM.UserName}' and pass = '{loginVM.Password}'");
+                        ModelState.AddModelError("", "Invalid User name/password.");
+                        result = View(loginVM);
                     }
+                }
+                else
+                {
+                    _logger.LogDebug($"[{nameof(Login)}] User with login = '{loginVM.UserName}' not found.");
+                    ModelState.AddModelError("", "Invalid User name/password.");
+                    result = View(loginVM);
                 }
             }
 
-            _logger.LogDebug($"[{nameof(Login)}] Failed for login = '{loginVM.UserName}' and pass = '{loginVM.Password}'");
-            ModelState.AddModelError("", "Invalid User name/password.");
-            return View(loginVM);
+            return result;
         }
 
         public IActionResult Register()

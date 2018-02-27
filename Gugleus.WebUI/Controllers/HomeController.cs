@@ -27,6 +27,7 @@ namespace Gugleus.WebUI.Controllers
             // Get the details of the exception that occurred
             var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
 
+            // TODO: global exception handling with call stack and parameters
             _logger.LogError("GlobalEx: {0}", exceptionFeature?.Error?.GetBaseException());
 
             return View(new ErrorViewModel

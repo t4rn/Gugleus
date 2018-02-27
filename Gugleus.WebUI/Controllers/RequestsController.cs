@@ -88,6 +88,7 @@ namespace Gugleus.WebUI.Controllers
         /// <summary>
         /// For Request details in Modal
         /// </summary>
+        [HttpPost]
         public async Task<IActionResult> DetailsPartial(long id, EnvType? env)
         {
             _logger.LogDebug($"[{nameof(DetailsPartial)}] Start for id = '{id}' and env = '{env}'");
