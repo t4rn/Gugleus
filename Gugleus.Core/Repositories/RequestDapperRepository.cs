@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Gugleus.Core.Repositories
 {
+    [Obsolete("Use RequestEfRepository instead", true)]
     public class RequestDapperRepository : AbstractRepository, IRequestRepository
     {
         public RequestDapperRepository(string connectionString) : base(connectionString)

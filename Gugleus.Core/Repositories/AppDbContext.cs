@@ -1,10 +1,11 @@
-﻿using Gugleus.Core.Domain.Requests;
+﻿using Gugleus.Core.Domain;
+using Gugleus.Core.Domain.Requests;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Gugleus.WebUI.Repositories
+namespace Gugleus.Core.Repositories
 {
     public class AppDbContext : IdentityDbContext<IdentityUser>
     {
@@ -17,6 +18,7 @@ namespace Gugleus.WebUI.Repositories
         }
 
         public DbSet<Request> Requests { get; set; }
+        public DbSet<WsClient> WsClients { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,7 +29,10 @@ namespace Gugleus.WebUI.Repositories
             base.OnModelCreating(modelBuilder);
         }
 
-        internal void SetConnectionString(string cs)
+        /// <summary>
+        /// For Erexus, which is connecting to different databases
+        /// </summary>
+        public void SetConnectionString(string cs)
         {
             _cs = cs;
         }
@@ -39,9 +44,17 @@ namespace Gugleus.WebUI.Repositories
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 connectionString = _config.GetConnectionString("csErexus");
+                if (!string.IsNullOrWhiteSpace(connectionString))
+                {
+                    // for erexus user auth
+                    optionsBuilder.UseNpgsql(connectionString);
+                }
             }
-
-            optionsBuilder.UseNpgsql(connectionString);
+            else
+            {
+                // for erexus connecting to different dbs
+                optionsBuilder.UseNpgsql(connectionString);
+            }
         }
     }
 }

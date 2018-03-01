@@ -16,8 +16,9 @@ namespace Gugleus.Core.AutofacModules
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(x => new RequestDapperRepository(_connStr))
-                .As<IRequestRepository>();
+            //builder.Register(x => new RequestDapperRepository(_connStr)).As<IRequestRepository>();
+            builder.RegisterType<RequestEfRepository>().As<IRequestRepository>();
+
             builder.RegisterType<RequestService>().As<IRequestService>();
             builder.RegisterType<ValidationService>().As<IValidationService>();
             builder.RegisterType<UtilsService>().As<IUtilsService>();

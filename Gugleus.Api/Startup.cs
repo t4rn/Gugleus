@@ -4,11 +4,13 @@ using AutoMapper;
 using Gugleus.Api.Middleware;
 using Gugleus.Core.AutofacModules;
 using Gugleus.Core.Mapping;
+using Gugleus.Core.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -44,6 +46,9 @@ namespace Gugleus.Api
                 config.Filters.Add(new ValidateModelAttribute());
             });
 
+            string connectionString = Configuration.GetConnectionString("cs");
+            services.AddEntityFrameworkNpgsql().AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+
             // AutoMapper
             AutoMapper.ServiceCollectionExtensions.UseStaticRegistration = false; // for e2e tests
             services.AddAutoMapper(typeof(MappingProfile));
@@ -74,7 +79,7 @@ namespace Gugleus.Api
             // Autofac
             var builder = new ContainerBuilder();
             builder.Populate(services);
-            builder.RegisterModule(new AutofacModule(Configuration.GetConnectionString("cs")));
+            builder.RegisterModule(new AutofacModule(connectionString));
             ApplicationContainer = builder.Build();
 
             return new AutofacServiceProvider(ApplicationContainer);

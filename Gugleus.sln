@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gugleus.Core", "Gugleus.Core\Gugleus.Core.csproj", "{01405A31-C11D-4C9B-AF42-A3CAE4F0A60D}"
 EndProject
@@ -21,6 +21,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gugleus.TestConsoleApp", "Gugleus.TestConsoleApp\Gugleus.TestConsoleApp.csproj", "{5ECCAB83-5614-43DF-94AF-D2B77490BEEF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gugleus.WebUI", "Gugleus.WebUI\Gugleus.WebUI.csproj", "{EC1C0C97-EA58-4D14-BC7C-D6393F93C3A5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{60AD0FB4-E2F3-41C9-A012-CA0BB9FBBC1A}"
+	ProjectSection(SolutionItems) = preProject
+		gugleus_dev_publish.bat = gugleus_dev_publish.bat
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
