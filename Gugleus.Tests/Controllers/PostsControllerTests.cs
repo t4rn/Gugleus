@@ -66,42 +66,7 @@ namespace Gugleus.Tests.Controllers
             // Arrange
             long postId = _fixture.Create<long>();
             var requestType = RequestType.RequestTypeCode.ADDPOST;
-            _postServiceMock
-                .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
-                .ReturnsAsync((ObjResult<RequestResponseDto<GoogleInfo>>)null);
-
-            // Act
-            IActionResult actionResult = await _controller.GetPostStatus(postId);
-
-            // Assert
-            _postServiceMock.Verify(
-                x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType),
-                Times.Once);
-            _loggerMock.Verify(m => m.Log(
-                LogLevel.Error,
-                0,
-                It.Is<FormattedLogValues>(v => v.ToString()
-                .Contains($"Post with Id: '{postId}' and type '{requestType}' not found")),
-                null,
-                It.IsAny<Func<object, Exception, string>>()
-                ));
-
-            actionResult.Should().NotBeNull().And.BeOfType<BadRequestObjectResult>();
-
-            var badRequestResult = actionResult as BadRequestObjectResult;
-            badRequestResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
-            badRequestResult.Value.Should().NotBeNull().And.BeOfType<string>().And.Be($"Post with Id: '{postId}' not found...");
-        }
-
-        [Fact(DisplayName = "GetPostStatusInternalServerError")]
-        public async void GetPostStatusInternalServerError()
-        {
-            // Arrange
-            long postId = _fixture.Create<long>();
-            var requestType = RequestType.RequestTypeCode.ADDPOST;
-            string expectedError = _fixture.Create<string>();
-            var expectedResponse = new ObjResult<RequestResponseDto<GoogleInfo>>()
-            { Object = new RequestResponseDto<GoogleInfo> { Error = expectedError } };
+            var expectedResponse = new ObjResult<RequestResponseDto<GoogleInfo>>() { IsOk = false };
             _postServiceMock
                 .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
                 .ReturnsAsync(expectedResponse);
@@ -117,7 +82,43 @@ namespace Gugleus.Tests.Controllers
                 LogLevel.Error,
                 0,
                 It.Is<FormattedLogValues>(v => v.ToString()
-                .Contains($"Error for Id: '{postId}' type: '{requestType}' -> {expectedError}")),
+                .Contains($"Request with Id: '{postId}' and type '{requestType}' not found")),
+                null,
+                It.IsAny<Func<object, Exception, string>>()
+                ));
+
+            actionResult.Should().NotBeNull().And.BeOfType<BadRequestObjectResult>();
+
+            var badRequestResult = actionResult as BadRequestObjectResult;
+            badRequestResult.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
+            badRequestResult.Value.Should().NotBeNull().And.BeOfType<string>().And.Be($"Request with Id: '{postId}' not found...");
+        }
+
+        [Fact(DisplayName = "GetPostStatusInternalServerError")]
+        public async void GetPostStatusInternalServerError()
+        {
+            // Arrange
+            long postId = _fixture.Create<long>();
+            var requestType = RequestType.RequestTypeCode.ADDPOST;
+            Exception expectedException = _fixture.Create<Exception>();
+            _postServiceMock
+                .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
+                .Throws(expectedException);
+
+            // Act
+            IActionResult actionResult = await _controller.GetPostStatus(postId);
+
+            // Assert
+            _postServiceMock.Verify(
+                x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType),
+                Times.Once);
+            _loggerMock.Verify(m => m.Log(
+                LogLevel.Error,
+                0,
+                It.Is<FormattedLogValues>(v => v.ToString()
+                .Contains(
+                    $"[GetRequestResponseAsync] Ex for Id: '{postId}' type: '{requestType}': System.Exception: {expectedException.Message}"
+                    )),
                 null,
                 It.IsAny<Func<object, Exception, string>>()
                 ));
@@ -126,9 +127,9 @@ namespace Gugleus.Tests.Controllers
 
             var objectResult = actionResult as ObjectResult;
             objectResult.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
-            objectResult.Value.Should().NotBeNull().And.BeOfType<RequestResponseDto<GoogleInfo>>();
-            var requestResponse = objectResult.Value as RequestResponseDto<GoogleInfo>;
-            requestResponse.Error.Should().Be(expectedError);
+            objectResult.Value.Should().NotBeNull().And.BeOfType<string>();
+            var requestResponse = objectResult.Value as string;
+            requestResponse.Should().Be(expectedException.Message);
         }
 
         [Fact(DisplayName = "GetPostStatusOk")]

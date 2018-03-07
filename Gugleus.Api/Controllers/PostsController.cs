@@ -67,6 +67,7 @@ namespace Gugleus.Api.Controllers
             }
             catch (Exception ex)
             {
+                // TODO: log input parameters
                 _logger.LogError($"[{LogDescription()}] Ex: {ex}");
                 result = InternalServerError(ex.Message);
             }
@@ -163,7 +164,7 @@ namespace Gugleus.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"[{nameof(GetRequestResponseAsync)}] Ex: {ex}");
+                _logger.LogError("[{0}] Ex for Id: '{1}' type: '{2}': {3}", nameof(GetRequestResponseAsync), id, requestType, ex);
                 result = InternalServerError(ex.Message);
             }
             return result;
