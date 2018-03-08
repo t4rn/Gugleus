@@ -46,6 +46,10 @@ namespace Gugleus.Tests.Controllers
             _cacheServiceMock = new Mock<ICacheService>();
             _controller = new PostsController(_postServiceMock.Object, _mapperMock.Object,
                 _loggerMock.Object, _httpActionContextMock.Object, _cacheServiceMock.Object);
+
+            // for mocking headers
+            _controller.ControllerContext = new ControllerContext();
+            _controller.ControllerContext.HttpContext = new DefaultHttpContext();
         }
 
         [Fact(DisplayName = "Ping")]
@@ -140,7 +144,7 @@ namespace Gugleus.Tests.Controllers
             var requestType = RequestType.RequestTypeCode.ADDPOST;
             string expectedRequestStatus = _fixture.Create<string>();
             var expectedResponse = new ObjResult<RequestResponseDto<GoogleInfo>>()
-            { Object = new RequestResponseDto<GoogleInfo> { Id = postId, Status = expectedRequestStatus } };
+            { IsOk = true, Object = new RequestResponseDto<GoogleInfo> { Id = postId, Status = expectedRequestStatus } };
             _postServiceMock
                 .Setup(x => x.GetRequestResponseAsync<GoogleInfo>(postId, requestType))
                 .ReturnsAsync(expectedResponse);
@@ -245,11 +249,12 @@ namespace Gugleus.Tests.Controllers
             List<WsClient> expectedWsClients = _fixture.CreateMany<WsClient>(1).ToList();
             PostDto postDto = _fixture.Create<PostDto>();
             IdResultDto<long> expectedResult = _fixture.Build<IdResultDto<long>>()
-                .With(x => x.IsOk, false)
+                .With(x => x.IsOk, false).With(x => x.Id, 0)
                 .Create();
 
             _postServiceMock.Setup(x => x.AddRequestAsync(postDto, It.IsAny<WsClient>())).ReturnsAsync(expectedResult);
             _cacheServiceMock.Setup(x => x.GetWsClientsAsync()).ReturnsAsync(expectedWsClients);
+            _controller.ControllerContext.HttpContext.Request.Headers["Hash"] = _fixture.Create<string>();
 
             // Act
             IActionResult actionResult = await _controller.AddPost(postDto);
@@ -274,13 +279,12 @@ namespace Gugleus.Tests.Controllers
             var idResultDto = objectResult.Value as IdResultDto<long>;
             idResultDto.IsOk.Should().Be(false);
             idResultDto.Message.Should().NotBeNull().And.Be(expectedResult.Message);
-            idResultDto.Id.Should().Be(0);
+            idResultDto.Id.Should().Be(0, because: "Post shouldn't be added");
         }
 
         [Fact(DisplayName = "AddPostOk")]
         public async void AddPostOk()
         {
-            // TODO: fix tests
             // Arrange
             List<WsClient> expectedWsClients = _fixture.CreateMany<WsClient>(1).ToList();
             PostDto postDto = _fixture.Create<PostDto>();

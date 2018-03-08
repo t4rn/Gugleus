@@ -30,18 +30,5 @@ namespace Gugleus.Tests.Erexus.Controllers
             _controller = new RequestsController( _mapperMock.Object, _requestSrvMock.Object,
                 _loggerMock.Object);
         }
-
-        [Theory(DisplayName = "Dev")]
-        [InlineData(EnvType.Dev)]
-        public async void Dev(EnvType env)
-        {
-            // Arrange
-
-            // Act
-            IActionResult actionResult = await _controller.List(env, null, null);
-
-            // Assert
-            actionResult.Should().NotBeNull().And.BeOfType<OkObjectResult>();
-        }
     }
 }

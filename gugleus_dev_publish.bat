@@ -8,6 +8,8 @@ set dest="c:\inetpub\wwwroot\gugleus_dev"
 set configSource="C:\inetpub\wwwroot\appsettings_dev.json"
 set configDest= "%dest%\appsettings.json"
 set backup="%dest%_backup\"
+set nlogSource="C:\inetpub\wwwroot\nlog_dev.config"
+set nlogDest= "%dest%\nlog.config"
 @echo on
 
 :: remove existing backup
@@ -29,6 +31,9 @@ dotnet publish -o %dest%
 
 :: copy config
 copy /y %configSource% %configDest%
+
+:: copy nlog
+copy /y %nlogSource% %nlogDest%
 
 :: start application pool in IIS
 %SYSTEMROOT%\System32\inetsrv\appcmd start apppool /apppool.name:%pool%

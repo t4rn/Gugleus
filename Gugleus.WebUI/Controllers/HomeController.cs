@@ -18,6 +18,7 @@ namespace Gugleus.WebUI.Controllers
 
         public IActionResult Index()
         {
+            // TODO: charts with server disk space
             return View();
         }
 
