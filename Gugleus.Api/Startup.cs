@@ -7,12 +7,14 @@ using Gugleus.Core.Mapping;
 using Gugleus.Core.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using NLog.Web;
@@ -53,6 +55,7 @@ namespace Gugleus.Api
             AutoMapper.ServiceCollectionExtensions.UseStaticRegistration = false; // for e2e tests
             services.AddAutoMapper(typeof(MappingProfile));
 
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             services.AddScoped<IUrlHelper>(implementationFactory =>
