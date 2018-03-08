@@ -67,7 +67,7 @@ namespace Gugleus.Api.Controllers
             }
             catch (Exception ex)
             {
-                // TODO: log input parameters
+                // input params logged in LogInvalidRequestMiddleware.cs
                 _logger.LogError($"[{LogDescription()}] Ex: {ex}");
                 result = InternalServerError(ex.Message);
             }
@@ -174,9 +174,11 @@ namespace Gugleus.Api.Controllers
         {
             IActionResult result;
 
+            string typeForLogs = typeof(T).Name;
+
             if (requestDto == null)
             {
-                _logger.LogError("{0} Null input for '{1}'", LogDescription(), typeof(T));
+                _logger.LogError("{0} Null input for '{1}'", LogDescription(), typeForLogs);
                 result = BadRequest(new ResultDto { Message = "Null input." });
             }
             else
@@ -187,7 +189,7 @@ namespace Gugleus.Api.Controllers
                 if (!validationResult.IsOk)
                 {
                     _logger.LogError("{0} ValidErr for '{1}': {2}",
-                        LogDescription(), typeof(T), validationResult.Message);
+                        LogDescription(), typeForLogs, validationResult.Message);
                     ResultDto badValidationResult = _mapper.Map<ResultDto>(validationResult);
                     result = BadRequest(badValidationResult);
                 }
@@ -202,14 +204,14 @@ namespace Gugleus.Api.Controllers
                     if (addResult.IsOk)
                     {
                         _logger.LogDebug("{0} Ok for: '{1}' -> Id: '{2}'",
-                            LogDescription(), typeof(T), addResult.Id);
+                            LogDescription(), typeForLogs, addResult.Id);
                         result = Ok(addResult);
                     }
                     else
                     {
                         // when ID from DB <= 0
                         _logger.LogError("{0} Error for: '{1}' -> Message: '{2}'",
-                            LogDescription(), typeof(T), addResult.Message);
+                            LogDescription(), typeForLogs, addResult.Message);
                         result = InternalServerError(addResult);
                     }
                 }

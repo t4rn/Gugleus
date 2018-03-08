@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Gugleus.Core.Domain;
+﻿using Gugleus.Core.Domain.Dictionaries;
 using Gugleus.Core.Results;
-using Gugleus.Core.Domain.Dictionaries;
+using System.ComponentModel.DataAnnotations;
 
 namespace Gugleus.Core.Dto.Input
 {
