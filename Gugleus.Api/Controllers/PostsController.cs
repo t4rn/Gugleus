@@ -78,9 +78,10 @@ namespace Gugleus.Api.Controllers
 
         [HttpGet("details/{id}", Name = "GetPostDetails")]
         //[ValidateModel]
-        [SwaggerResponse(200, Type = typeof(RequestResponseDto<ActivityInfo>))]
+        //[SwaggerResponse(200, Type = typeof(RequestResponseDto<ActivityInfo>))]
+        [ProducesResponseType(typeof(RequestResponseDto<ActivityInfo>), 200)]
         [SwaggerResponse(400, Type = typeof(string))]
-        [SwaggerResponse(500, Type = typeof(RequestResponseDto<ActivityInfo>))]
+        [ProducesResponseType(typeof(ObjectResult), 500)]
         public async Task<IActionResult> GetPostDetails(long id)
         {
             IActionResult result = await GetRequestResponseAsync<ActivityInfo>(id, RequestType.RequestTypeCode.GETINFO);

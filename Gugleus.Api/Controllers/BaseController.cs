@@ -19,7 +19,7 @@ namespace Gugleus.Api.Controllers
         /// <summary>
         /// Returns a ObjectResult with 500 code
         /// </summary>
-        protected IActionResult InternalServerError(object obj)
+        protected ObjectResult InternalServerError(object obj)
         {
             return StatusCode(StatusCodes.Status500InternalServerError, obj);
         }
