@@ -202,6 +202,9 @@ namespace Gugleus.Core.Services
 
             if (!string.IsNullOrWhiteSpace(userInfo.Username))
                 userInfo.Username = userInfo.Username.Trim();
+
+            if (!string.IsNullOrWhiteSpace(userInfo.Profile))
+                userInfo.Profile = userInfo.Profile.Trim();
         }
     }
 }
