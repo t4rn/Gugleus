@@ -45,7 +45,9 @@ namespace Gugleus.Core.Services
             // saving img to disk
             if (requestDto is PostDto)
             {
-                PreProcessingRequest((requestDto as PostDto).Image);
+                PostDto post = requestDto as PostDto;
+                TrimUserInfo(post.User);
+                ProcessImage(post.Image);
             }
 
             // preparing request
@@ -150,7 +152,10 @@ namespace Gugleus.Core.Services
             return dto;
         }
 
-        private void PreProcessingRequest(ImageDto imageDto)
+        /// <summary>
+        /// Saves image to disk and changes content to file location
+        /// </summary>
+        private void ProcessImage(ImageDto imageDto)
         {
             if (!string.IsNullOrWhiteSpace(imageDto?.Content))
             {
@@ -179,9 +184,19 @@ namespace Gugleus.Core.Services
                 }
                 else
                 {
-                    _logger.LogError($"[{nameof(PreProcessingRequest)}] fileExists: '{fileName}' - tried '{i}' times...");
+                    _logger.LogError($"[{nameof(ProcessImage)}] fileExists: '{fileName}' - tried '{i}' times...");
                 }
             }
+        }
+
+        /// <summary>
+        /// Trims AdditionalEmail, Phone and Username
+        /// </summary>
+        private void TrimUserInfo(UserInfoDto userInfo)
+        {
+            userInfo.AdditionalEmail = userInfo.AdditionalEmail.Trim();
+            userInfo.Phone = userInfo.Phone.Trim();
+            userInfo.Username = userInfo.Username.Trim();
         }
     }
 }
