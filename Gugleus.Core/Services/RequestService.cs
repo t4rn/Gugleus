@@ -46,7 +46,7 @@ namespace Gugleus.Core.Services
             if (requestDto is PostDto)
             {
                 PostDto post = requestDto as PostDto;
-                TrimUserInfo(post.User);
+                //TrimUserInfo(post.User);
                 ProcessImage(post.Image);
             }
 
