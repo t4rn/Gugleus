@@ -46,7 +46,7 @@ namespace Gugleus.Core.Services
             if (requestDto is PostDto)
             {
                 PostDto post = requestDto as PostDto;
-                //TrimUserInfo(post.User);
+                TrimUserInfo(post.User);
                 ProcessImage(post.Image);
             }
 
@@ -194,9 +194,14 @@ namespace Gugleus.Core.Services
         /// </summary>
         private void TrimUserInfo(UserInfoDto userInfo)
         {
-            userInfo.AdditionalEmail = userInfo.AdditionalEmail.Trim();
-            userInfo.Phone = userInfo.Phone.Trim();
-            userInfo.Username = userInfo.Username.Trim();
+            if (!string.IsNullOrWhiteSpace(userInfo.AdditionalEmail))
+                userInfo.AdditionalEmail = userInfo.AdditionalEmail.Trim();
+
+            if (!string.IsNullOrWhiteSpace(userInfo.Phone))
+                userInfo.Phone = userInfo.Phone.Trim();
+
+            if (!string.IsNullOrWhiteSpace(userInfo.Username))
+                userInfo.Username = userInfo.Username.Trim();
         }
     }
 }
