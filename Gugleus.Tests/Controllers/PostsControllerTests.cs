@@ -191,7 +191,7 @@ namespace Gugleus.Tests.Controllers
                 LogLevel.Error,
                 0,
                 It.Is<FormattedLogValues>(v => v.ToString()
-                .Contains($"Null input for '{typeof(PostDto)}'")),
+                .Contains($"Null input for '{typeof(PostDto).Name}'")),
                 null,
                 It.IsAny<Func<object, Exception, string>>()
                 ));
@@ -226,7 +226,7 @@ namespace Gugleus.Tests.Controllers
                 LogLevel.Error,
                 0,
                 It.Is<FormattedLogValues>(v => v.ToString()
-                .Contains($"ValidErr for '{postDto.GetType()}': {expectedErrorMsg}")),
+                .Contains($"ValidErr for '{postDto.GetType().Name}': {expectedErrorMsg}")),
                 null,
                 It.IsAny<Func<object, Exception, string>>()
                 ));
@@ -268,7 +268,7 @@ namespace Gugleus.Tests.Controllers
                 LogLevel.Error,
                 0,
                 It.Is<FormattedLogValues>(v => v.ToString()
-                .Contains($"Error for: '{typeof(PostDto)}' -> Message: '{expectedResult.Message}'")),
+                .Contains($"Error for: '{postDto.GetType().Name}' -> Message: '{expectedResult.Message}'")),
                 null,
                 It.IsAny<Func<object, Exception, string>>()
                 ));
@@ -306,7 +306,7 @@ namespace Gugleus.Tests.Controllers
                 LogLevel.Debug,
                 0,
                 It.Is<FormattedLogValues>(v => v.ToString()
-                .Contains($"Ok for: '{typeof(PostDto)}' -> Id: '{expectedResult.Id}'")),
+                .Contains($"Ok for: '{postDto.GetType().Name}' -> Id: '{expectedResult.Id}'")),
                 null,
                 It.IsAny<Func<object, Exception, string>>()
                 ));
