@@ -11,5 +11,8 @@ namespace Gugleus.Core.Dto.Input
         //[Required]
         public string AdditionalEmail { get; set; }
         public string Phone { get; set; }
+
+        [Url(ErrorMessage = "Invalid Profile Url")]
+        public string Profile { get; set; }
     }
 }
