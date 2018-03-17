@@ -25,9 +25,27 @@ namespace Gugleus.WebUI.Models.Requests
         {
             get
             {
-                // if Error -> pale red
-                return Queue?.Status == RequestStatus.RequestStatusCode.ERR.ToString() ?
-                    "#ffb3b3" : "";
+                string color = string.Empty;
+
+                if (IsFinishedWithError())
+                {
+                    if (!string.IsNullOrWhiteSpace(Queue?.ErrorMsg) &&
+                        (Queue.ErrorMsg.Contains("GOOGLE_NO_PLUS") ||
+                        Queue.ErrorMsg.Contains("GOOGLE_USER_BLOCKED") ||
+                        Queue.ErrorMsg.Contains("GOOGLE_WRONG_PASSWORD"))
+                        )
+                    {
+                        // pale yellow
+                        color = "#ffffcc";
+                    }
+                    else
+                    {
+                        // pale red
+                        color = "#ffb3b3";
+                    }
+                }
+
+                return color;
             }
         }
 
@@ -42,8 +60,7 @@ namespace Gugleus.WebUI.Models.Requests
         public string OutputShort(int chars)
         {
             string retVal = string.Empty;
-            if (Queue?.Status == RequestStatus.RequestStatusCode.ERR.ToString() &&
-                !string.IsNullOrWhiteSpace(Queue?.ErrorMsg))
+            if (IsFinishedWithError())
             {
                 // on Error status show Error
                 retVal = Queue.ErrorMsg.Shorten(chars);
@@ -54,10 +71,14 @@ namespace Gugleus.WebUI.Models.Requests
                 retVal = Output.Shorten(chars);
             }
 
-            //if (!string.IsNullOrWhiteSpace(Output))
-            //    return Output.Shorten(chars);
-
             return retVal;
+        }
+
+        private bool IsFinishedWithError()
+        {
+            // Error status on Queue + not empty error message
+            return Queue?.Status == RequestStatus.RequestStatusCode.ERR.ToString() &&
+                !string.IsNullOrWhiteSpace(Queue?.ErrorMsg);
         }
     }
 }

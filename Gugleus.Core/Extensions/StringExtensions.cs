@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Gugleus.Core.Extensions
 {
@@ -16,6 +17,11 @@ namespace Gugleus.Core.Extensions
                 return str.Substring(0, chars);
 
             return str;
+        }
+
+        public static bool In(this string instance, params string[] strings)
+        {
+            return strings.Contains(instance);
         }
     }
 }
