@@ -17,4 +17,4 @@ BEGIN
 END
 $BODY$
   LANGUAGE plpgsql VOLATILE COST 100;
-GRANT EXECUTE ON FUNCTION he.add_request(character varying, json, integer) TO gugleus;
+GRANT EXECUTE ON FUNCTION he.add_request(character varying, json, integer) TO gugleus_dev_user;
