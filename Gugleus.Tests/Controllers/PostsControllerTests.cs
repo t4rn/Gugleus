@@ -12,6 +12,7 @@ using Gugleus.GoogleCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Internal;
 using Moq;
@@ -32,6 +33,7 @@ namespace Gugleus.Tests.Controllers
         private readonly Mock<ILogger<PostsController>> _loggerMock;
         private readonly Mock<IActionContextAccessor> _httpActionContextMock;
         private readonly Mock<ICacheService> _cacheServiceMock;
+        private readonly Mock<IConfiguration> _configurationMock;
         private readonly PostsController _controller;
 
         public PostsControllerTests()
@@ -44,8 +46,9 @@ namespace Gugleus.Tests.Controllers
             _loggerMock = new Mock<ILogger<PostsController>>();
             _httpActionContextMock = new Mock<IActionContextAccessor>();
             _cacheServiceMock = new Mock<ICacheService>();
+            _configurationMock = new Mock<IConfiguration>();
             _controller = new PostsController(_postServiceMock.Object, _mapperMock.Object,
-                _loggerMock.Object, _httpActionContextMock.Object, _cacheServiceMock.Object);
+                _loggerMock.Object, _httpActionContextMock.Object, _cacheServiceMock.Object, _configurationMock.Object);
 
             // for mocking headers
             _controller.ControllerContext = new ControllerContext();

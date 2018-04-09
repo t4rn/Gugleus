@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Gugleus.Api.Middleware;
 using Gugleus.Core.Domain;
 using Gugleus.Core.Domain.Dictionaries;
 using Gugleus.Core.Dto.Input;
@@ -7,13 +6,15 @@ using Gugleus.Core.Dto.Output;
 using Gugleus.Core.Results;
 using Gugleus.Core.Services;
 using Gugleus.GoogleCore;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -25,14 +26,16 @@ namespace Gugleus.Api.Controllers
         private readonly IRequestService _requestService;
         private readonly IMapper _mapper;
         private readonly ILogger<PostsController> _logger;
+        private readonly IConfiguration _configuration;
         private readonly string _ip;
 
         public PostsController(IRequestService requestService, IMapper mapper, ILogger<PostsController> logger,
-            IActionContextAccessor actionContextAccessor, ICacheService cacheService) : base(cacheService)
+            IActionContextAccessor actionContextAccessor, ICacheService cacheService, IConfiguration configuration) : base(cacheService)
         {
             _requestService = requestService;
             _mapper = mapper;
             _logger = logger;
+            _configuration = configuration;
             _ip = actionContextAccessor?.ActionContext?.HttpContext?.Connection?.RemoteIpAddress?.ToString();
         }
 
@@ -141,6 +144,30 @@ namespace Gugleus.Api.Controllers
             return result;
         }
 
+        [HttpGet("img/{guid}")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400, Type = typeof(string))]
+        [SwaggerResponse(500, Type = typeof(string))]
+        public IActionResult GetImg(string guid)
+        {
+            try
+            {
+                string folderForSearch = _configuration["img-dir"];
+                var files = Directory.GetFiles(folderForSearch, $"{guid}.*");
+                if (files.Any())
+                {
+                    return PhysicalFile(files.First(), "image/jpg");
+                }
+                else
+                {
+                    return BadRequest($"No file '{guid}' found...");
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex.GetBaseException().Message);
+            }
+        }
 
 
         private async Task<IActionResult> GetRequestResponseAsync<T>(long id, RequestType.RequestTypeCode requestType) where T : class
