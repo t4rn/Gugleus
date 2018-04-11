@@ -25,3 +25,4 @@
 * Install WebDeploy_amd64_en-US.msi https://www.microsoft.com/en-us/download/details.aspx?id=43717 (Complete installation)
 * IIS: Management Service -> Enable Remote Connections
 * Check, if Server is listening (in CMD):  `netstat -aon | findstr :8172`
+* Check, if Remote Agent Service and Web Management Service are running: `net start wmsvc` & `net start msdepsvc`
