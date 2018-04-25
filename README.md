@@ -26,3 +26,8 @@
 * IIS: Management Service -> Enable Remote Connections
 * Check, if Server is listening (in CMD):  `netstat -aon | findstr :8172`
 * Check, if Remote Agent Service and Web Management Service are running: `net start wmsvc` & `net start msdepsvc`
+
+## Version check:
+`dotnet --version`
+
+`dotnet --info`
