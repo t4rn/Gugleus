@@ -145,9 +145,7 @@ namespace Gugleus.Api.Controllers
         }
 
         [HttpGet("img/{guid}")]
-        [SwaggerResponse(200)]
-        [SwaggerResponse(400, Type = typeof(string))]
-        [SwaggerResponse(500, Type = typeof(string))]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult GetImg(string guid)
         {
             try
@@ -165,6 +163,7 @@ namespace Gugleus.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("[{0}] Ex for guid: '{1}': {2}", nameof(GetImg), guid, ex);
                 return InternalServerError(ex.GetBaseException().Message);
             }
         }
