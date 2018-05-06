@@ -16,8 +16,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
-using NLog.Web;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 
@@ -100,13 +98,6 @@ namespace Gugleus.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            //env.ConfigureNLog("nlog.config");
-
-            //add NLog to ASP.NET Core
-            loggerFactory.AddNLog();
-            //add NLog.Web
-            app.AddNLogWeb();
 
             app.UseSwagger();
 

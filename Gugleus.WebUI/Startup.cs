@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
 
 namespace Gugleus.WebUI
 {
@@ -79,11 +78,6 @@ namespace Gugleus.WebUI
             app.UseStaticFiles();
 
             app.UseAuthentication();
-
-            //add NLog to ASP.NET Core
-            loggerFactory.AddNLog();
-            //add NLog.Web
-            //app.AddNLogWeb();
 
             app.UseMvc(routes =>
             {
