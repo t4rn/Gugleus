@@ -9,7 +9,7 @@ namespace Gugleus.WebUI.Repositories
     public interface IRequestSrv
     {
         Task<List<Request>> GetAllAsync(EnvType envType);
-        Task<IQueryable<Request>> GetAllQueryableAsync(EnvType envType);
+        IQueryable<Request> GetAllQueryableAsync(EnvType envType);
 
         Task<Request> GetRequestByIdAsync(EnvType envType, long requestId);
     }

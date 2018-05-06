@@ -7,6 +7,7 @@ using Gugleus.Core.Domain.Requests;
 using Gugleus.Core.Domain;
 using Microsoft.Extensions.Configuration;
 using Gugleus.Core.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace Gugleus.WebUI.Repositories
 {
@@ -14,23 +15,34 @@ namespace Gugleus.WebUI.Repositories
     {
         private readonly AppDbContext _ctx;
         private readonly IConfiguration _config;
+        private readonly ILogger<RequestSrv> _logger;
 
-        public RequestSrv(AppDbContext ctx, IConfiguration config)
+        public RequestSrv(AppDbContext ctx, IConfiguration config, ILogger<RequestSrv> logger)
         {
             _ctx = ctx;
             _config = config;
+            _logger = logger;
         }
 
         public async Task<List<Request>> GetAllAsync(EnvType envType)
         {
-            IRequestRepository repo  = PrepareRepository(envType);
+            IRequestRepository repo = PrepareRepository(envType);
             return await repo.GetAllAsync();
         }
 
-        public async Task<IQueryable<Request>> GetAllQueryableAsync(EnvType envType)
+        public IQueryable<Request> GetAllQueryableAsync(EnvType envType)
         {
             IRequestRepository repo = PrepareRepository(envType);
-            return await Task.FromResult(repo.GetAllQueryable());
+            try
+            {
+                return repo.GetAllQueryable();
+            }
+            catch (Exception ex)
+            {
+                string cs = repo.GetConnectionString();
+                _logger.LogError("GetAllQueryableAsync Ex for cs: {0} -> {1}", cs, ex.ToString());
+                throw ex;
+            }
         }
 
         public async Task<Request> GetRequestByIdAsync(EnvType envType, long requestId)

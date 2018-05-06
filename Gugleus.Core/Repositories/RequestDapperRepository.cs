@@ -57,6 +57,11 @@ namespace Gugleus.Core.Repositories
             throw new NotImplementedException();
         }
 
+        public string GetConnectionString()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Request> GetRequestByIdAsync(long requestId)
         {
             throw new NotImplementedException();

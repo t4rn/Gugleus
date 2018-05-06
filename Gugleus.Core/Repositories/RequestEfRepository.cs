@@ -157,5 +157,10 @@ namespace Gugleus.Core.Repositories
                 .Include(x => x.Queue)
                 .Include(x => x.Queue.Status);
         }
+
+        public string GetConnectionString()
+        {
+            return _appDbContext.Database?.GetDbConnection()?.ConnectionString;
+        }
     }
 }

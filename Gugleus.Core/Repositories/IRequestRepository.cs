@@ -22,5 +22,7 @@ namespace Gugleus.Core.Repositories
         Task<Request> GetRequestByIdAsync(long requestId);
 
         IQueryable<Request> GetAllQueryable();
+
+        string GetConnectionString();
     }
 }
