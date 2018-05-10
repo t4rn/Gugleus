@@ -47,9 +47,9 @@ namespace Gugleus.Api.Controllers
         }
 
         [HttpGet("{id}", Name = "GetPostStatus")]
-        [SwaggerResponse(200, Type = typeof(RequestResponseDto<GoogleInfo>))]
-        [SwaggerResponse(400, Type = typeof(string))]
-        [SwaggerResponse(500, Type = typeof(RequestResponseDto<GoogleInfo>))]
+        [ProducesResponseType(200, Type = typeof(RequestResponseDto<GoogleInfo>))]
+        [ProducesResponseType(400, Type = typeof(string))]
+        [ProducesResponseType(500, Type = typeof(RequestResponseDto<GoogleInfo>))]
         public async Task<IActionResult> GetPostStatus(long id)
         {
             IActionResult result = await GetRequestResponseAsync<GoogleInfo>(id, RequestType.RequestTypeCode.ADDPOST);
@@ -58,9 +58,9 @@ namespace Gugleus.Api.Controllers
 
         [HttpPost]
         //[ValidateModel]
-        [SwaggerResponse(200, Type = typeof(IdResultDto<long>))]
-        [SwaggerResponse(400, Type = typeof(ResultDto))]
-        [SwaggerResponse(500, Type = typeof(IdResultDto<long>))]
+        [ProducesResponseType(200, Type = typeof(IdResultDto<long>))]
+        [ProducesResponseType(400, Type = typeof(ResultDto))]
+        [ProducesResponseType(500, Type = typeof(IdResultDto<long>))]
         public async Task<IActionResult> AddPost([FromBody]PostDto postDto)
         {
             IActionResult result;
@@ -81,9 +81,8 @@ namespace Gugleus.Api.Controllers
 
         [HttpGet("details/{id}", Name = "GetPostDetails")]
         //[ValidateModel]
-        //[SwaggerResponse(200, Type = typeof(RequestResponseDto<ActivityInfo>))]
-        [ProducesResponseType(typeof(RequestResponseDto<ActivityInfo>), 200)]
-        [SwaggerResponse(400, Type = typeof(string))]
+        [ProducesResponseType(200, Type = typeof(RequestResponseDto<ActivityInfo>))]
+        [ProducesResponseType(400, Type = typeof(string))]
         [ProducesResponseType(typeof(ObjectResult), 500)]
         public async Task<IActionResult> GetPostDetails(long id)
         {
@@ -93,9 +92,9 @@ namespace Gugleus.Api.Controllers
 
         [HttpPost("details")]
         //[ValidateModel]
-        [SwaggerResponse(200, Type = typeof(IdResultDto<long>))]
-        [SwaggerResponse(400, Type = typeof(ResultDto))]
-        [SwaggerResponse(500, Type = typeof(IdResultDto<long>))]
+        [ProducesResponseType(200, Type = typeof(IdResultDto<long>))]
+        [ProducesResponseType(400, Type = typeof(ResultDto))]
+        [ProducesResponseType(500, Type = typeof(IdResultDto<long>))]
         public async Task<IActionResult> AddPostDetailsRequest([FromBody]RequestDetailsDto requestDetailsDto)
         {
             IActionResult result;
@@ -115,8 +114,8 @@ namespace Gugleus.Api.Controllers
         [HttpGet("stats/{from}/{to}")]
         [SwaggerResponse(200, Type = typeof(RequestSummaryDto<DateFilterDto>),
             Description = "Example: http://localhost:65508/posts/stats/20170101/20180131")]
-        [SwaggerResponse(400, Type = typeof(string))]
-        [SwaggerResponse(500, Type = typeof(string))]
+        [ProducesResponseType(400, Type = typeof(string))]
+        [ProducesResponseType(500, Type = typeof(string))]
         public async Task<IActionResult> GetStats(string from, string to)
         {
             IActionResult result;
@@ -145,9 +144,7 @@ namespace Gugleus.Api.Controllers
         }
 
         [HttpGet("img/{guid}")]
-        [SwaggerResponse(200)]
-        [SwaggerResponse(400, Type = typeof(string))]
-        [SwaggerResponse(500, Type = typeof(string))]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult GetImg(string guid)
         {
             try
@@ -165,6 +162,7 @@ namespace Gugleus.Api.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError("[{0}] Ex for guid: '{1}': {2}", nameof(GetImg), guid, ex);
                 return InternalServerError(ex.GetBaseException().Message);
             }
         }
