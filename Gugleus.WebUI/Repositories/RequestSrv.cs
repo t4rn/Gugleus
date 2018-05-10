@@ -1,12 +1,10 @@
-﻿using System;
+﻿using Gugleus.Core.Domain;
+using Gugleus.Core.Domain.Requests;
+using Gugleus.Core.Repositories;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Gugleus.Core.Domain.Requests;
-using Gugleus.Core.Domain;
-using Microsoft.Extensions.Configuration;
-using Gugleus.Core.Repositories;
 
 namespace Gugleus.WebUI.Repositories
 {
@@ -27,10 +25,10 @@ namespace Gugleus.WebUI.Repositories
             return await repo.GetAllAsync();
         }
 
-        public async Task<IQueryable<Request>> GetAllQueryableAsync(EnvType envType)
+        public IQueryable<Request> GetAllQueryable(EnvType envType)
         {
             IRequestRepository repo = PrepareRepository(envType);
-            return await Task.FromResult(repo.GetAllQueryable());
+            return repo.GetAllQueryable();
         }
 
         public async Task<Request> GetRequestByIdAsync(EnvType envType, long requestId)

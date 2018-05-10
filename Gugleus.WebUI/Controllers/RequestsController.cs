@@ -33,9 +33,9 @@ namespace Gugleus.WebUI.Controllers
         }
 
         [Route("[controller]/List/{env}/{page?}/{pageSize?}")]
-        public async Task<IActionResult> List(EnvType env, int? page, int? pageSize)
+        public IActionResult List(EnvType env, int? page, int? pageSize)
         {
-            RequestListVM model = await PrepareRequestListVM(env, page, pageSize);
+            RequestListVM model = PrepareRequestListVM(env, page, pageSize);
             return View("RequestList", model);
         }
 
@@ -54,18 +54,18 @@ namespace Gugleus.WebUI.Controllers
             return model;
         }
 
-        private async Task<RequestListVM> PrepareRequestListVM(EnvType env, int? page, int? pageSize)
+        private RequestListVM PrepareRequestListVM(EnvType env, int? page, int? pageSize)
         {
             RequestListVM model = new RequestListVM();
 
-            var requests = (await _requestSrv.GetAllQueryableAsync(env)).OrderByDescending(x => x.Id);
+            var requests = _requestSrv.GetAllQueryable(env).OrderByDescending(x => x.Id);
 
-            var pageNumber = page ?? 1;
-            var size = pageSize ?? 20;
-            var onePageOfProducts = requests.ToPagedList(pageNumber, size)
+            int pageNumber = page ?? 1;
+            int size = pageSize ?? 20;
+            IPagedList<RequestVM> onePageOfRequests = requests.ToPagedList(pageNumber, size)
                 .ToMappedPagedList<Request, RequestVM>();
 
-            model.Requests = onePageOfProducts;
+            model.Requests = onePageOfRequests;
 
             model.Env = env;
             model.Description = $"Requests from {model.Env}";
