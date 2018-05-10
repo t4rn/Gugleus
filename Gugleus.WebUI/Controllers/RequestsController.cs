@@ -6,6 +6,7 @@ using Gugleus.WebUI.Models.Requests;
 using Gugleus.WebUI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -58,18 +59,27 @@ namespace Gugleus.WebUI.Controllers
         {
             RequestListVM model = new RequestListVM();
 
-            var requests = _requestSrv.GetAllQueryable(env).OrderByDescending(x => x.Id);
+            try
+            {
+                var requests = _requestSrv.GetAllQueryable(env).OrderByDescending(x => x.Id);
 
-            int pageNumber = page ?? 1;
-            int size = pageSize ?? 20;
-            IPagedList<RequestVM> onePageOfRequests = requests.ToPagedList(pageNumber, size)
-                .ToMappedPagedList<Request, RequestVM>();
+                var pageNumber = page ?? 1;
+                var size = pageSize ?? 20;
+                IPagedList<RequestVM> onePageOfRequests = requests.ToPagedList(pageNumber, size)
+                    .ToMappedPagedList<Request, RequestVM>();
 
-            model.Requests = onePageOfRequests;
+                model.Requests = onePageOfRequests;
 
-            model.Env = env;
-            model.Description = $"Requests from {model.Env}";
-            model.PageSize = size;
+                model.Env = env;
+                model.Description = $"Requests from {model.Env}";
+                model.PageSize = size;
+            }
+            catch (Exception ex)
+            {
+                string cs = _requestSrv.GetConnectionString();
+                _logger.LogError("[PrepareRequestListVM] Ex for cs: '{0}' -> {1}", cs, ex.ToString());
+                throw ex;
+            }
 
             return model;
         }

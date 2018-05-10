@@ -7,7 +7,7 @@ namespace Gugleus.WebUI.Repositories
 {
     public class FileLogsService : IFileLogsService
     {
-        public List<FileInfo> GetAllAsync(EnvType env)
+        public List<FileInfo> GetAll(EnvType env)
         {
             List<FileInfo> files = new List<FileInfo>();
 
@@ -16,17 +16,17 @@ namespace Gugleus.WebUI.Repositories
             var dir = new DirectoryInfo(logsPath);
             if (dir.Exists)
             {
-                files = dir.GetFiles().ToList();
+                files = dir.GetFiles("*", SearchOption.AllDirectories).ToList();
             }
 
             return files;
         }
 
-        public FileInfo GetFileByNameAsync(EnvType env, string fileName)
+        public FileInfo GetFileByName(EnvType env, string fileName)
         {
-            string logsPath = PrepareLogsPath(env);
+            List<FileInfo> allFiles = GetAll(env);
 
-            FileInfo fileInfo = new FileInfo($"{logsPath}\\{fileName}");
+            FileInfo fileInfo = allFiles?.FirstOrDefault(x => x.Name == fileName);
 
             return fileInfo;
         }

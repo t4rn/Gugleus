@@ -29,7 +29,7 @@ namespace Gugleus.WebUI.Controllers
             var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
 
             // TODO: global exception handling with call stack and parameters
-            _logger.LogError("GlobalEx: {0}", exceptionFeature?.Error?.GetBaseException());
+            _logger.LogError("GlobalEx for path: '{0}' >>>> {1}", exceptionFeature?.Path, exceptionFeature?.Error?.GetBaseException());
 
             return View(new ErrorViewModel
             {

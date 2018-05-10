@@ -3,7 +3,6 @@ using Gugleus.Core.Domain.Requests;
 using Gugleus.Core.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +14,7 @@ namespace Gugleus.WebUI.Repositories
         private readonly AppDbContext _ctx;
         private readonly IConfiguration _config;
         private readonly ILogger<RequestSrv> _logger;
+        private IRequestRepository _repo;
 
         public RequestSrv(AppDbContext ctx, IConfiguration config, ILogger<RequestSrv> logger)
         {
@@ -31,17 +31,14 @@ namespace Gugleus.WebUI.Repositories
 
         public IQueryable<Request> GetAllQueryable(EnvType envType)
         {
-            IRequestRepository repo = PrepareRepository(envType);
-            try
-            {
-                return repo.GetAllQueryable();
-            }
-            catch (Exception ex)
-            {
-                string cs = repo.GetConnectionString();
-                _logger.LogError("GetAllQueryableAsync Ex for cs: {0} -> {1}", cs, ex.ToString());
-                throw ex;
-            }
+            _repo = PrepareRepository(envType);
+
+            return _repo.GetAllQueryable();
+        }
+
+        public string GetConnectionString()
+        {
+            return _repo.GetConnectionString();
         }
 
         public async Task<Request> GetRequestByIdAsync(EnvType envType, long requestId)

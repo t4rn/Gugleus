@@ -12,5 +12,6 @@ namespace Gugleus.WebUI.Repositories
         IQueryable<Request> GetAllQueryable(EnvType envType);
 
         Task<Request> GetRequestByIdAsync(EnvType envType, long requestId);
+        string GetConnectionString();
     }
 }

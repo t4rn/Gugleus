@@ -36,7 +36,7 @@ namespace Gugleus.WebUI.Controllers
         {
             _logger.LogDebug($"[{nameof(Details)}] Start for name = '{fileName}' and env = '{env}'");
 
-            var fileInfo = _fileLogsService.GetFileByNameAsync(env.Value, fileName);
+            var fileInfo = _fileLogsService.GetFileByName(env.Value, fileName);
 
             FileLogVM requestVM = _mapper.Map<FileLogVM>(fileInfo);
             requestVM.Env = env;
@@ -57,7 +57,7 @@ namespace Gugleus.WebUI.Controllers
         private FileLogListVM PrepareListModel(EnvType env, int? page, int pageSize = 20)
         {
             FileLogListVM model = new FileLogListVM();
-            var fileInfoList = _fileLogsService.GetAllAsync(env).OrderByDescending(x => x.LastWriteTime);
+            var fileInfoList = _fileLogsService.GetAll(env).OrderByDescending(x => x.LastWriteTime);
 
             int pageNumber = page ?? 1;
 
