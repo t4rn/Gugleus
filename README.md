@@ -18,7 +18,7 @@
 
 ### Hosting on IIS [https://docs.microsoft.com/en-us/aspnet/core/publishing/iis?tabs=aspnetcore2x]:
 * Install .NET SDK https://download.microsoft.com/download/D/8/1/D8131218-F121-4E13-8C5F-39B09A36E406/dotnet-sdk-2.1.104-win-gs-x64.exe (from https://www.microsoft.com/net/learn/get-started/windows)
-* Install .NET Core Windows Server Hosting bundle https://aka.ms/dotnetcore-2-windowshosting
+* Install .NET Core Windows Server Hosting bundle https://dotnet.microsoft.com/download/thank-you/dotnet-runtime-2.2.1-windows-hosting-bundle-installer [2.0.8: https://aka.ms/dotnetcore-2-windowshosting]
 * CMD -> `net stop was /y`  ->  `net start w3svc`
 
 ### Web Deploy:
